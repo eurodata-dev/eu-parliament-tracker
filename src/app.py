@@ -578,7 +578,6 @@ if has_recent_data:
 # ── Footer ────────────────────────────────────────────────────────────────────
 
 st.markdown(
-    "<small style='color:#9ca3af;'>Data: HowTheyVote.eu (historical) + "
-    "EU Parliament Open Data API (live) | Built with Streamlit + Claude</small>",
+    "<small style='color:#9ca3af;'>Data: European Parliament Open Data Portal &amp; HowTheyVote.eu</small>",
     unsafe_allow_html=True,
 )

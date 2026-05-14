@@ -8,3 +8,4 @@ __pycache__/
 *.parquet
 *.gz
 src/__pycache__/
+.claude/
