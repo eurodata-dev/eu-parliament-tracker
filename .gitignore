@@ -1,0 +1,10 @@
+.env
+data/raw/real_votes/
+data/processed/
+data/recent/*
+!data/recent/.gitkeep
+__pycache__/
+*.pyc
+*.parquet
+*.gz
+src/__pycache__/
