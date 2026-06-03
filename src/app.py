@@ -22,12 +22,42 @@ except Exception as e:
     st.stop()
 
 try:
+    import os
+    from pathlib import Path
+    from config import settings
+    data_dir = Path(settings.DATA_DIR)
+    parquet_path = data_dir / "processed" / "eu_votes_real.parquet"
+    csv_path     = data_dir / "processed" / "eu_votes_real.csv"
+    sample_path  = data_dir / "raw" / "eu_votes_sample.csv"
+    st.write(f"**parquet exists:** {parquet_path.exists()} — size: {parquet_path.stat().st_size // 1024} KB" if parquet_path.exists() else f"**parquet:** NOT FOUND at `{parquet_path}`")
+    st.write(f"**real CSV exists:** {csv_path.exists()} — size: {csv_path.stat().st_size // 1024} KB" if csv_path.exists() else f"**real CSV:** NOT FOUND")
+    st.write(f"**sample CSV exists:** {sample_path.exists()}" )
+except BaseException as e:
+    st.error(f"File check FAILED: {e}")
+
+try:
+    import pandas as pd
+    import pyarrow.parquet as pq
+    from config import settings
+    from pathlib import Path
+    parquet_path = Path(settings.DATA_DIR) / "processed" / "eu_votes_real.parquet"
+    if parquet_path.exists():
+        meta = pq.read_metadata(str(parquet_path))
+        st.write(f"## Step 4a: Parquet metadata OK — {meta.num_rows:,} rows, {meta.num_row_groups} row groups")
+    else:
+        st.write("## Step 4a: Parquet not found — will use CSV fallback")
+except BaseException as e:
+    import traceback
+    st.error(f"Step 4a (parquet metadata) FAILED: {e}")
+    st.code(traceback.format_exc())
+
+try:
     from eu_dataset_loader import get_eu_votes
     df = get_eu_votes()
-    st.write(f"## Step 4: Data loaded OK — {len(df):,} rows, {df['policy_topic'].nunique()} topics")
-except Exception as e:
+    st.write(f"## Step 4b: Data loaded OK — {len(df):,} rows, {df['policy_topic'].nunique()} topics")
+except BaseException as e:
     import traceback
-    st.error(f"Data loading FAILED: {e}")
+    st.error(f"Step 4b (data load) FAILED: {e}")
     st.code(traceback.format_exc())
     st.stop()
 
