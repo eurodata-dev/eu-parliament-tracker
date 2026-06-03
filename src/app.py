@@ -714,6 +714,7 @@ with search_col:
                              key="pill_all", use_container_width=True):
                     st.session_state["search_override"] = "__ALL__:" + query
                     st.rerun()
+
         for row_start in range(0, len(suggestions), 3):
             row = suggestions[row_start : row_start + 3]
             pill_cols = st.columns(len(row))
