@@ -114,12 +114,6 @@ def get_eu_votes() -> pd.DataFrame:
     else:
         df = _load_fallback()
 
-    # DEV/DEMO mode: sample down to 50k rows for fast iteration
-    env = settings.ENV
-    demo_mode = os.getenv("DEMO_MODE", "false").lower() in ("1", "true", "yes")
-    if env == "development" or demo_mode:
-        n = min(50_000, len(df))
-        df = df.sample(n=n, random_state=42)
-        print(f"DEV MODE: sampled {n:,} rows from full dataset")
+    print(f"Loaded {len(df):,} rows (2019–2026)")
 
     return df

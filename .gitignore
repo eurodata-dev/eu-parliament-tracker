@@ -9,3 +9,4 @@ __pycache__/
 *.gz
 src/__pycache__/
 .claude/
+.streamlit/secrets.toml

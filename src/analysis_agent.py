@@ -2,7 +2,7 @@ import logging
 import statistics
 from collections import Counter
 
-import anthropic
+import requests
 import pandas as pd
 
 from config import settings
@@ -70,15 +70,9 @@ def analyze_policy(votes_df: pd.DataFrame, topic: str) -> VoteSummary:
 
 
 def validate_output(text: str) -> str:
-    """Reject LLM responses that contain hallucinated political reasoning."""
-    forbidden = [
-        "alliance", "aligned", "coalition",
-        "ideology", "unexpected", "supports same",
-    ]
-    for word in forbidden:
-        if word in text.lower():
-            logger.warning("Hallucination detected — forbidden word %r in LLM output.", word)
-            return "Error: invalid AI output (hallucination detected)"
+    """Basic sanity check on LLM output — only reject clearly broken responses."""
+    if not text or len(text.strip()) < 20:
+        return "API_ERROR"
     return text
 
 
@@ -194,118 +188,92 @@ def compute_political_signals(metrics: dict) -> dict:
     }
 
 
-def _ollama_insight(prompt: str) -> str:
-    """Fallback: call Ollama locally at port 11434."""
-    import requests
-    try:
-        response = requests.post(
-            "http://localhost:11434/api/generate",
-            json={
-                "model": "mistral",
-                "prompt": prompt,
-                "stream": False,
-            },
-            timeout=120,
-        )
-        if response.status_code == 200:
-            result = response.json()["response"]
-            return validate_output(result)
-        else:
-            raise Exception(f"Ollama returned {response.status_code}")
-    except requests.exceptions.ConnectionError:
-        raise Exception("Ollama not running — start it with: ollama serve")
+def generate_ai_insight(summary_dict: VoteSummary, topic: str, lang: str = "English") -> str:
+    """Return a data-driven AI summary of voting patterns via Groq (free tier).
 
-
-def generate_ai_insight(summary_dict: VoteSummary, topic: str) -> str:
-    """Return a strictly data-driven statistical summary of voting patterns.
-
-    Converts the VoteSummary dict to a structured list before passing to the
-    LLM so the model receives explicit, enumerated rows rather than a raw dict.
-    The response is validated against a forbidden-word list before being returned.
-
-    Args:
-        summary_dict: Aggregated vote counts from :func:`build_summary` or
-            :func:`analyze_policy`.
-        topic:        Policy topic label used to contextualise the prompt.
-
-    Returns:
-        Validated LLM response string, or an error string prefixed with "Error:".
+    Requires GROQ_API_KEY in .env — get a free key at console.groq.com.
     """
-    # Convert to flat list, then compute all metrics in Python — not the LLM.
+    api_key = settings.GROQ_API_KEY
+    if not api_key or api_key == "your_groq_api_key_here":
+        return "NO_KEY"
+
     summary_list = [
         {"group": group, "FOR": counts["FOR"], "AGAINST": counts["AGAINST"], "ABSTAIN": counts["ABSTAIN"]}
         for group, counts in summary_dict.items()
     ]
     metrics = compute_vote_metrics(summary_list)
 
-    prompt = f"""[INST]
-YOU ARE A TEXT FORMATTER ONLY.
-DO NOT COMPUTE ANYTHING.
-USE ONLY THE VALUES PROVIDED BELOW — COPY THEM VERBATIM.
+    # Determine outcome from dominant bloc
+    dominant = "PASSED" if metrics["groups"] and sum(g["FOR"] for g in metrics["groups"]) > sum(g["AGAINST"] for g in metrics["groups"]) else "REJECTED"
 
-TOPIC: {topic}
+    # Left/right orientation per group (simplified)
+    left_groups  = {"S&D", "Greens/EFA", "The Left"}
+    right_groups = {"EPP", "ECR", "Patriots for Europe", "ESN", "ID"}
+    center_groups = {"Renew"}
 
-PRECOMPUTED VALUES (do not recalculate):
-- Groups: {metrics["groups"]}
-- Ranking by FOR (high→low): {metrics["ranking_for"]}
-- Ranking by AGAINST (high→low): {metrics["ranking_against"]}
-- Highest FOR: {metrics["max_for"]}
-- Lowest FOR: {metrics["min_for"]}
-- Delta FOR: {metrics["delta_for"]}
+    group_summary = []
+    for g in metrics["groups"]:
+        name = g["group"]
+        dominant_vote = "FOR" if g["FOR"] >= g["AGAINST"] else "AGAINST"
+        if name in left_groups:
+            side = "left-wing"
+        elif name in right_groups:
+            side = "right-wing"
+        elif name in center_groups:
+            side = "centrist"
+        else:
+            side = "other"
+        group_summary.append(f"- {name} ({side}): {dominant_vote} ({g['FOR']} for / {g['AGAINST']} against)")
 
-OUTPUT FORMAT (copy values only, no additions, no interpretation):
+    group_text = "\n".join(group_summary)
 
-BLOCS:
-- <group>: FOR=<n> AGAINST=<n> ABSTAIN=<n>
-(one line per group, values from Groups list)
+    prompt = f"""You are explaining an EU Parliament vote to someone with no political knowledge. Be clear, simple, and neutral.
 
-RANKING_FOR:
-- <group> (<n>), ... (from Ranking by FOR)
+VOTE TOPIC: {topic}
 
-RANKING_AGAINST:
-- <group> (<n>), ... (from Ranking by AGAINST)
+RESULT: The vote {dominant}.
 
-HIGHEST_FOR:
-- <group> with FOR=<n> (from Highest FOR)
+HOW EACH GROUP VOTED:
+{group_text}
 
-LOWEST_FOR:
-- <group> with FOR=<n> (from Lowest FOR)
+Write a short explanation (4-6 sentences) that covers:
+1. In plain language, what this vote was about (explain the topic as if to a curious teenager)
+2. Which political side (left/right/center) supported or opposed it, and why that makes sense
+3. Whether it passed or failed, and what that means in practice
 
-DELTA_FOR:
-- <n> (from Delta FOR, copy only)
+Use simple language. No jargon. No bullet points — write in flowing sentences.
 
-CLEAVAGE:
-- max(FOR)=<n>, min(FOR)=<n>, delta=<n>
-
-EXECUTIVE_SUMMARY:
-• Total groups: <n>
-• Group with most FOR votes: <group> (<n>)
-• FOR vote spread (delta): <n>
-
-COPY VALUES ONLY. NO CALCULATIONS. NO INTERPRETATION.
-[/INST]"""
-
-    if not settings.ANTHROPIC_API_KEY:
-        logger.info("No ANTHROPIC_API_KEY — using Ollama fallback.")
-        try:
-            return _ollama_insight(prompt)
-        except Exception:
-            return "⚠️ Start Ollama to enable AI insights: run 'ollama serve' in a terminal"
+Respond entirely in {lang}."""
 
     try:
-        client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
-        message = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=400,
-            messages=[{"role": "user", "content": prompt}],
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "llama-3.1-8b-instant",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 400,
+                "temperature": 0.1,
+            },
+            timeout=15,
         )
-        raw = message.content[0].text
-        logger.debug("Raw Claude output for topic %r: %s", topic, raw)
-        return validate_output(raw)
-    except anthropic.AuthenticationError:
-        return "Error: Anthropic API key is missing or invalid. Set ANTHROPIC_API_KEY in your .env file."
-    except anthropic.RateLimitError:
-        return "Error: Anthropic rate limit reached. Try again in a few seconds."
+        if response.status_code == 200:
+            return validate_output(response.json()["choices"][0]["message"]["content"])
+        elif response.status_code == 401:
+            return "BAD_KEY"
+        elif response.status_code == 429:
+            return "RATE_LIMIT"
+        elif response.status_code == 404:
+            logger.warning("Groq 404 — model not found: %s", response.text[:200])
+            return "API_ERROR"
+        else:
+            logger.warning("Groq returned %s: %s", response.status_code, response.text[:300])
+            return "API_ERROR"
+    except requests.exceptions.Timeout:
+        return "TIMEOUT"
     except Exception as exc:
-        logger.exception("Claude API call failed for topic %r", topic)
-        return f"Error: Claude API call failed — {exc}"
+        logger.warning("Groq request failed: %s", exc)
+        return "API_ERROR"

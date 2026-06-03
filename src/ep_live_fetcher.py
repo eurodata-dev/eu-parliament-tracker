@@ -44,10 +44,10 @@ _OUTPUT_DIR      = Path(settings.DATA_DIR) / "recent"
 _API_LIST        = "https://howtheyvote.eu/api/votes"
 _API_DETAIL      = "https://howtheyvote.eu/api/votes/{vote_id}"
 _TIMEOUT         = 20
-_REQUEST_DELAY   = 1       # seconds between requests
-_LOOKBACK_DAYS   = 60
-_MAX_SESSIONS    = 5       # stop after this many unique session dates
-_MAX_DETAIL_CALLS = 60     # cap total detail API calls (≈60 sec max)
+_REQUEST_DELAY   = 0.4     # seconds between requests
+_LOOKBACK_DAYS   = 30
+_MAX_SESSIONS    = 3       # stop after this many unique session dates
+_MAX_DETAIL_CALLS = 25     # cap total detail API calls (≈10 sec max)
 _PAGE_SIZE       = 50
 
 SCHEMA_COLUMNS = ["member_name", "political_group", "policy_topic", "vote", "date"]

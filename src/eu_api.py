@@ -16,7 +16,6 @@ import logging
 
 import pandas as pd
 
-import ep_live_fetcher
 from eu_dataset_loader import SCHEMA, get_eu_votes
 
 logger = logging.getLogger(__name__)
@@ -99,11 +98,6 @@ def fetch_all_votes() -> pd.DataFrame:
 
     Used by app.py for global KPIs and charts.
     """
-    try:
-        ep_live_fetcher.run()
-    except Exception as exc:
-        logger.warning("EP live fetch skipped: %s", exc)
-
     return get_eu_votes()
 
 
