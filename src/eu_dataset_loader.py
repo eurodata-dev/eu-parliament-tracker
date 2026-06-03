@@ -1,32 +1,14 @@
-"""
-eu_dataset_loader.py — EU Parliament voting data ingestion layer.
-
-Source priority (highest -> lowest):
-  1. data/processed/eu_votes_real.parquet  -- fastest, produced by load_real_votes.py
-  2. data/processed/eu_votes_real.csv      -- CSV fallback
-  3. data/raw/eu_votes_sample.csv          -- small demo dataset
-  4. hardcoded 12-record fallback          -- offline / CI
-"""
+"""eu_dataset_loader.py — EU Parliament voting data ingestion layer."""
 
 from __future__ import annotations
-
 import logging
-import os
 from pathlib import Path
-
 import pandas as pd
-
 from config import settings
 
 logger = logging.getLogger(__name__)
 
-SCHEMA: list[str] = [
-    "member_name",
-    "political_group",
-    "policy_topic",
-    "vote",
-    "date",
-]
+SCHEMA: list[str] = ["member_name", "political_group", "policy_topic", "vote", "date"]
 
 _FALLBACK_RECORDS: list[dict] = [
     {"member_name": "Dragos Tudorache",     "political_group": "Renew",      "policy_topic": "AI Act",               "vote": "FOR",     "date": "2024-03-13"},
@@ -43,8 +25,7 @@ _FALLBACK_RECORDS: list[dict] = [
     {"member_name": "Fabrice Leggeri",      "political_group": "ID",         "policy_topic": "Migration Policy",     "vote": "ABSTAIN", "date": "2024-04-10"},
 ]
 
-# Max rows to load — keeps memory under 500MB on Streamlit Cloud free tier
-MAX_ROWS = 500_000
+MAX_ROWS = 300_000
 
 
 def _clean(df: pd.DataFrame) -> pd.DataFrame:
@@ -54,67 +35,65 @@ def _clean(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _load_from_parquet() -> pd.DataFrame:
+    import pyarrow.parquet as pq
+    import pyarrow as pa
     path = Path(settings.DATA_DIR) / "processed" / "eu_votes_real.parquet"
-    # Use pyarrow engine and load only needed columns to save memory
-    df = pd.read_parquet(path, columns=SCHEMA, engine="pyarrow")
-    # Deduplicate first
-    df = df.drop_duplicates()
-    # Cap rows if still too large
-    if len(df) > MAX_ROWS:
-        logger.warning("Parquet has %d rows after dedup — sampling to %d", len(df), MAX_ROWS)
-        df = df.sample(n=MAX_ROWS, random_state=42)
+    pf = pq.ParquetFile(str(path))
+    num_rg = pf.metadata.num_row_groups
+    logger.info("Parquet has %d row groups, %d total rows", num_rg, pf.metadata.num_rows)
+    # Read row groups one at a time until we have enough rows
+    tables = []
+    rows_so_far = 0
+    for i in range(num_rg):
+        rg = pf.read_row_group(i, columns=SCHEMA)
+        tables.append(rg)
+        rows_so_far += rg.num_rows
+        if rows_so_far >= MAX_ROWS:
+            break
+    table = pa.concat_tables(tables)
+    df = table.to_pandas()
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df = df.drop_duplicates()
     logger.info("Loaded %d rows from parquet (%d unique topics)", len(df), df["policy_topic"].nunique())
-    return _clean(df[SCHEMA])
-
-
-def _load_from_real_votes() -> pd.DataFrame:
-    path = Path(settings.DATA_DIR) / "processed" / "eu_votes_real.csv"
-    df = pd.read_csv(path, usecols=SCHEMA)
-    df = df.drop_duplicates()
-    if len(df) > MAX_ROWS:
-        df = df.sample(n=MAX_ROWS, random_state=42)
-    df["date"] = pd.to_datetime(df["date"], errors="coerce")
-    logger.info("Loaded %d rows from real CSV", len(df))
-    return _clean(df[SCHEMA])
+    return _clean(df)
 
 
 def _load_from_csv() -> pd.DataFrame:
-    csv_path = Path(settings.DATA_DIR) / "raw" / "eu_votes_sample.csv"
-    df = pd.read_csv(csv_path)
+    path = Path(settings.DATA_DIR) / "processed" / "eu_votes_real.csv"
+    df = pd.read_csv(path, usecols=SCHEMA)
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df = df.drop_duplicates()
+    if len(df) > MAX_ROWS:
+        df = df.sample(n=MAX_ROWS, random_state=42)
+    return _clean(df)
+
+
+def _load_from_sample() -> pd.DataFrame:
+    path = Path(settings.DATA_DIR) / "raw" / "eu_votes_sample.csv"
+    df = pd.read_csv(path)
     df["date"] = pd.to_datetime(df["date"])
-    logger.info("Loaded %d vote records from sample CSV (%s)", len(df), csv_path)
     return _clean(df[SCHEMA])
 
 
 def _load_fallback() -> pd.DataFrame:
-    logger.warning("No CSV found — using hardcoded fallback dataset (%d records).", len(_FALLBACK_RECORDS))
     df = pd.DataFrame(_FALLBACK_RECORDS)
     df["date"] = pd.to_datetime(df["date"])
     return _clean(df[SCHEMA])
 
 
 def get_eu_votes() -> pd.DataFrame:
-    """Return a DataFrame of EU Parliament voting records.
-
-    Source priority:
-        1. data/processed/eu_votes_real.parquet  (fastest)
-        2. data/processed/eu_votes_real.csv
-        3. data/raw/eu_votes_sample.csv
-        4. hardcoded 12-record fallback
-    """
     parquet_path = Path(settings.DATA_DIR) / "processed" / "eu_votes_real.parquet"
-    real_path    = Path(settings.DATA_DIR) / "processed" / "eu_votes_real.csv"
-    sample_path  = Path(settings.DATA_DIR) / "raw"       / "eu_votes_sample.csv"
+    csv_path     = Path(settings.DATA_DIR) / "processed" / "eu_votes_real.csv"
+    sample_path  = Path(settings.DATA_DIR) / "raw" / "eu_votes_sample.csv"
 
     if parquet_path.exists():
         df = _load_from_parquet()
-    elif real_path.exists():
-        df = _load_from_real_votes()
-    elif sample_path.exists():
+    elif csv_path.exists():
         df = _load_from_csv()
+    elif sample_path.exists():
+        df = _load_from_sample()
     else:
         df = _load_fallback()
 
-    print(f"Loaded {len(df):,} rows (2019-2026)")
+    print(f"Loaded {len(df):,} rows")
     return df
