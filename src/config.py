@@ -14,15 +14,8 @@ for _candidate in [
         load_dotenv(dotenv_path=_candidate, override=True)
         break
 
-# Streamlit Cloud: inject st.secrets into os.environ so the rest of the code
-# can use os.getenv() regardless of where it's running.
-try:
-    import streamlit as st
-    for _key, _val in st.secrets.items():
-        if isinstance(_val, str) and _key not in os.environ:
-            os.environ[_key] = _val
-except Exception:
-    pass  # Not running inside Streamlit, or no secrets configured — that's fine.
+# NOTE: Streamlit secrets are loaded in app.py AFTER st.set_page_config(),
+# not here, to avoid calling st.secrets before the Streamlit context is ready.
 
 
 @dataclass

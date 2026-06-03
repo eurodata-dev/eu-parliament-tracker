@@ -19,6 +19,16 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Inject Streamlit Cloud secrets into os.environ AFTER set_page_config.
+# This must happen here (not in config.py) to avoid calling st.secrets before
+# the Streamlit context is fully initialised.
+try:
+    for _sk, _sv in st.secrets.items():
+        if isinstance(_sv, str) and _sk not in os.environ:
+            os.environ[_sk] = _sv
+except Exception:
+    pass
+
 st.markdown("""
 <style>
     .stButton > button {
@@ -135,7 +145,7 @@ _TR: dict[str, dict[str, str]] = {
         "recent_failed":     "Could not compute recent changes",
         "across_topics":     " across {n} legislative topics",
         "lang_name":         "English",
-        "subscribe_title":   "📬 Get the weekly digest",
+        "subscribe_title":   "\U0001f4ec Get the weekly digest",
         "subscribe_body":    "Every Monday: the 5 most important EU votes, explained in plain language.",
         "subscribe_placeholder": "your@email.com",
         "subscribe_btn":     "Subscribe — it's free",
@@ -163,7 +173,7 @@ _TR: dict[str, dict[str, str]] = {
         "refresh":           "\U0001f504 Actualiser les données",
         "refresh_help":      "Récupère les derniers votes du Parlement européen (~15 secondes)",
         "refreshing":        "Récupération des votes... (~15 secondes)",
-        "refreshed":         "Données actualisées !",
+        "refreshed":         "Données actualisées !",
         "refresh_failed":    "Échec de la mise à jour",
         "votes_loaded":      "votes chargés",
         "live_included":     "\U0001f7e2 Données en direct incluses",
@@ -174,9 +184,9 @@ _TR: dict[str, dict[str, str]] = {
         "no_results":        "Aucun sujet trouvé.",
         "see_all_combined":  "\U0001f50d Voir les {n} sujets combinés — {v:,} votes",
         "see_all_list":      "\U0001f4cb Voir les {n} sujets correspondants",
-        "n_match_pick":      "{n} sujets correspondent — choisissez-en un ou combinez-les :",
+        "n_match_pick":      "{n} sujets correspondent — choisissez-en un ou combinez-les :",
         "all_topics_label":  "Tous les sujets correspondant à '{q}'",
-        "how_voted":         "Comment les partis ont-ils voté ?",
+        "how_voted":         "Comment les partis ont-ils voté ?",
         "vote_breakdown":    "Répartition des votes par groupe politique",
         "no_vote_data":      "Aucune donnée de vote pour ce sujet.",
         "overall_result":    "Résultat global",
@@ -208,7 +218,7 @@ _TR: dict[str, dict[str, str]] = {
         "recent_failed":     "Impossible de calculer les changements récents",
         "across_topics":     " sur {n} sujets législatifs",
         "lang_name":         "French",
-        "subscribe_title":   "📬 Recevez le résumé hebdomadaire",
+        "subscribe_title":   "\U0001f4ec Recevez le résumé hebdomadaire",
         "subscribe_body":    "Chaque lundi : les 5 votes les plus importants de l'UE, expliqués simplement.",
         "subscribe_placeholder": "votre@email.com",
         "subscribe_btn":     "S'abonner — c'est gratuit",
@@ -281,7 +291,7 @@ _TR: dict[str, dict[str, str]] = {
         "recent_failed":     "No se pudieron calcular los cambios recientes",
         "across_topics":     " en {n} temas legislativos",
         "lang_name":         "Spanish",
-        "subscribe_title":   "📬 Recibe el resumen semanal",
+        "subscribe_title":   "\U0001f4ec Recibe el resumen semanal",
         "subscribe_body":    "Cada lunes: los 5 votos más importantes de la UE, explicados en claro.",
         "subscribe_placeholder": "tu@email.com",
         "subscribe_btn":     "Suscribirse — es gratis",
@@ -354,7 +364,7 @@ _TR: dict[str, dict[str, str]] = {
         "recent_failed":     "Veränderungen konnten nicht berechnet werden",
         "across_topics":     " über {n} Gesetzgebungsthemen",
         "lang_name":         "German",
-        "subscribe_title":   "📬 Wöchentliche Zusammenfassung erhalten",
+        "subscribe_title":   "\U0001f4ec Wöchentliche Zusammenfassung erhalten",
         "subscribe_body":    "Jeden Montag: die 5 wichtigsten EU-Abstimmungen, einfach erklärt.",
         "subscribe_placeholder": "deine@email.com",
         "subscribe_btn":     "Abonnieren — kostenlos",
@@ -427,7 +437,7 @@ _TR: dict[str, dict[str, str]] = {
         "recent_failed":     "Impossibile calcolare i cambiamenti recenti",
         "across_topics":     " su {n} argomenti legislativi",
         "lang_name":         "Italian",
-        "subscribe_title":   "📬 Ricevi il riepilogo settimanale",
+        "subscribe_title":   "\U0001f4ec Ricevi il riepilogo settimanale",
         "subscribe_body":    "Ogni lunedì: i 5 voti più importanti dell'UE, spiegati in chiaro.",
         "subscribe_placeholder": "tua@email.com",
         "subscribe_btn":     "Iscriviti — è gratuito",
@@ -447,22 +457,22 @@ _TR: dict[str, dict[str, str]] = {
 }
 
 _LANG_OPTIONS = {
-    "🇬🇧 English":  "EN",
-    "🇫🇷 Français": "FR",
-    "🇪🇸 Español":  "ES",
-    "🇩🇪 Deutsch":  "DE",
-    "🇮🇹 Italiano": "IT",
+    "\U0001f1ec\U0001f1e7 English":  "EN",
+    "\U0001f1eb\U0001f1f7 Français": "FR",
+    "\U0001f1ea\U0001f1f8 Español":  "ES",
+    "\U0001f1e9\U0001f1ea Deutsch":  "DE",
+    "\U0001f1ee\U0001f1f9 Italiano": "IT",
 }
 
 # Render language picker at top-right BEFORE sidebar so t() calls work everywhere
 _sp, _lang_col = st.columns([5, 1])
 with _lang_col:
-    st.markdown('<p class="lang-label">🌐 Language</p>', unsafe_allow_html=True)
+    st.markdown('<p class="lang-label">\U0001f310 Language</p>', unsafe_allow_html=True)
     lang_display = st.selectbox(
         "language",
         options=list(_LANG_OPTIONS.keys()),
         index=list(_LANG_OPTIONS.keys()).index(
-            next((k for k, v in _LANG_OPTIONS.items() if v == st.session_state.get("lang", "EN")), "🇬🇧 English")
+            next((k for k, v in _LANG_OPTIONS.items() if v == st.session_state.get("lang", "EN")), "\U0001f1ec\U0001f1e7 English")
         ),
         key="lang_display",
         label_visibility="collapsed",
@@ -492,7 +502,7 @@ def _preload():
     _g_behavior = compute_group_behavior(_historical) if not _historical.empty else pd.DataFrame()
     _comparison = compare_behavior(_historical, _recent) if _has_recent else {}
     _topic_index = (
-        _votes.groupby("policy_topic")
+        _votes.groupby("policy_topic", observed=True)
         .agg(n=("vote", "count"), min_date=("date", "min"), max_date=("date", "max"))
         .reset_index()
         .sort_values("n", ascending=False)
@@ -536,12 +546,10 @@ def _search_topics(topic_index: pd.DataFrame, query: str) -> pd.DataFrame:
         return topic_index[mask]
 
     # Multi-word query: each token must appear somewhere in the topic (AND logic)
-    # This handles "AI act" matching "Regulation on artificial intelligence (AI Act)"
     topics_lower = topic_index["policy_topic"].str.lower()
     mask = pd.Series([True] * len(topic_index), index=topic_index.index)
     for token in tokens:
         token_l = token.lower()
-        # Expand abbreviations per token
         token_syns = _SYNONYMS.get(token.upper(), [token_l])
         if token_l not in token_syns:
             token_syns = [token_l] + list(token_syns)
@@ -563,7 +571,13 @@ def _get_suggestions(topic_index: pd.DataFrame, query: str) -> list[tuple[str, i
     return [(row["policy_topic"], int(row["n"])) for _, row in ranked.iterrows()]
 
 
-votes_df, _hist_df, _recent_df, _group_behavior, _comparison, _has_recent, _topic_index, _latest_15 = _preload()
+try:
+    votes_df, _hist_df, _recent_df, _group_behavior, _comparison, _has_recent, _topic_index, _latest_15 = _preload()
+except Exception as _startup_err:
+    import traceback as _tb
+    st.error(f"**Startup error:** {_startup_err}")
+    st.code(_tb.format_exc())
+    st.stop()
 
 # ---------------------------------------------------------------------------
 # Sidebar
@@ -655,7 +669,7 @@ def _apply_filters(df: pd.DataFrame) -> pd.DataFrame:
 # Search state
 # ---------------------------------------------------------------------------
 
-# ── Deep-link: load topic from URL ?q=... on first visit ────────────────────
+# Deep-link: load topic from URL ?q=... on first visit
 if "main_search" not in st.session_state:
     _url_q = st.query_params.get("q", "")
     if _url_q:
@@ -773,13 +787,13 @@ if topic:
         f'<div class="topic-bar"><strong>{topic}</strong><br>'
         f'<span style="color:#6b7280;font-size:0.9rem;">{len(topic_df):,} votes{n_topics_str} &nbsp;·&nbsp; {d_range_str}</span>'
         f'&nbsp;&nbsp;<a href="{_share_url}" style="font-size:0.78rem;color:#2563eb;text-decoration:none;" '
-        f'title="Copy link to share this vote analysis">🔗 Share</a></div>',
+        f'title="Copy link to share this vote analysis">\U0001f517 Share</a></div>',
         unsafe_allow_html=True,
     )
 
     st.subheader(t("how_voted"))
     group_votes = (
-        topic_df.groupby(["political_group", "vote"]).size()
+        topic_df.groupby(["political_group", "vote"], observed=True).size()
         .unstack(fill_value=0).reindex(columns=["FOR", "AGAINST", "ABSTAIN"], fill_value=0)
     )
     if not group_votes.empty:
@@ -881,12 +895,11 @@ if topic:
 # ---------------------------------------------------------------------------
 
 if not query:
-    # ── Hero banner ──────────────────────────────────────────────────────────
     st.markdown(f"""
     <div style="background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 50%,#0369a1 100%);
                 border-radius:16px;padding:2.5rem 2rem 2rem 2rem;
                 margin-bottom:1.8rem;color:white;text-align:center;">
-        <div style="font-size:2.8rem;margin-bottom:0.4rem;">🏛️</div>
+        <div style="font-size:2.8rem;margin-bottom:0.4rem;">\U0001f3db️</div>
         <div style="font-size:1.6rem;font-weight:800;margin-bottom:0.7rem;letter-spacing:-0.02em;">
             {t("onboard_title")}
         </div>
@@ -896,7 +909,6 @@ if not query:
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Quick-start examples ─────────────────────────────────────────────────
     st.markdown(
         f"<p style='color:#6b7280;font-size:0.9rem;font-weight:600;margin-bottom:0.5rem;'>"
         f"{t('try_example')}</p>",
@@ -920,7 +932,7 @@ if not query:
         display_t = (tn[:90] + "...") if len(tn) > 90 else tn
         col_btn, col_date = st.columns([5, 1])
         with col_btn:
-            if st.button(f"\U0001f5f3 {display_t}", key=f"recent_{hash(tn)}", use_container_width=True):
+            if st.button(f"\U0001f5f3️ {display_t}", key=f"recent_{hash(tn)}", use_container_width=True):
                 st.session_state["search_override"] = tn
                 st.rerun()
         with col_date:
@@ -963,7 +975,7 @@ if _has_recent:
             st.warning(f"{t('recent_failed')}: {exc}")
     st.divider()
 
-# ── Newsletter subscription ──────────────────────────────────────────────────
+# Newsletter subscription
 st.divider()
 st.markdown(f"""
 <div style="background:linear-gradient(135deg,#f0fdf4 0%,#eff6ff 100%);
@@ -1009,9 +1021,9 @@ st.markdown(f"""
     <strong style="color:#374151;">{t("about_tool_title")}</strong><br>
     {t("about_tool_body")}<br><br>
     <strong style="color:#374151;">{t("about_data_title")}</strong><br>
-    🏛️ <a href="https://data.europarl.europa.eu" target="_blank" style="color:#2563eb;">EU Parliament Open Data Portal</a> — official roll-call votes 2019–2026<br>
-    🔴 <a href="https://howtheyvote.eu" target="_blank" style="color:#2563eb;">HowTheyVote.eu</a> — live vote feed (last 30 days)<br>
-    🤖 AI analysis powered by <a href="https://groq.com" target="_blank" style="color:#2563eb;">Groq</a> (Llama 3.1)<br><br>
+    \U0001f3db️ <a href="https://data.europarl.europa.eu" target="_blank" style="color:#2563eb;">EU Parliament Open Data Portal</a> — official roll-call votes 2019–2026<br>
+    \U0001f534 <a href="https://howtheyvote.eu" target="_blank" style="color:#2563eb;">HowTheyVote.eu</a> — live vote feed (last 30 days)<br>
+    \U0001f916 AI analysis powered by <a href="https://groq.com" target="_blank" style="color:#2563eb;">Groq</a> (Llama 3.1)<br><br>
     <strong style="color:#374151;">{t("about_transp_title")}</strong><br>
     {t("about_transparency")}
 </div>
