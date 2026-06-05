@@ -123,6 +123,22 @@ def mark_sent() -> None:
     )
 
 
+def remove_subscriber(email: str) -> str:
+    """Delete a subscriber. Returns 'ok' or 'error'."""
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        return "error"
+    resp = requests.delete(
+        f"{SUPABASE_URL}/rest/v1/subscribers",
+        headers={**_sb_headers(), "Prefer": "return=minimal"},
+        params={"email": f"eq.{email}"},
+        timeout=10,
+    )
+    if resp.status_code in (200, 204):
+        return "ok"
+    logger.error("Supabase delete failed: %s %s", resp.status_code, resp.text[:200])
+    return "error"
+
+
 # ---------------------------------------------------------------------------
 # Vote data
 # ---------------------------------------------------------------------------
@@ -194,7 +210,7 @@ def get_top_votes(n: int = 5) -> list[dict]:
 # Email builder
 # ---------------------------------------------------------------------------
 
-def build_html(votes: list[dict], lang: str) -> str:
+def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
     week_label  = _WEEK_LABELS.get(lang, _WEEK_LABELS["EN"])
     intro       = _INTRO.get(lang, _INTRO["EN"])
     explore_lbl = _EXPLORE.get(lang, _EXPLORE["EN"])
@@ -265,6 +281,10 @@ def build_html(votes: list[dict], lang: str) -> str:
         EU Parliament Vote Tracker &nbsp;·&nbsp;
         Data: European Parliament Open Data Portal
       </p>
+      <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">
+        <a href="{unsub_link}"
+           style="color:#9ca3af;text-decoration:underline;">{unsub_lbl}</a>
+      </p>
     </div>
   </div>
 </body>
@@ -299,7 +319,8 @@ def send_digest() -> None:
         if not email:
             continue
 
-        html    = build_html(votes, lang)
+        unsub_link = f"{APP_URL}?unsubscribe={email}"
+        html    = build_html(votes, lang, unsub_link=unsub_link)
         subject = f"🏛️ EU Parliament {_WEEK_LABELS.get(lang,'Weekly Digest')} — {datetime.now().strftime('%d %b %Y')}"
 
         try:

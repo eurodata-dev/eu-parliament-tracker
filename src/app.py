@@ -570,6 +570,22 @@ _selected_years  = tuple(st.session_state.get("selected_years", _default_years))
 votes_df, _hist_df, _recent_df, _group_behavior, _comparison, _has_recent, _topic_index, _latest_15 = _preload(years=_selected_years)
 
 # ---------------------------------------------------------------------------
+# Unsubscribe handler
+# ---------------------------------------------------------------------------
+_unsub_email = st.query_params.get("unsubscribe", "")
+if _unsub_email:
+    try:
+        from email_alerts import remove_subscriber as _remove_subscriber
+        _result = _remove_subscriber(_unsub_email.strip().lower())
+        if _result == "ok":
+            st.success(f"✅ {_unsub_email} a été désabonné(e).")
+        else:
+            st.warning("Une erreur s'est produite. Contactez-nous si le problème persiste.")
+    except Exception:
+        st.warning("Désabonnement temporairement indisponible.")
+    st.query_params.clear()
+
+# ---------------------------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------------------------
 
@@ -978,45 +994,6 @@ if _has_recent:
     st.divider()
 
 # ── Newsletter subscription ──────────────────────────────────────────────────
-st.divider()
-st.markdown(f"""
-<div style="background:linear-gradient(135deg,#f0fdf4 0%,#eff6ff 100%);
-            border:1px solid #bbf7d0;border-radius:12px;padding:1.5rem 2rem;
-            text-align:center;margin-bottom:1rem;">
-    <div style="font-size:1.15rem;font-weight:700;color:#166534;margin-bottom:0.4rem;">
-        {t("subscribe_title")}
-    </div>
-    <div style="font-size:0.9rem;color:#374151;">
-        {t("subscribe_body")}
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-_sub_col1, _sub_col2, _sub_col3 = st.columns([1, 3, 1])
-with _sub_col2:
-    with st.form("subscribe_form", clear_on_submit=True):
-        _email_input = st.text_input(
-            "email", placeholder=t("subscribe_placeholder"),
-            label_visibility="collapsed"
-        )
-        _submitted = st.form_submit_button(t("subscribe_btn"), use_container_width=True)
-        if _submitted:
-            import re as _re
-            if not _email_input or not _re.match(r"[^@]+@[^@]+\.[^@]+", _email_input):
-                st.warning(t("subscribe_invalid"))
-            else:
-                try:
-                    from email_alerts import add_subscriber
-                    _result = add_subscriber(_email_input.strip().lower(), st.session_state.get("lang", "EN"))
-                    if _result == "ok":
-                        st.success(t("subscribe_ok"))
-                    elif _result == "exists":
-                        st.info(t("subscribe_exists"))
-                    else:
-                        st.error(t("subscribe_err"))
-                except Exception as _e:
-                    st.error(t("subscribe_err"))
-
 st.divider()
 st.markdown(f"""
 <div style="color:#6b7280;font-size:0.82rem;line-height:1.7;">
