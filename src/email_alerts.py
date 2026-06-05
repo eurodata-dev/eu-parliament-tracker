@@ -89,7 +89,7 @@ def get_subscribers() -> list[dict]:
     resp = requests.get(
         f"{SUPABASE_URL}/rest/v1/subscribers",
         headers=_sb_headers(),
-        params={"active": "eq.true", "select": "email,language"},
+        params={"select": "email,language"},
         timeout=10,
     )
     if resp.status_code == 200:
@@ -131,13 +131,25 @@ def mark_sent() -> None:
 def get_top_votes(n: int = 5) -> list[dict]:
     data_dir = Path(__file__).parent.parent / "data"
     dfs = []
-    for path in [
-        data_dir / "processed" / "eu_votes_real.parquet",
-        data_dir / "processed" / "eu_votes_real.csv",
-    ]:
-        if path.exists():
-            dfs.append(pd.read_parquet(path) if path.suffix == ".parquet" else pd.read_csv(path))
-            break
+    # Try yearly parquets first (most recent 2 years)
+    by_year = data_dir / "processed" / "by_year"
+    if by_year.exists():
+        yearly = sorted(by_year.glob("eu_votes_*.parquet"), reverse=True)[:2]
+        for p in yearly:
+            try:
+                dfs.append(pd.read_parquet(p, engine="pyarrow"))
+            except Exception:
+                pass
+    # Fallback: flat parquet or CSV
+    if not dfs:
+        for fallback in [
+            data_dir / "processed" / "eu_votes_real.parquet",
+            data_dir / "processed" / "eu_votes_real.csv",
+        ]:
+            if fallback.exists():
+                dfs.append(pd.read_parquet(fallback) if fallback.suffix == ".parquet" else pd.read_csv(fallback))
+                break
+    # Recent live data
     recent_dir = data_dir / "recent"
     if recent_dir.exists():
         for f in sorted(recent_dir.glob("*.csv"), reverse=True)[:3]:
