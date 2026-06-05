@@ -118,7 +118,6 @@ def mark_sent() -> None:
     requests.patch(
         f"{SUPABASE_URL}/rest/v1/subscribers",
         headers={**_sb_headers(), "Prefer": "return=minimal"},
-        params={"active": "eq.true"},
         json={"last_digest_at": datetime.utcnow().isoformat()},
         timeout=10,
     )
