@@ -479,12 +479,12 @@ def t(key: str, **kwargs) -> str:
 # Data loading
 # ---------------------------------------------------------------------------
 
-@st.cache_resource
-def _preload():
-    _votes = fetch_all_votes()
+@st.cache_data(show_spinner=False)
+def _preload(years: tuple = (2024, 2025, 2026)):
+    _votes = get_eu_votes(years=list(years))
     if DEMO_MODE and len(_votes) > _DEMO_ROW_LIMIT:
         _votes = _votes.tail(_DEMO_ROW_LIMIT).reset_index(drop=True)
-    _historical = get_eu_votes()
+    _historical = _votes  # same dataset, used for historical comparisons
     if DEMO_MODE and len(_historical) > _DEMO_ROW_LIMIT:
         _historical = _historical.tail(_DEMO_ROW_LIMIT).reset_index(drop=True)
     _recent = load_recent_votes(30)
@@ -563,7 +563,11 @@ def _get_suggestions(topic_index: pd.DataFrame, query: str) -> list[tuple[str, i
     return [(row["policy_topic"], int(row["n"])) for _, row in ranked.iterrows()]
 
 
-votes_df, _hist_df, _recent_df, _group_behavior, _comparison, _has_recent, _topic_index, _latest_15 = _preload()
+from eu_dataset_loader import get_available_years as _get_available_years
+_available_years = _get_available_years() or list(range(2019, 2027))
+_default_years   = tuple(sorted(_available_years)[-3:])
+_selected_years  = tuple(st.session_state.get("selected_years", _default_years))
+votes_df, _hist_df, _recent_df, _group_behavior, _comparison, _has_recent, _topic_index, _latest_15 = _preload(years=_selected_years)
 
 # ---------------------------------------------------------------------------
 # Sidebar
@@ -599,6 +603,16 @@ with st.sidebar:
 
     st.divider()
     st.subheader(t("filters"))
+
+    # Year selector — reloads data for selected years
+    _yr_selection = st.multiselect(
+        "📅 Years", options=_available_years,
+        default=list(_selected_years),
+        key="year_picker",
+    )
+    if _yr_selection and tuple(sorted(_yr_selection)) != _selected_years:
+        st.session_state["selected_years"] = tuple(sorted(_yr_selection))
+        st.rerun()
 
     valid_dates = votes_df["date"].dropna()
     if not valid_dates.empty:
