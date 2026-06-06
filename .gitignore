@@ -1,7 +1,6 @@
 .env
 data/raw/real_votes/
-data/recent/*
-!data/recent/.gitkeep
+data/recent/*.bak
 __pycache__/
 *.pyc
 *.gz
