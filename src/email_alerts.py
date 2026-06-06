@@ -277,11 +277,11 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
     </div>
 
     <div style="padding:0 32px 24px;text-align:center;">
-      <a href="UNSUB_URL_PLACEHOLDER"
-         style="background:#f3f4f6;color:#6b7280;padding:10px 24px;border-radius:8px;
+      <a href="{unsub_link}"
+         style="background:#f3f4f6;color:#374151;padding:10px 24px;border-radius:8px;
                 text-decoration:none;font-weight:600;font-size:13px;display:inline-block;
-                border:1px solid #e5e7eb;">
-        UNSUB_LBL_PLACEHOLDER
+                border:1px solid #d1d5db;">
+        {unsub_lbl}
       </a>
     </div>
 
@@ -327,8 +327,6 @@ def send_digest() -> None:
 
         unsub_link = f"{APP_URL}?unsubscribe={quote(email, safe='')}"
         html    = build_html(votes, lang, unsub_link=unsub_link)
-        html    = html.replace("UNSUB_URL_PLACEHOLDER", unsub_link)
-        html    = html.replace("UNSUB_LBL_PLACEHOLDER", _UNSUB.get(lang, _UNSUB["EN"]))
         subject = f"🏛️ EU Parliament {_WEEK_LABELS.get(lang,'Weekly Digest')} — {datetime.now().strftime('%d %b %Y')}"
 
         try:
