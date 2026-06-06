@@ -267,7 +267,7 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
 
     <div style="padding:0 32px 24px;">{blocks}</div>
 
-    <div style="padding:0 32px 28px;text-align:center;">
+    <div style="padding:0 32px 16px;text-align:center;">
       <a href="{APP_URL}"
          style="background:#2563eb;color:white;padding:12px 28px;border-radius:8px;
                 text-decoration:none;font-weight:600;font-size:14px;display:inline-block;">
@@ -275,15 +275,16 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
       </a>
     </div>
 
+    <div style="padding:0 32px 24px;text-align:center;">
+      <a href="{unsub_link}"
+         style="color:#6b7280;font-size:13px;text-decoration:underline;">{unsub_lbl}</a>
+    </div>
+
     <div style="background:#f9fafb;padding:16px 32px;
                 border-top:1px solid #e5e7eb;text-align:center;">
       <p style="color:#9ca3af;font-size:12px;margin:0;">
         EU Parliament Vote Tracker &nbsp;·&nbsp;
         Data: European Parliament Open Data Portal
-      </p>
-      <p style="font-size:12px;margin:8px 0 0;">
-        <a href="{unsub_link}"
-           style="color:#6b7280;text-decoration:underline;">{unsub_lbl}</a>
       </p>
     </div>
   </div>
