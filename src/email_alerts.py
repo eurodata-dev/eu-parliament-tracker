@@ -326,7 +326,9 @@ def send_digest() -> None:
             continue
 
         unsub_link = f"{APP_URL}?unsubscribe={quote(email, safe='')}"
+        logger.info("DEBUG unsub_link: %s", unsub_link)
         html    = build_html(votes, lang, unsub_link=unsub_link)
+        logger.info("DEBUG html snippet: %s", html[html.find("unsub"):html.find("unsub")+200] if "unsub" in html.lower() else "NOT FOUND IN HTML")
         subject = f"🏛️ EU Parliament {_WEEK_LABELS.get(lang,'Weekly Digest')} — {datetime.now().strftime('%d %b %Y')}"
 
         try:
