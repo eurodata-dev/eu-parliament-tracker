@@ -331,7 +331,8 @@ def send_digest() -> None:
                 "https://api.resend.com/emails",
                 headers={"Authorization": f"Bearer {RESEND_API_KEY}",
                          "Content-Type": "application/json"},
-                json={"from": FROM_EMAIL, "to": [email], "subject": subject, "html": html},
+                json={"from": FROM_EMAIL, "to": [email], "subject": subject, "html": html,
+                      "headers": {"List-Unsubscribe": f"<{unsub_link}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"}},
                 timeout=15,
             )
             if resp.status_code in (200, 201, 202):
