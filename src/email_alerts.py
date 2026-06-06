@@ -281,9 +281,9 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
         EU Parliament Vote Tracker &nbsp;·&nbsp;
         Data: European Parliament Open Data Portal
       </p>
-      <p style="color:#9ca3af;font-size:11px;margin:8px 0 0;">
+      <p style="font-size:12px;margin:8px 0 0;">
         <a href="{unsub_link}"
-           style="color:#9ca3af;text-decoration:underline;">{unsub_lbl}</a>
+           style="color:#6b7280;text-decoration:underline;">{unsub_lbl}</a>
       </p>
     </div>
   </div>
