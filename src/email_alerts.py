@@ -224,9 +224,11 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
         verdict_bg    = "#dcfce7" if v["passed"] else "#fee2e2"
         verdict_txt   = _PASSED.get(lang, "✅ Passed") if v["passed"] else _REJECTED.get(lang, "❌ Rejected")
         topic_short   = v["topic"][:80] + "…" if len(v["topic"]) > 80 else v["topic"]
+        vote_url      = f"{APP_URL}?q={quote(v['topic'], safe='')}"
         blocks += f"""
+        <a href="{vote_url}" style="text-decoration:none;display:block;margin-bottom:12px;">
         <div style="border:1px solid #e5e7eb;border-radius:8px;padding:16px;
-                    margin-bottom:12px;background:#fafafa;">
+                    background:#fafafa;transition:background 0.15s;">
           <div style="font-size:14px;font-weight:600;color:#111827;margin-bottom:8px;">
             {topic_short}
           </div>
@@ -242,7 +244,8 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
                       font-size:13px;color:#374151;">
             🗳️ {v['for_pct']}% FOR &nbsp;·&nbsp; {v['against_pct']}% AGAINST
           </div>
-        </div>"""
+        </div>
+        </a>"""
 
     return f"""<!DOCTYPE html>
 <html>
