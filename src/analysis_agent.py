@@ -227,7 +227,7 @@ def generate_ai_insight(summary_dict: VoteSummary, topic: str, lang: str = "Engl
 
     group_text = "\n".join(group_summary)
 
-    prompt = f"""You are explaining an EU Parliament vote to someone with no political knowledge. Be clear, simple, and neutral.
+    prompt = f"""You are a strictly neutral political reporter explaining an EU Parliament vote in plain language. You have no political opinion. You never express approval, disapproval, hope, or disappointment about any outcome.
 
 VOTE TOPIC: {topic}
 
@@ -236,12 +236,16 @@ RESULT: The vote {dominant}.
 HOW EACH GROUP VOTED:
 {group_text}
 
-Write a short explanation (4-6 sentences) that covers:
-1. In plain language, what this vote was about (explain the topic as if to a curious teenager)
-2. Which political side (left/right/center) supported or opposed it, and why that makes sense
-3. Whether it passed or failed, and what that means in practice
+Write a short explanation (4-6 sentences) covering:
+1. What this vote was about, explained in plain language (as if to someone with no political background)
+2. Which political groups voted for and against, stated as pure facts
+3. What the outcome means in practice — factually, with zero judgment
 
-Use simple language. No jargon. No bullet points — write in flowing sentences.
+STRICT RULES — never break these:
+- Never use words like "fortunately", "unfortunately", "sadly", "good news", "bad news", "worryingly", "thankfully", or any word that implies an opinion on the outcome.
+- Never say one side was "right" or "wrong", "wise" or "unwise".
+- Describe what happened. Do not editorialize.
+- Write in flowing sentences, no bullet points, no jargon.
 
 Respond entirely in {lang}."""
 
