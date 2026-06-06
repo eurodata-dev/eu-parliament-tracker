@@ -565,8 +565,7 @@ def _get_suggestions(topic_index: pd.DataFrame, query: str) -> list[tuple[str, i
 
 from eu_dataset_loader import get_available_years as _get_available_years
 _available_years = _get_available_years() or list(range(2019, 2027))
-_default_years   = tuple(sorted(_available_years)[-3:])
-_selected_years  = tuple(st.session_state.get("selected_years", _default_years))
+_selected_years  = tuple(sorted(_available_years))  # always load all years
 votes_df, _hist_df, _recent_df, _group_behavior, _comparison, _has_recent, _topic_index, _latest_15 = _preload(years=_selected_years)
 
 # ---------------------------------------------------------------------------
@@ -619,16 +618,6 @@ with st.sidebar:
 
     st.divider()
     st.subheader(t("filters"))
-
-    # Year selector — reloads data for selected years
-    _yr_selection = st.multiselect(
-        "📅 Years", options=_available_years,
-        default=list(_selected_years),
-        key="year_picker",
-    )
-    if _yr_selection and tuple(sorted(_yr_selection)) != _selected_years:
-        st.session_state["selected_years"] = tuple(sorted(_yr_selection))
-        st.rerun()
 
     valid_dates = votes_df["date"].dropna()
     if not valid_dates.empty:
@@ -956,44 +945,69 @@ if not query:
         with col_date:
             st.markdown(f"<p style='color:#9ca3af;font-size:0.8rem;text-align:right;margin-top:0.5rem;'>{date_str}</p>", unsafe_allow_html=True)
 
-    st.divider()
+    # ---------------------------------------------------------------------------
+    # Recent political changes (homepage only)
+    # ---------------------------------------------------------------------------
+    if _has_recent:
+        st.header(t("recent_changes"))
+        st.caption(t("recent_caption"))
+
+        st.subheader(t("hist_insight"))
+        if not _group_behavior.empty:
+            st.dataframe(_group_behavior.set_index("political_group"), use_container_width=True)
+
+        st.subheader(t("recent_analysis"))
+        if not _recent_df.empty and _comparison:
+            try:
+                summary = _comparison.get("summary", {})
+                mc_group  = summary.get("most_changed_group") or "-"
+                mc_topic  = summary.get("most_changed_topic") or "-"
+                pol_change = summary.get("overall_polarization_change")
+                pol_label  = f"{pol_change:+.1f} pp" if pol_change is not None else "-"
+                pol_color  = "normal" if pol_change is None or abs(pol_change) < 1.0 else ("inverse" if pol_change > 0 else "normal")
+                m1, m2, m3 = st.columns(3)
+                m1.metric(t("most_chg_group"), mc_group)
+                m2.metric(t("most_chg_topic"), mc_topic)
+                m3.metric(t("polarization"), pol_label, delta=pol_label, delta_color=pol_color)
+                st.subheader(t("ai_summary"))
+                if DEMO_MODE:
+                    st.info("AI Summary disabled in Demo Mode.")
+                else:
+                    explanation = explain_political_changes(_comparison)
+                    st.write(explanation)
+            except Exception as exc:
+                st.warning(f"{t('recent_failed')}: {exc}")
+        st.divider()
 
 # ---------------------------------------------------------------------------
-# Recent political changes
+# Newsletter subscription (shown on every page)
 # ---------------------------------------------------------------------------
+st.divider()
+st.markdown(f"### {t('subscribe_title')}")
+st.caption(t("subscribe_body"))
+_sub_col, _ = st.columns([2, 1])
+with _sub_col:
+    _sub_email = st.text_input(
+        "email_sub", label_visibility="collapsed",
+        placeholder=t("subscribe_placeholder"), key="sub_email_input",
+    )
+    if st.button(t("subscribe_btn"), type="primary", key="sub_btn"):
+        _email_clean = _sub_email.strip().lower()
+        if not _email_clean or "@" not in _email_clean:
+            st.warning(t("subscribe_invalid"))
+        else:
+            try:
+                from email_alerts import add_subscriber as _add_subscriber
+                _res = _add_subscriber(_email_clean, lang=st.session_state.get("lang", "EN"))
+                if _res == "ok":
+                    st.success(t("subscribe_ok"))
+                elif _res == "exists":
+                    st.info(t("subscribe_exists"))
+                else:
+                    st.error(t("subscribe_err"))
+            except Exception:
+                st.error(t("subscribe_err"))
 
-if _has_recent:
-    st.header(t("recent_changes"))
-    st.caption(t("recent_caption"))
-
-    st.subheader(t("hist_insight"))
-    if not _group_behavior.empty:
-        st.dataframe(_group_behavior.set_index("political_group"), use_container_width=True)
-
-    st.subheader(t("recent_analysis"))
-    if not _recent_df.empty and _comparison:
-        try:
-            summary = _comparison.get("summary", {})
-            mc_group  = summary.get("most_changed_group") or "-"
-            mc_topic  = summary.get("most_changed_topic") or "-"
-            pol_change = summary.get("overall_polarization_change")
-            pol_label  = f"{pol_change:+.1f} pp" if pol_change is not None else "-"
-            pol_color  = "normal" if pol_change is None or abs(pol_change) < 1.0 else ("inverse" if pol_change > 0 else "normal")
-            m1, m2, m3 = st.columns(3)
-            m1.metric(t("most_chg_group"), mc_group)
-            m2.metric(t("most_chg_topic"), mc_topic)
-            m3.metric(t("polarization"), pol_label, delta=pol_label, delta_color=pol_color)
-            st.subheader(t("ai_summary"))
-            if DEMO_MODE:
-                st.info("AI Summary disabled in Demo Mode.")
-            else:
-                explanation = explain_political_changes(_comparison)
-                st.write(explanation)
-        except Exception as exc:
-            st.warning(f"{t('recent_failed')}: {exc}")
-    st.divider()
-
-# ── Newsletter subscription ──────────────────────────────────────────────────
 st.divider()
 st.markdown(f"""
 <div style="color:#6b7280;font-size:0.82rem;line-height:1.7;">
