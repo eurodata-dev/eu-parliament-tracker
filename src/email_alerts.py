@@ -16,6 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 import requests
+from urllib.parse import quote
 from dotenv import load_dotenv
 
 for _c in [Path(__file__).parent.parent / ".env", Path(".env")]:
@@ -267,7 +268,7 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
 
     <div style="padding:0 32px 24px;">{blocks}</div>
 
-    <div style="padding:0 32px 16px;text-align:center;">
+    <div style="padding:0 32px 12px;text-align:center;">
       <a href="{APP_URL}"
          style="background:#2563eb;color:white;padding:12px 28px;border-radius:8px;
                 text-decoration:none;font-weight:600;font-size:14px;display:inline-block;">
@@ -277,7 +278,11 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
 
     <div style="padding:0 32px 24px;text-align:center;">
       <a href="UNSUB_URL_PLACEHOLDER"
-         style="color:#374151;font-size:13px;font-weight:600;text-decoration:underline;">UNSUB_LBL_PLACEHOLDER</a>
+         style="background:#f3f4f6;color:#6b7280;padding:10px 24px;border-radius:8px;
+                text-decoration:none;font-weight:600;font-size:13px;display:inline-block;
+                border:1px solid #e5e7eb;">
+        UNSUB_LBL_PLACEHOLDER
+      </a>
     </div>
 
     <div style="background:#f9fafb;padding:16px 32px;
@@ -320,7 +325,7 @@ def send_digest() -> None:
         if not email:
             continue
 
-        unsub_link = f"{APP_URL}?unsubscribe={email}"
+        unsub_link = f"{APP_URL}?unsubscribe={quote(email, safe='')}"
         html    = build_html(votes, lang, unsub_link=unsub_link)
         html    = html.replace("UNSUB_URL_PLACEHOLDER", unsub_link)
         html    = html.replace("UNSUB_LBL_PLACEHOLDER", _UNSUB.get(lang, _UNSUB["EN"]))
