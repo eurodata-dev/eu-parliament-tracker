@@ -19,6 +19,8 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+st.markdown('<meta name="google-site-verification" content="ymZ5DtlnckmG4aJ3DT4_OAbB1vsTcUXJpOoklHcXO58" />', unsafe_allow_html=True)
+
 st.markdown("""
 <style>
     .stButton > button {
@@ -924,7 +926,7 @@ elif _current_page == "contact":
                         if _resp.status_code in (200, 201, 202):
                             st.success(t("contact_ok"))
                         else:
-                            st.error(f"Resend error {_resp.status_code}: {_resp.text[:300]}")
+                            st.error(t("contact_err"))
                 except Exception:
                     st.error(t("contact_err"))
 
