@@ -501,21 +501,23 @@ def _preload(years: tuple = (2024, 2025, 2026)):
     _has_recent = not _recent.empty
     _g_behavior = compute_group_behavior(_historical) if not _historical.empty else pd.DataFrame()
     _comparison = compare_behavior(_historical, _recent) if _has_recent else {}
+    # Merge recent live data so topics from the daily fetcher are searchable
+    _votes_all = pd.concat([_votes, _recent], ignore_index=True).drop_duplicates() if _has_recent else _votes
     _topic_index = (
-        _votes.groupby("policy_topic")
+        _votes_all.groupby("policy_topic")
         .agg(n=("vote", "count"), min_date=("date", "min"), max_date=("date", "max"))
         .reset_index()
         .sort_values("n", ascending=False)
         .reset_index(drop=True)
     )
     _latest_15 = (
-        _votes.dropna(subset=["policy_topic", "date"])
+        _votes_all.dropna(subset=["policy_topic", "date"])
         .sort_values("date", ascending=False)
         .drop_duplicates(subset=["policy_topic"])
         .head(15)[["policy_topic", "date"]]
         .reset_index(drop=True)
     )
-    return _votes, _historical, _recent, _g_behavior, _comparison, _has_recent, _topic_index, _latest_15
+    return _votes_all, _historical, _recent, _g_behavior, _comparison, _has_recent, _topic_index, _latest_15
 
 
 def _search_topics(topic_index: pd.DataFrame, query: str) -> pd.DataFrame:
