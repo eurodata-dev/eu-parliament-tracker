@@ -153,6 +153,18 @@ _TR: dict[str, dict[str, str]] = {
         "about_data_title":  "Data sources",
         "about_transparency":"All voting data is public record. No editorial bias — the app shows raw vote counts and lets you draw your own conclusions.",
         "about_transp_title":"Transparency",
+        "about_nav":         "👤 About",
+        "contact_nav":       "✉️ Contact",
+        "contact_page_title":"Get in Touch",
+        "contact_subtitle":  "Questions, suggestions, partnership ideas — all welcome.",
+        "contact_name_label":"Your name (optional)",
+        "contact_email_label":"Your email address",
+        "contact_msg_label": "Your message",
+        "contact_send_btn":  "Send message",
+        "contact_ok":        "✅ Message sent! I'll get back to you soon.",
+        "contact_err":       "Something went wrong. Try again or email me directly.",
+        "contact_invalid":   "Please enter a valid email address and a message.",
+        "contact_direct":    "Or reach me directly:",
     },
     "FR": {
         "lang_label":        "Langue",
@@ -228,6 +240,18 @@ _TR: dict[str, dict[str, str]] = {
         "about_data_title":  "Sources de données",
         "about_transparency":"Toutes les données de vote sont publiques. Aucun biais éditorial — l'application affiche les chiffres bruts et vous laisse tirer vos propres conclusions.",
         "about_transp_title":"Transparence",
+        "about_nav":         "👤 À propos",
+        "contact_nav":       "✉️ Contact",
+        "contact_page_title":"Contactez-moi",
+        "contact_subtitle":  "Questions, suggestions, idées de collaboration — tout est bienvenu.",
+        "contact_name_label":"Votre nom (optionnel)",
+        "contact_email_label":"Votre adresse email",
+        "contact_msg_label": "Votre message",
+        "contact_send_btn":  "Envoyer",
+        "contact_ok":        "✅ Message envoyé ! Je vous répondrai bientôt.",
+        "contact_err":       "Une erreur est survenue. Réessayez ou contactez-moi directement.",
+        "contact_invalid":   "Veuillez entrer une adresse email valide et un message.",
+        "contact_direct":    "Ou contactez-moi directement :",
     },
     "ES": {
         "lang_label":        "Idioma",
@@ -303,6 +327,18 @@ _TR: dict[str, dict[str, str]] = {
         "about_data_title":  "Fuentes de datos",
         "about_transparency":"Todos los datos de votación son de dominio público. Sin sesgo editorial — la app muestra los recuentos brutos y te deja sacar tus propias conclusiones.",
         "about_transp_title":"Transparencia",
+        "about_nav":         "👤 Acerca de",
+        "contact_nav":       "✉️ Contacto",
+        "contact_page_title":"Ponte en contacto",
+        "contact_subtitle":  "Preguntas, sugerencias, ideas de colaboración — todo es bienvenido.",
+        "contact_name_label":"Tu nombre (opcional)",
+        "contact_email_label":"Tu dirección de email",
+        "contact_msg_label": "Tu mensaje",
+        "contact_send_btn":  "Enviar mensaje",
+        "contact_ok":        "✅ ¡Mensaje enviado! Te responderé pronto.",
+        "contact_err":       "Algo salió mal. Inténtalo de nuevo o escríbeme directamente.",
+        "contact_invalid":   "Por favor, introduce un email válido y un mensaje.",
+        "contact_direct":    "O escríbeme directamente:",
     },
     "DE": {
         "lang_label":        "Sprache",
@@ -378,6 +414,18 @@ _TR: dict[str, dict[str, str]] = {
         "about_data_title":  "Datenquellen",
         "about_transparency":"Alle Abstimmungsdaten sind öffentlich zugänglich. Kein redaktioneller Bias — die App zeigt rohe Stimmauszählungen und lässt dich eigene Schlüsse ziehen.",
         "about_transp_title":"Transparenz",
+        "about_nav":         "👤 Über uns",
+        "contact_nav":       "✉️ Kontakt",
+        "contact_page_title":"Kontakt aufnehmen",
+        "contact_subtitle":  "Fragen, Vorschläge, Kooperationsideen — alles willkommen.",
+        "contact_name_label":"Dein Name (optional)",
+        "contact_email_label":"Deine E-Mail-Adresse",
+        "contact_msg_label": "Deine Nachricht",
+        "contact_send_btn":  "Nachricht senden",
+        "contact_ok":        "✅ Nachricht gesendet! Ich melde mich bald.",
+        "contact_err":       "Etwas ist schiefgelaufen. Versuche es erneut oder kontaktiere mich direkt.",
+        "contact_invalid":   "Bitte gib eine gültige E-Mail-Adresse und eine Nachricht ein.",
+        "contact_direct":    "Oder direkt kontaktieren:",
     },
     "IT": {
         "lang_label":        "Lingua",
@@ -453,6 +501,18 @@ _TR: dict[str, dict[str, str]] = {
         "about_data_title":  "Fonti dei dati",
         "about_transparency":"Tutti i dati di voto sono di pubblico dominio. Nessun pregiudizio editoriale — l'app mostra i conteggi grezzi e ti lascia trarre le tue conclusioni.",
         "about_transp_title":"Trasparenza",
+        "about_nav":         "👤 Chi siamo",
+        "contact_nav":       "✉️ Contatti",
+        "contact_page_title":"Contattaci",
+        "contact_subtitle":  "Domande, suggerimenti, idee di collaborazione — tutto è benvenuto.",
+        "contact_name_label":"Il tuo nome (opzionale)",
+        "contact_email_label":"Il tuo indirizzo email",
+        "contact_msg_label": "Il tuo messaggio",
+        "contact_send_btn":  "Invia messaggio",
+        "contact_ok":        "✅ Messaggio inviato! Ti risponderò presto.",
+        "contact_err":       "Qualcosa è andato storto. Riprova o contattami direttamente.",
+        "contact_invalid":   "Inserisci un indirizzo email valido e un messaggio.",
+        "contact_direct":    "Oppure contattami direttamente:",
     },
 }
 
@@ -605,7 +665,15 @@ with st.sidebar:
     if st.button(t("home"), use_container_width=True, help=t("home_help")):
         st.session_state.pop("main_search", None)
         st.session_state.pop("_combined_mode", None)
+        st.session_state["page"] = "home"
         st.query_params.clear()
+        st.rerun()
+    _nav_c1, _nav_c2 = st.columns(2)
+    if _nav_c1.button(t("about_nav"), use_container_width=True):
+        st.session_state["page"] = "about"
+        st.rerun()
+    if _nav_c2.button(t("contact_nav"), use_container_width=True):
+        st.session_state["page"] = "contact"
         st.rerun()
     st.divider()
 
@@ -681,7 +749,172 @@ def _apply_filters(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 # ---------------------------------------------------------------------------
-# Search state
+# Page routing — About / Contact rendered here; st.stop() skips home content
+# ---------------------------------------------------------------------------
+_current_page = st.session_state.get("page", "home")
+_contact_email = st.secrets.get("CONTACT_EMAIL", os.getenv("CONTACT_EMAIL", "elmas.burhan80@gmail.com"))
+
+if _current_page == "about":
+    st.markdown("""
+<div style="max-width:720px;margin:0 auto;">
+<div style="background:linear-gradient(135deg,#1e3a8a,#1d4ed8);border-radius:16px;
+            padding:2.5rem 2rem;color:white;text-align:center;margin-bottom:2rem;">
+  <div style="font-size:2.5rem;margin-bottom:0.5rem;">🏛️</div>
+  <div style="font-size:1.6rem;font-weight:800;letter-spacing:-0.02em;">EU Parliament Vote Tracker</div>
+  <div style="opacity:0.8;font-size:1rem;margin-top:0.5rem;">The story behind this project</div>
+</div>
+</div>""", unsafe_allow_html=True)
+
+    st.markdown("""
+<div style="max-width:720px;margin:0 auto;">
+<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;
+            padding:1.5rem;margin-bottom:2rem;display:flex;align-items:center;gap:1.2rem;">
+  <div style="font-size:3.5rem;flex-shrink:0;">👨‍💻</div>
+  <div>
+    <div style="font-weight:700;font-size:1.15rem;color:#1e3a8a;">Burhan</div>
+    <div style="color:#2563eb;font-size:0.9rem;margin-top:0.1rem;">AI &amp; Data Engineer · Belgium</div>
+    <div style="color:#6b7280;font-size:0.85rem;margin-top:0.3rem;">
+      Passionate about making European democracy legible for everyone
+    </div>
+  </div>
+</div>
+</div>""", unsafe_allow_html=True)
+
+    st.markdown("---")
+    st.markdown("### Why I built this")
+    st.markdown("""
+Like many young Europeans, I care deeply about the EU. But every time I tried to understand what was
+actually happening in the Parliament — what was being voted on, who stood for what — I hit the same wall.
+
+Impenetrable jargon. Bureaucratic complexity. Data scattered across a dozen websites in formats nobody
+can read without a law degree.
+
+The EU Parliament publishes every single vote as open data. The information is *there* — but it's completely
+inaccessible to most people. You'd need to be a professional political analyst to make sense of it.
+
+**That bothered me. A lot.**
+""")
+
+    st.markdown("### What this is")
+    st.markdown("""
+EU Parliament Vote Tracker pulls real voting records directly from the European Parliament's Open Data
+Portal and turns them into something anyone can understand.
+
+Search any legislative topic. See instantly how each political group voted. Get a plain-language AI
+explanation of what the vote meant and what it changes in practice.
+
+No editorial spin. No political agenda. Just raw democracy — made readable.
+
+**My goal: make EU democracy as easy to follow as a sports score.**
+""")
+
+    st.markdown("### Why it matters")
+    st.markdown("""
+Democracy works better when citizens understand it. 450 million people are affected by decisions made
+in this building every week, and most of them have no idea what's being debated.
+
+This project started as a personal learning exercise and grew into something I genuinely believe in.
+Months of work in my spare time — data pipelines, AI analysis, five-language support, weekly email digests —
+because I think accessible democracy is worth building.
+""")
+
+    st.markdown("### What I'm hoping for")
+    st.markdown("""
+If you work at an EU institution, a think tank, a civic technology organization, or a media outlet —
+or if you simply share the conviction that *transparency is not optional in a democracy* —
+I would genuinely love to hear from you.
+
+This is just the beginning. There is so much more this could become.
+""")
+
+    _cols = st.columns([1, 1, 1])
+    with _cols[0]:
+        st.markdown("""<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;
+        padding:1rem;text-align:center;">
+        <div style="font-size:1.5rem;">🏛️</div>
+        <div style="font-weight:600;font-size:0.85rem;color:#166534;margin-top:0.3rem;">Real EP open data</div>
+        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.2rem;">10M+ votes, 2019–2026</div>
+        </div>""", unsafe_allow_html=True)
+    with _cols[1]:
+        st.markdown("""<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;
+        padding:1rem;text-align:center;">
+        <div style="font-size:1.5rem;">🤖</div>
+        <div style="font-weight:600;font-size:0.85rem;color:#1e3a8a;margin-top:0.3rem;">AI explanations</div>
+        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.2rem;">Llama 3.1 via Groq</div>
+        </div>""", unsafe_allow_html=True)
+    with _cols[2]:
+        st.markdown("""<div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;
+        padding:1rem;text-align:center;">
+        <div style="font-size:1.5rem;">🌍</div>
+        <div style="font-weight:600;font-size:0.85rem;color:#6b21a8;margin-top:0.3rem;">5 languages</div>
+        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.2rem;">EN · FR · ES · DE · IT</div>
+        </div>""", unsafe_allow_html=True)
+
+    st.markdown("---")
+    if st.button("✉️ Get in touch", type="primary"):
+        st.session_state["page"] = "contact"
+        st.rerun()
+    st.stop()
+
+elif _current_page == "contact":
+    st.markdown(f"## {t('contact_page_title')}")
+    st.caption(t("contact_subtitle"))
+    st.markdown("---")
+
+    _c1, _c2 = st.columns([2, 1])
+    with _c1:
+        _ct_name  = st.text_input(t("contact_name_label"),  key="ct_name",  placeholder="e.g. Marie Dupont")
+        _ct_email = st.text_input(t("contact_email_label"), key="ct_email", placeholder="marie@example.com")
+        _ct_msg   = st.text_area( t("contact_msg_label"),   key="ct_msg",   height=180,
+                                  placeholder="I work at the European Commission and I'd love to discuss...")
+        if st.button(t("contact_send_btn"), type="primary", key="ct_send"):
+            _e = _ct_email.strip()
+            _m = _ct_msg.strip()
+            if not _e or "@" not in _e or not _m:
+                st.warning(t("contact_invalid"))
+            else:
+                try:
+                    import requests as _rq
+                    _rk = st.secrets.get("RESEND_API_KEY", os.getenv("RESEND_API_KEY", ""))
+                    _fe = st.secrets.get("FROM_EMAIL", os.getenv("FROM_EMAIL", "EU Vote Tracker <onboarding@resend.dev>"))
+                    if not _rk:
+                        st.error(t("contact_err"))
+                    else:
+                        _subj = f"[EU Vote Tracker] Message from {_ct_name or _e}"
+                        _html_body = f"""<p><strong>From:</strong> {_ct_name or '(no name)'} &lt;{_e}&gt;</p>
+<p><strong>Message:</strong></p><p style="white-space:pre-wrap;">{_m}</p>"""
+                        _resp = _rq.post(
+                            "https://api.resend.com/emails",
+                            headers={"Authorization": f"Bearer {_rk}", "Content-Type": "application/json"},
+                            json={"from": _fe, "to": [_contact_email],
+                                  "reply_to": _e, "subject": _subj, "html": _html_body},
+                            timeout=15,
+                        )
+                        if _resp.status_code in (200, 201, 202):
+                            st.success(t("contact_ok"))
+                        else:
+                            st.error(t("contact_err"))
+                except Exception:
+                    st.error(t("contact_err"))
+
+    with _c2:
+        st.markdown(f"""
+<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:1.2rem;margin-top:1.8rem;">
+  <div style="font-weight:600;color:#374151;font-size:0.9rem;margin-bottom:0.6rem;">
+    {t('contact_direct')}
+  </div>
+  <div style="font-size:0.85rem;color:#2563eb;">
+    📧 <a href="mailto:{_contact_email}" style="color:#2563eb;">{_contact_email}</a>
+  </div>
+  <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.8rem;">
+    Burhan — AI &amp; Data Engineer<br>Belgium 🇧🇪
+  </div>
+</div>""", unsafe_allow_html=True)
+
+    st.stop()
+
+# ---------------------------------------------------------------------------
+# Search state  (only needed on home page, but harmless to run always)
 # ---------------------------------------------------------------------------
 
 # ── Deep-link: load topic from URL ?q=... on first visit ────────────────────
