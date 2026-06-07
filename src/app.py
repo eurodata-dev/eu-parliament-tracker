@@ -497,12 +497,13 @@ def _preload(years: tuple = (2024, 2025, 2026)):
     _historical = _votes  # same dataset, used for historical comparisons
     if DEMO_MODE and len(_historical) > _DEMO_ROW_LIMIT:
         _historical = _historical.tail(_DEMO_ROW_LIMIT).reset_index(drop=True)
-    _recent = load_recent_votes(30)
+    _recent = load_recent_votes(30)   # 30-day window for comparison analysis
     _has_recent = not _recent.empty
     _g_behavior = compute_group_behavior(_historical) if not _historical.empty else pd.DataFrame()
     _comparison = compare_behavior(_historical, _recent) if _has_recent else {}
-    # Merge recent live data so topics from the daily fetcher are searchable
-    _votes_all = pd.concat([_votes, _recent], ignore_index=True).drop_duplicates() if _has_recent else _votes
+    # Load ALL recent CSVs (no date limit) so topics beyond the parquet cutoff are searchable
+    _recent_all = load_recent_votes(9999)
+    _votes_all = pd.concat([_votes, _recent_all], ignore_index=True).drop_duplicates() if not _recent_all.empty else _votes
     _topic_index = (
         _votes_all.groupby("policy_topic")
         .agg(n=("vote", "count"), min_date=("date", "min"), max_date=("date", "max"))
