@@ -503,7 +503,17 @@ def _preload(years: tuple = (2024, 2025, 2026)):
     _comparison = compare_behavior(_historical, _recent) if _has_recent else {}
     # Load ALL recent CSVs (no date limit) so topics beyond the parquet cutoff are searchable
     _recent_all = load_recent_votes(9999)
-    _votes_all = pd.concat([_votes, _recent_all], ignore_index=True).drop_duplicates() if not _recent_all.empty else _votes
+    if not _recent_all.empty:
+        # Cast to str before concat to avoid category dtype conflicts, then re-categorize
+        _v = _votes.copy()
+        for _c in ("member_name", "political_group", "policy_topic", "vote"):
+            if _c in _v.columns:       _v[_c] = _v[_c].astype(str)
+            if _c in _recent_all.columns: _recent_all[_c] = _recent_all[_c].astype(str)
+        _votes_all = pd.concat([_v, _recent_all], ignore_index=True)
+        for _c in ("member_name", "political_group", "policy_topic", "vote"):
+            _votes_all[_c] = _votes_all[_c].astype("category")
+    else:
+        _votes_all = _votes
     _topic_index = (
         _votes_all.groupby("policy_topic")
         .agg(n=("vote", "count"), min_date=("date", "min"), max_date=("date", "max"))
