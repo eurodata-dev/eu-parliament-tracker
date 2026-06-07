@@ -155,6 +155,20 @@ _TR: dict[str, dict[str, str]] = {
         "about_transp_title":"Transparency",
         "about_nav":         "👤 About",
         "contact_nav":       "✉️ Contact",
+        "about_tagline":     "The story behind this project",
+        "about_profile_bio": "Passionate about making European democracy legible for everyone",
+        "about_why_title":   "Why I built this",
+        "about_why_body":    "Like many young Europeans, I care deeply about the EU. But every time I tried to understand what was actually happening in the Parliament — what was being voted on, who stood for what — I hit the same wall.\n\nThere are resources out there — and some are genuinely excellent. But they're largely built for specialists, researchers, and political journalists. For a curious person who simply wants to understand a vote, the barrier to entry is still too high.\n\nThe EU Parliament publishes every single vote as open data. The information is *there* — but making it truly accessible requires more than just publishing it.\n\n**That gap is what I set out to close.**",
+        "about_what_title":  "What this is",
+        "about_what_body":   "EU Parliament Vote Tracker combines data from two sources: the **European Parliament's official Open Data Portal** for the full historical record, and **HowTheyVote.eu** for the most recent live votes — a project whose existence made this much easier to build.\n\nSearch any legislative topic. See instantly how each political group voted. And then — the part I'm most proud of — get an **AI explanation that actually makes sense**.\n\nNot a dry summary, not jargon swapped for different jargon. The AI reads the raw vote data and explains in plain language: *what this issue was actually about*, *which political families supported or opposed it and why*, and *what it means in practice for people living in Europe*. Think of it as having a knowledgeable friend walk you through it over coffee.\n\nNo editorial bias. No political agenda. Just democracy — made legible.\n\nThe project is fully open source. **My goal: make EU democracy as easy to follow as a sports score.**",
+        "about_matters_title":"Why it matters",
+        "about_matters_body":"Democracy works better when citizens understand it. 450 million people are affected by decisions made in this building every week, and most of them have no idea what's being debated.\n\nThis project started as a personal learning exercise and grew into something I genuinely believe in. Months of work in my spare time — because I think accessible democracy is worth building.",
+        "about_hope_title":  "What I'm hoping for",
+        "about_hope_body":   "If you work at an EU institution, a think tank, a civic tech organization, or a media outlet — or if you simply share the conviction that *transparency is not optional in a democracy* — I would genuinely love to hear from you.\n\nThis is just the beginning. There is so much more this could become.",
+        "about_stack_1":     "Real EP open data",
+        "about_stack_2":     "AI explanations",
+        "about_stack_3":     "5 languages",
+        "about_cta":         "✉️ Get in touch",
         "contact_page_title":"Get in Touch",
         "contact_subtitle":  "Questions, suggestions, partnership ideas — all welcome.",
         "contact_name_label":"Your name (optional)",
@@ -242,6 +256,20 @@ _TR: dict[str, dict[str, str]] = {
         "about_transp_title":"Transparence",
         "about_nav":         "👤 À propos",
         "contact_nav":       "✉️ Contact",
+        "about_tagline":     "L'histoire derrière ce projet",
+        "about_profile_bio": "Passionné par l'accessibilité de la démocratie européenne pour tous",
+        "about_why_title":   "Pourquoi j'ai créé ça",
+        "about_why_body":    "Comme beaucoup de jeunes Européens, je m'intéresse profondément à l'UE. Mais chaque fois que j'essayais de comprendre ce qui se passait vraiment au Parlement — ce qui était voté, qui défendait quoi — je me heurtais au même mur.\n\nIl existe des ressources, et certaines sont vraiment excellentes. Mais elles sont en grande partie conçues pour les spécialistes, chercheurs et journalistes politiques. Pour quelqu'un qui veut simplement comprendre un vote, la barrière reste trop haute.\n\nLe Parlement européen publie chaque vote en données ouvertes. L'information *existe* — mais la rendre vraiment accessible nécessite plus que de la publier.\n\n**C'est ce fossé que j'ai voulu combler.**",
+        "about_what_title":  "Ce que c'est",
+        "about_what_body":   "EU Parliament Vote Tracker combine des données de deux sources : le **portail Open Data officiel du Parlement européen** pour l'historique complet, et **HowTheyVote.eu** pour les votes les plus récents — un projet dont l'existence a rendu tout cela bien plus facile à construire.\n\nRecherchez n'importe quel sujet législatif. Voyez instantanément comment chaque groupe politique a voté. Et ensuite — la partie dont je suis le plus fier — obtenez une **explication IA qui a vraiment du sens**.\n\nPas un résumé aride, pas du jargon remplacé par d'autre jargon. L'IA lit les données de vote et explique en langage clair : *de quoi il s'agissait réellement*, *quelles familles politiques ont soutenu ou s'y sont opposées et pourquoi*, et *ce que cela signifie concrètement pour les gens qui vivent en Europe*. Comme si un ami bien informé vous l'expliquait autour d'un café.\n\nAucun biais éditorial. Aucun agenda politique. Juste la démocratie — rendue lisible.\n\nLe projet est entièrement open source. **Mon objectif : rendre la démocratie européenne aussi facile à suivre qu'un score sportif.**",
+        "about_matters_title":"Pourquoi c'est important",
+        "about_matters_body":"La démocratie fonctionne mieux quand les citoyens la comprennent. 450 millions de personnes sont concernées par les décisions prises dans ce bâtiment chaque semaine, et la plupart ne savent pas ce qui y est débattu.\n\nCe projet a commencé comme un exercice personnel d'apprentissage et est devenu quelque chose en lequel je crois vraiment. Des mois de travail pendant mes heures libres — parce que je pense qu'une démocratie accessible vaut la peine d'être construite.",
+        "about_hope_title":  "Ce que j'espère",
+        "about_hope_body":   "Si vous travaillez dans une institution européenne, un think tank, une organisation de civic tech ou un média — ou si vous partagez simplement la conviction que *la transparence n'est pas optionnelle en démocratie* — je serais vraiment ravi d'échanger avec vous.\n\nC'est seulement un début. Il y a tellement plus que cela pourrait devenir.",
+        "about_stack_1":     "Données ouvertes du PE",
+        "about_stack_2":     "Explications IA",
+        "about_stack_3":     "5 langues",
+        "about_cta":         "✉️ Me contacter",
         "contact_page_title":"Contactez-moi",
         "contact_subtitle":  "Questions, suggestions, idées de collaboration — tout est bienvenu.",
         "contact_name_label":"Votre nom (optionnel)",
@@ -329,6 +357,20 @@ _TR: dict[str, dict[str, str]] = {
         "about_transp_title":"Transparencia",
         "about_nav":         "👤 Acerca de",
         "contact_nav":       "✉️ Contacto",
+        "about_tagline":     "La historia detrás de este proyecto",
+        "about_profile_bio": "Apasionado por hacer la democracia europea accesible para todos",
+        "about_why_title":   "Por qué lo construí",
+        "about_why_body":    "Como muchos jóvenes europeos, me preocupa profundamente la UE. Pero cada vez que intentaba entender lo que realmente ocurría en el Parlamento — qué se votaba, quién defendía qué — chocaba con el mismo muro.\n\nExisten recursos, y algunos son realmente excelentes. Pero están diseñados principalmente para especialistas, investigadores y periodistas políticos. Para alguien que simplemente quiere entender un voto, la barrera de entrada sigue siendo demasiado alta.\n\nEl Parlamento Europeo publica cada voto como datos abiertos. La información *existe* — pero hacerla verdaderamente accesible requiere más que publicarla.\n\n**Esa brecha es lo que me propuse cerrar.**",
+        "about_what_title":  "Qué es esto",
+        "about_what_body":   "EU Parliament Vote Tracker combina datos de dos fuentes: el **portal de Datos Abiertos oficial del Parlamento Europeo** para el registro histórico completo, y **HowTheyVote.eu** para los votos más recientes — un proyecto cuya existencia hizo esto mucho más fácil de construir.\n\nBusca cualquier tema legislativo. Ve al instante cómo votó cada grupo político. Y luego — la parte de la que más me enorgullezco — obtén una **explicación de IA que realmente tiene sentido**.\n\nNi un resumen seco, ni jerga reemplazada por más jerga. La IA lee los datos del voto y explica en lenguaje sencillo: *de qué trataba realmente este asunto*, *qué familias políticas lo apoyaron o se opusieron y por qué*, y *qué significa en la práctica para las personas que viven en Europa*. Como si un amigo bien informado te lo explicara tomando un café.\n\nSin sesgo editorial. Sin agenda política. Solo democracia — hecha legible.\n\nEl proyecto es completamente open source. **Mi objetivo: hacer que seguir la democracia europea sea tan fácil como ver un marcador deportivo.**",
+        "about_matters_title":"Por qué importa",
+        "about_matters_body":"La democracia funciona mejor cuando los ciudadanos la entienden. 450 millones de personas se ven afectadas por decisiones tomadas en este edificio cada semana, y la mayoría no sabe qué se debate.\n\nEste proyecto empezó como un ejercicio personal de aprendizaje y se convirtió en algo en lo que realmente creo. Meses de trabajo en mi tiempo libre — porque creo que una democracia accesible vale la pena construirse.",
+        "about_hope_title":  "Lo que espero",
+        "about_hope_body":   "Si trabajas en una institución europea, un think tank, una organización de tecnología cívica o un medio de comunicación — o si simplemente compartes la convicción de que *la transparencia no es opcional en una democracia* — me encantaría hablar contigo.\n\nEsto es solo el comienzo. Hay mucho más en lo que esto podría convertirse.",
+        "about_stack_1":     "Datos abiertos del PE",
+        "about_stack_2":     "Explicaciones IA",
+        "about_stack_3":     "5 idiomas",
+        "about_cta":         "✉️ Contactar",
         "contact_page_title":"Ponte en contacto",
         "contact_subtitle":  "Preguntas, sugerencias, ideas de colaboración — todo es bienvenido.",
         "contact_name_label":"Tu nombre (opcional)",
@@ -416,6 +458,20 @@ _TR: dict[str, dict[str, str]] = {
         "about_transp_title":"Transparenz",
         "about_nav":         "👤 Über uns",
         "contact_nav":       "✉️ Kontakt",
+        "about_tagline":     "Die Geschichte hinter diesem Projekt",
+        "about_profile_bio": "Leidenschaftlich daran interessiert, die europäische Demokratie für alle zugänglich zu machen",
+        "about_why_title":   "Warum ich das gebaut habe",
+        "about_why_body":    "Wie viele junge Europäer liegt mir die EU sehr am Herzen. Aber jedes Mal, wenn ich versuchte zu verstehen, was wirklich im Parlament passierte — was abgestimmt wurde, wer wofür stand — stieß ich auf dieselbe Wand.\n\nEs gibt Ressourcen — und einige sind wirklich ausgezeichnet. Aber sie sind größtenteils für Spezialisten, Forscher und politische Journalisten konzipiert. Für eine neugierige Person, die einen Abstimmungsvorgang einfach verstehen möchte, ist die Einstiegshürde immer noch zu hoch.\n\nDas EU-Parlament veröffentlicht jede Abstimmung als offene Daten. Die Information ist *da* — aber sie wirklich zugänglich zu machen erfordert mehr als nur zu veröffentlichen.\n\n**Diese Lücke wollte ich schließen.**",
+        "about_what_title":  "Was das ist",
+        "about_what_body":   "EU Parliament Vote Tracker kombiniert Daten aus zwei Quellen: dem **offiziellen Open-Data-Portal des EU-Parlaments** für die vollständige historische Aufzeichnung und **HowTheyVote.eu** für die aktuellsten Live-Abstimmungen — ein Projekt, dessen Existenz vieles einfacher gemacht hat.\n\nSuche nach jedem Gesetzgebungsthema. Sieh sofort, wie jede politische Fraktion abgestimmt hat. Und dann — das ist der Teil, auf den ich am stolzesten bin — erhalte eine **KI-Erklärung, die wirklich Sinn ergibt**.\n\nKeine trockene Zusammenfassung, kein Fachjargon ersetzt durch anderen Fachjargon. Die KI liest die Abstimmungsdaten und erklärt in einfacher Sprache: *worum es bei diesem Thema wirklich ging*, *welche politischen Familien es unterstützt oder abgelehnt haben und warum*, und *was es in der Praxis für die Menschen in Europa bedeutet*. Wie wenn ein gut informierter Freund es dir bei einem Kaffee erklärt.\n\nKein redaktioneller Bias. Keine politische Agenda. Nur Demokratie — lesbar gemacht.\n\nDas Projekt ist vollständig open source. **Mein Ziel: EU-Demokratie so einfach verfolgbar machen wie ein Sportergebnis.**",
+        "about_matters_title":"Warum es wichtig ist",
+        "about_matters_body":"Demokratie funktioniert besser, wenn Bürgerinnen und Bürger sie verstehen. 450 Millionen Menschen sind jede Woche von Entscheidungen in diesem Gebäude betroffen, und die meisten wissen nicht, was dort debattiert wird.\n\nDieses Projekt begann als persönliche Lernübung und wurde zu etwas, an das ich wirklich glaube. Monate Arbeit in meiner Freizeit — weil ich denke, dass zugängliche Demokratie es wert ist, gebaut zu werden.",
+        "about_hope_title":  "Was ich mir erhoffe",
+        "about_hope_body":   "Wenn du bei einer EU-Institution, einem Think Tank, einer Civic-Tech-Organisation oder einem Medienunternehmen arbeitest — oder wenn du einfach die Überzeugung teilst, dass *Transparenz in einer Demokratie nicht optional ist* — würde ich mich wirklich freuen, von dir zu hören.\n\nDas ist erst der Anfang. Es gibt so viel mehr, was daraus werden könnte.",
+        "about_stack_1":     "Offene EP-Daten",
+        "about_stack_2":     "KI-Erklärungen",
+        "about_stack_3":     "5 Sprachen",
+        "about_cta":         "✉️ Kontakt aufnehmen",
         "contact_page_title":"Kontakt aufnehmen",
         "contact_subtitle":  "Fragen, Vorschläge, Kooperationsideen — alles willkommen.",
         "contact_name_label":"Dein Name (optional)",
@@ -503,6 +559,20 @@ _TR: dict[str, dict[str, str]] = {
         "about_transp_title":"Trasparenza",
         "about_nav":         "👤 Chi siamo",
         "contact_nav":       "✉️ Contatti",
+        "about_tagline":     "La storia dietro questo progetto",
+        "about_profile_bio": "Appassionato nel rendere la democrazia europea comprensibile a tutti",
+        "about_why_title":   "Perché l'ho costruito",
+        "about_why_body":    "Come molti giovani europei, mi importa profondamente dell'UE. Ma ogni volta che cercavo di capire cosa stesse davvero succedendo nel Parlamento — cosa veniva votato, chi difendeva cosa — mi scontravo con lo stesso muro.\n\nEsistono risorse — e alcune sono davvero eccellenti. Ma sono progettate principalmente per specialisti, ricercatori e giornalisti politici. Per una persona curiosa che vuole semplicemente capire un voto, la barriera è ancora troppo alta.\n\nIl Parlamento Europeo pubblica ogni singolo voto come dati aperti. L'informazione *c'è* — ma renderla veramente accessibile richiede più che pubblicarla.\n\n**Quel divario è quello che ho voluto colmare.**",
+        "about_what_title":  "Cos'è questo",
+        "about_what_body":   "EU Parliament Vote Tracker combina dati da due fonti: il **portale Open Data ufficiale del Parlamento Europeo** per il registro storico completo, e **HowTheyVote.eu** per i voti più recenti — un progetto la cui esistenza ha reso tutto questo molto più facile da costruire.\n\nCerca qualsiasi argomento legislativo. Vedi istantaneamente come ha votato ogni gruppo politico. E poi — la parte di cui sono più orgoglioso — ottieni una **spiegazione IA che ha davvero senso**.\n\nNon un riassunto arido, non gergo sostituito da altro gergo. L'IA legge i dati del voto e spiega in linguaggio semplice: *di cosa si trattava realmente*, *quali famiglie politiche l'hanno sostenuto o vi si sono opposte e perché*, e *cosa significa in pratica per le persone che vivono in Europa*. Come se un amico ben informato te lo spiegasse davanti a un caffè.\n\nNessun pregiudizio editoriale. Nessuna agenda politica. Solo democrazia — resa leggibile.\n\nIl progetto è completamente open source. **Il mio obiettivo: rendere la democrazia europea facile da seguire come un risultato sportivo.**",
+        "about_matters_title":"Perché è importante",
+        "about_matters_body":"La democrazia funziona meglio quando i cittadini la capiscono. 450 milioni di persone sono influenzate ogni settimana da decisioni prese in questo edificio, e la maggior parte non sa cosa viene dibattuto.\n\nQuesto progetto è iniziato come un esercizio personale di apprendimento ed è diventato qualcosa in cui credo davvero. Mesi di lavoro nel mio tempo libero — perché penso che una democrazia accessibile valga la pena di essere costruita.",
+        "about_hope_title":  "Cosa spero",
+        "about_hope_body":   "Se lavori in un'istituzione europea, un think tank, un'organizzazione di civic tech o un'organizzazione mediatica — o se semplicemente condividi la convinzione che *la trasparenza non sia opzionale in una democrazia* — mi farebbe davvero piacere sentirti.\n\nQuesto è solo l'inizio. C'è molto di più in cui questo potrebbe trasformarsi.",
+        "about_stack_1":     "Dati aperti del PE",
+        "about_stack_2":     "Spiegazioni IA",
+        "about_stack_3":     "5 lingue",
+        "about_cta":         "✉️ Contattami",
         "contact_page_title":"Contattaci",
         "contact_subtitle":  "Domande, suggerimenti, idee di collaborazione — tutto è benvenuto.",
         "contact_name_label":"Il tuo nome (opzionale)",
@@ -755,17 +825,17 @@ _current_page = st.session_state.get("page", "home")
 _contact_email = st.secrets.get("CONTACT_EMAIL", os.getenv("CONTACT_EMAIL", "elmas.burhan80@gmail.com"))
 
 if _current_page == "about":
-    st.markdown("""
+    st.markdown(f"""
 <div style="max-width:720px;margin:0 auto;">
 <div style="background:linear-gradient(135deg,#1e3a8a,#1d4ed8);border-radius:16px;
             padding:2.5rem 2rem;color:white;text-align:center;margin-bottom:2rem;">
   <div style="font-size:2.5rem;margin-bottom:0.5rem;">🏛️</div>
   <div style="font-size:1.6rem;font-weight:800;letter-spacing:-0.02em;">EU Parliament Vote Tracker</div>
-  <div style="opacity:0.8;font-size:1rem;margin-top:0.5rem;">The story behind this project</div>
+  <div style="opacity:0.8;font-size:1rem;margin-top:0.5rem;">{t("about_tagline")}</div>
 </div>
 </div>""", unsafe_allow_html=True)
 
-    st.markdown("""
+    st.markdown(f"""
 <div style="max-width:720px;margin:0 auto;">
 <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;
             padding:1.5rem;margin-bottom:2rem;display:flex;align-items:center;gap:1.2rem;">
@@ -773,85 +843,46 @@ if _current_page == "about":
   <div>
     <div style="font-weight:700;font-size:1.15rem;color:#1e3a8a;">Burhan</div>
     <div style="color:#2563eb;font-size:0.9rem;margin-top:0.1rem;">AI &amp; Data Engineer · Belgium</div>
-    <div style="color:#6b7280;font-size:0.85rem;margin-top:0.3rem;">
-      Passionate about making European democracy legible for everyone
-    </div>
+    <div style="color:#6b7280;font-size:0.85rem;margin-top:0.3rem;">{t("about_profile_bio")}</div>
   </div>
 </div>
 </div>""", unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("### Why I built this")
-    st.markdown("""
-Like many young Europeans, I care deeply about the EU. But every time I tried to understand what was
-actually happening in the Parliament — what was being voted on, who stood for what — I hit the same wall.
-
-Impenetrable jargon. Bureaucratic complexity. Data scattered across a dozen websites in formats nobody
-can read without a law degree.
-
-The EU Parliament publishes every single vote as open data. The information is *there* — but it's completely
-inaccessible to most people. You'd need to be a professional political analyst to make sense of it.
-
-**That bothered me. A lot.**
-""")
-
-    st.markdown("### What this is")
-    st.markdown("""
-EU Parliament Vote Tracker pulls real voting records directly from the European Parliament's Open Data
-Portal and turns them into something anyone can understand.
-
-Search any legislative topic. See instantly how each political group voted. Get a plain-language AI
-explanation of what the vote meant and what it changes in practice.
-
-No editorial spin. No political agenda. Just raw democracy — made readable.
-
-**My goal: make EU democracy as easy to follow as a sports score.**
-""")
-
-    st.markdown("### Why it matters")
-    st.markdown("""
-Democracy works better when citizens understand it. 450 million people are affected by decisions made
-in this building every week, and most of them have no idea what's being debated.
-
-This project started as a personal learning exercise and grew into something I genuinely believe in.
-Months of work in my spare time — data pipelines, AI analysis, five-language support, weekly email digests —
-because I think accessible democracy is worth building.
-""")
-
-    st.markdown("### What I'm hoping for")
-    st.markdown("""
-If you work at an EU institution, a think tank, a civic technology organization, or a media outlet —
-or if you simply share the conviction that *transparency is not optional in a democracy* —
-I would genuinely love to hear from you.
-
-This is just the beginning. There is so much more this could become.
-""")
+    st.markdown(f"### {t('about_why_title')}")
+    st.markdown(t("about_why_body"))
+    st.markdown(f"### {t('about_what_title')}")
+    st.markdown(t("about_what_body"))
+    st.markdown(f"### {t('about_matters_title')}")
+    st.markdown(t("about_matters_body"))
+    st.markdown(f"### {t('about_hope_title')}")
+    st.markdown(t("about_hope_body"))
 
     _cols = st.columns([1, 1, 1])
     with _cols[0]:
-        st.markdown("""<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;
+        st.markdown(f"""<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;
         padding:1rem;text-align:center;">
         <div style="font-size:1.5rem;">🏛️</div>
-        <div style="font-weight:600;font-size:0.85rem;color:#166534;margin-top:0.3rem;">Real EP open data</div>
+        <div style="font-weight:600;font-size:0.85rem;color:#166534;margin-top:0.3rem;">{t("about_stack_1")}</div>
         <div style="font-size:0.75rem;color:#6b7280;margin-top:0.2rem;">10M+ votes, 2019–2026</div>
         </div>""", unsafe_allow_html=True)
     with _cols[1]:
-        st.markdown("""<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;
+        st.markdown(f"""<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;
         padding:1rem;text-align:center;">
         <div style="font-size:1.5rem;">🤖</div>
-        <div style="font-weight:600;font-size:0.85rem;color:#1e3a8a;margin-top:0.3rem;">AI explanations</div>
+        <div style="font-weight:600;font-size:0.85rem;color:#1e3a8a;margin-top:0.3rem;">{t("about_stack_2")}</div>
         <div style="font-size:0.75rem;color:#6b7280;margin-top:0.2rem;">Llama 3.1 via Groq</div>
         </div>""", unsafe_allow_html=True)
     with _cols[2]:
-        st.markdown("""<div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;
+        st.markdown(f"""<div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;
         padding:1rem;text-align:center;">
         <div style="font-size:1.5rem;">🌍</div>
-        <div style="font-weight:600;font-size:0.85rem;color:#6b21a8;margin-top:0.3rem;">5 languages</div>
+        <div style="font-weight:600;font-size:0.85rem;color:#6b21a8;margin-top:0.3rem;">{t("about_stack_3")}</div>
         <div style="font-size:0.75rem;color:#6b7280;margin-top:0.2rem;">EN · FR · ES · DE · IT</div>
         </div>""", unsafe_allow_html=True)
 
     st.markdown("---")
-    if st.button("✉️ Get in touch", type="primary"):
+    if st.button(t("about_cta"), type="primary"):
         st.session_state["page"] = "contact"
         st.rerun()
     st.stop()
