@@ -924,7 +924,7 @@ elif _current_page == "contact":
                         if _resp.status_code in (200, 201, 202):
                             st.success(t("contact_ok"))
                         else:
-                            st.error(t("contact_err"))
+                            st.error(f"Resend error {_resp.status_code}: {_resp.text[:300]}")
                 except Exception:
                     st.error(t("contact_err"))
 
