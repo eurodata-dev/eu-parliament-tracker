@@ -1,13 +1,5 @@
 def explain_political_changes(comparison_results: dict, topic: str = None) -> str:
-    """Convert structured comparison results into a journalist-friendly summary.
-
-    Args:
-        comparison_results: Output dict from political_comparison_engine.compare_behavior().
-        topic: Optional policy topic to focus the explanation on.
-
-    Returns:
-        A plain-English summary string (5–10 sentences).
-    """
+    """Turns the comparison data into a readable text summary."""
     summary = comparison_results.get("summary", {})
     group_drift = comparison_results.get("group_drift", {})
     topic_drift = comparison_results.get("topic_drift", {})
@@ -17,7 +9,7 @@ def explain_political_changes(comparison_results: dict, topic: str = None) -> st
 
     sentences = []
 
-    # --- Opening framing ---
+    # opening line
     if topic:
         matched = {t: v for t, v in topic_drift.items() if topic.lower() in t.lower()}
         if matched:
@@ -31,7 +23,7 @@ def explain_political_changes(comparison_results: dict, topic: str = None) -> st
             "Here is an overview of how voting behavior has shifted between the historical and recent periods."
         )
 
-    # --- Most changed group ---
+    # which group changed the most
     most_changed_group = summary.get("most_changed_group")
     if most_changed_group and most_changed_group in group_drift:
         g = group_drift[most_changed_group]
@@ -41,7 +33,7 @@ def explain_political_changes(comparison_results: dict, topic: str = None) -> st
             f"which moved notably {direction}."
         )
 
-    # --- Top 5 groups ---
+    # other notable groups
     top_groups = summary.get("top_5_changed_groups", [])
     if len(top_groups) > 1:
         others = ", ".join(top_groups[1:4])
@@ -49,7 +41,7 @@ def explain_political_changes(comparison_results: dict, topic: str = None) -> st
             f"Other groups showing significant shifts include {others}."
         )
 
-    # --- Topic focus or most changed topic ---
+    # topic-level shifts
     if topic and matched:
         for topic_name, drift in matched.items():
             direction = _dominant_direction(drift)
@@ -75,7 +67,7 @@ def explain_political_changes(comparison_results: dict, topic: str = None) -> st
                 f"Notable shifts also appear in {other_topics}."
             )
 
-    # --- Polarization ---
+    # polarization
     pol_change = summary.get("overall_polarization_change")
     if pol_change is not None:
         if abs(pol_change) < 1.0:
@@ -93,7 +85,6 @@ def explain_political_changes(comparison_results: dict, topic: str = None) -> st
                 "suggesting some convergence across groups."
             )
 
-    # --- Closing ---
     if not topic:
         sentences.append(
             "These changes reflect observable differences in recorded vote counts "
@@ -104,7 +95,7 @@ def explain_political_changes(comparison_results: dict, topic: str = None) -> st
 
 
 def _dominant_direction(drift: dict) -> str:
-    """Return the label of the largest absolute change in a drift entry."""
+    """Finds which vote type changed the most in a drift entry."""
     mapping = {
         "FOR": drift.get("delta_FOR", 0.0),
         "AGAINST": drift.get("delta_AGAINST", 0.0),
@@ -117,5 +108,4 @@ def _dominant_direction(drift: dict) -> str:
 
 
 def _fmt(value: float) -> str:
-    """Format a delta value with a sign prefix."""
     return f"{value:+.1f}%"

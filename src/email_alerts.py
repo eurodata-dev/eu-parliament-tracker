@@ -1,12 +1,6 @@
-"""
-email_alerts.py — Weekly digest email sender for EU Vote Tracker.
-
-Fetches the top 5 most recent EP votes, sends a digest to all subscribers.
-Run every Monday via GitHub Actions.
-
-Required env vars:
-    SUPABASE_URL, SUPABASE_KEY, RESEND_API_KEY, GROQ_API_KEY
-"""
+# email_alerts.py
+# Sends the weekly digest to all subscribers every Monday.
+# Needs SUPABASE_URL, SUPABASE_KEY, RESEND_API_KEY in environment.
 
 import logging
 import os
@@ -71,9 +65,7 @@ _REJECTED = {
 }
 
 
-# ---------------------------------------------------------------------------
 # Supabase helpers
-# ---------------------------------------------------------------------------
 
 def _sb_headers() -> dict:
     return {
@@ -140,9 +132,7 @@ def remove_subscriber(email: str) -> str:
     return "error"
 
 
-# ---------------------------------------------------------------------------
 # Vote data
-# ---------------------------------------------------------------------------
 
 def get_top_votes(n: int = 5) -> list[dict]:
     data_dir = Path(__file__).parent.parent / "data"
@@ -201,9 +191,7 @@ def get_top_votes(n: int = 5) -> list[dict]:
     return result
 
 
-# ---------------------------------------------------------------------------
 # Email builder
-# ---------------------------------------------------------------------------
 
 def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
     week_label  = _WEEK_LABELS.get(lang, _WEEK_LABELS["EN"])
@@ -294,9 +282,7 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
 </html>"""
 
 
-# ---------------------------------------------------------------------------
 # Main
-# ---------------------------------------------------------------------------
 
 def send_digest() -> None:
     if not RESEND_API_KEY:

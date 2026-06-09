@@ -7,8 +7,7 @@ import pandas as pd
 
 from config import settings
 
-# Nested vote counts keyed by political group.
-# Shape: {"EPP": {"FOR": 2, "AGAINST": 1, "ABSTAIN": 0}, ...}
+# vote counts per political group, e.g. {"EPP": {"FOR": 2, "AGAINST": 1, "ABSTAIN": 0}}
 VoteSummary = dict[str, dict[str, int]]
 
 logger = logging.getLogger(__name__)
@@ -17,20 +16,7 @@ _VOTE_LABELS = ["FOR", "AGAINST", "ABSTAIN"]
 
 
 def build_summary(votes_df: pd.DataFrame) -> VoteSummary:
-    """Aggregate a votes DataFrame into a per-group vote-count dictionary.
-
-    Args:
-        votes_df: DataFrame with at minimum columns ``political_group`` and
-            ``vote`` (values: FOR | AGAINST | ABSTAIN).
-
-    Returns:Donc
-        Nested dict mapping each political group to its vote counts, e.g.::
-
-            {
-                "EPP":        {"FOR": 2, "AGAINST": 1, "ABSTAIN": 0},
-                "Greens/EFA": {"FOR": 1, "AGAINST": 0, "ABSTAIN": 0},
-            }
-    """
+    """Groups votes by political group and counts FOR/AGAINST/ABSTAIN for each."""
     pivot = (
         votes_df
         .groupby(["political_group", "vote"])
@@ -48,18 +34,7 @@ def build_summary(votes_df: pd.DataFrame) -> VoteSummary:
 
 
 def analyze_policy(votes_df: pd.DataFrame, topic: str) -> VoteSummary:
-    """Filter votes by policy topic and return a per-group vote summary.
-
-    Args:
-        votes_df: Full DataFrame of voting records (all topics).
-        topic:    Exact ``policy_topic`` value to analyse, e.g. ``"AI Act"``.
-
-    Returns:
-        VoteSummary for the requested topic only.
-
-    Raises:
-        ValueError: If ``topic`` is not present in the DataFrame.
-    """
+    """Filters the dataset to a specific topic and returns the vote breakdown."""
     filtered = votes_df[votes_df["policy_topic"] == topic]
     if filtered.empty:
         raise ValueError(
@@ -70,30 +45,14 @@ def analyze_policy(votes_df: pd.DataFrame, topic: str) -> VoteSummary:
 
 
 def validate_output(text: str) -> str:
-    """Basic sanity check on LLM output — only reject clearly broken responses."""
+    """Rejects obviously broken LLM responses."""
     if not text or len(text.strip()) < 20:
         return "API_ERROR"
     return text
 
 
 def compute_vote_metrics(summary_list: list[dict]) -> dict:
-    """Compute all vote statistics in pure Python — deterministic, no LLM involved.
-
-    Enriches each group entry with derived fields, then computes dataset-level
-    rankings and extremes from the enriched data.
-
-    Per-group derived fields:
-        TOTAL         = FOR + AGAINST + ABSTAIN
-        PARTICIPATION = FOR + AGAINST  (excludes abstentions)
-        FOR_RATIO     = FOR / TOTAL    (0.0 if TOTAL == 0)
-        AGAINST_RATIO = AGAINST / TOTAL (0.0 if TOTAL == 0)
-
-    Args:
-        summary_list: List of dicts with keys group, FOR, AGAINST, ABSTAIN.
-
-    Returns:
-        Dict with enriched groups and precomputed ranking, max/min, delta values.
-    """
+    """Calculates totals, ratios and rankings from the raw vote counts."""
     enriched = []
     for row in summary_list:
         total = row["FOR"] + row["AGAINST"] + row["ABSTAIN"]
@@ -120,27 +79,7 @@ def compute_vote_metrics(summary_list: list[dict]) -> dict:
 
 
 def compute_political_signals(metrics: dict) -> dict:
-    """Derive dataset-level political signals from precomputed vote metrics.
-
-    All computation is pure Python and fully deterministic.
-
-    Signals:
-        consensus_score    (float)  Percentage of groups sharing the same
-                                    dominant vote category. Range: 0–100.
-        polarization_score (float)  Population standard deviation of FOR values
-                                    across groups. 0.0 when only one group.
-        abstention_signal  (int)    Count of groups where ABSTAIN strictly
-                                    exceeds both FOR and AGAINST.
-        dominant_bloc      (str)    "FOR" | "AGAINST" | "TIED" — whichever
-                                    category has the higher total across all groups.
-
-    Args:
-        metrics: Output of compute_vote_metrics().
-
-    Returns:
-        Dict with keys: consensus_score, polarization_score,
-        abstention_signal, dominant_bloc.
-    """
+    """Derives consensus, polarization and abstention signals from vote metrics."""
     groups = metrics["groups"]
 
     if not groups:
@@ -151,8 +90,7 @@ def compute_political_signals(metrics: dict) -> dict:
             "dominant_bloc": "N/A",
         }
 
-    # consensus_score — share of groups whose dominant category is the same.
-    # Ties inside a group are broken by category order: FOR > AGAINST > ABSTAIN.
+    # what fraction of groups share the same dominant vote
     dominant_per_group = [
         max(_VOTE_LABELS, key=lambda v: g[v])
         for g in groups
@@ -160,17 +98,17 @@ def compute_political_signals(metrics: dict) -> dict:
     most_common_count = Counter(dominant_per_group).most_common(1)[0][1]
     consensus_score = round(most_common_count / len(groups) * 100, 1)
 
-    # polarization_score — population std dev of FOR counts across groups.
+    # spread of FOR votes across groups
     for_values = [g["FOR"] for g in groups]
     polarization_score = round(statistics.pstdev(for_values), 4)
 
-    # abstention_signal — groups where ABSTAIN is strictly the highest value.
+    # how many groups abstained more than they voted either way
     abstention_signal = sum(
         1 for g in groups
         if g["ABSTAIN"] > g["FOR"] and g["ABSTAIN"] > g["AGAINST"]
     )
 
-    # dominant_bloc — aggregate FOR vs AGAINST totals across all groups.
+    # overall winner
     total_for = sum(g["FOR"] for g in groups)
     total_against = sum(g["AGAINST"] for g in groups)
     if total_for > total_against:
@@ -189,10 +127,7 @@ def compute_political_signals(metrics: dict) -> dict:
 
 
 def generate_ai_insight(summary_dict: VoteSummary, topic: str, lang: str = "English") -> str:
-    """Return a data-driven AI summary of voting patterns via Groq (free tier).
-
-    Requires GROQ_API_KEY in .env — get a free key at console.groq.com.
-    """
+    """Calls Groq to generate a short neutral summary of a vote. Needs GROQ_API_KEY."""
     api_key = settings.GROQ_API_KEY
     if not api_key or api_key == "your_groq_api_key_here":
         return "NO_KEY"
@@ -203,10 +138,8 @@ def generate_ai_insight(summary_dict: VoteSummary, topic: str, lang: str = "Engl
     ]
     metrics = compute_vote_metrics(summary_list)
 
-    # Determine outcome from dominant bloc
     dominant = "PASSED" if metrics["groups"] and sum(g["FOR"] for g in metrics["groups"]) > sum(g["AGAINST"] for g in metrics["groups"]) else "REJECTED"
 
-    # Left/right orientation per group (simplified)
     left_groups  = {"S&D", "Greens/EFA", "The Left"}
     right_groups = {"EPP", "ECR", "Patriots for Europe", "ESN", "ID"}
     center_groups = {"Renew"}

@@ -1,14 +1,6 @@
-"""
-eu_api.py — EU Parliament data access layer.
-
-Single point of contact between the application and EU Parliament voting data.
-Its public interface is intentionally stable: when the data source changes
-(CSV → bulk download → SPARQL), only eu_dataset_loader.py changes — callers
-(app.py, analysis_agent.py) stay untouched.
-
-Data flow:
-    caller → eu_api.py → eu_dataset_loader.get_eu_votes() → CSV / EP Open Data
-"""
+# eu_api.py
+# Handles all data fetching for the app. Everything goes through here
+# so if the data source ever changes, only this file needs updating.
 
 from __future__ import annotations
 
@@ -23,10 +15,6 @@ logger = logging.getLogger(__name__)
 _EXPECTED_COLUMNS: list[str] = SCHEMA
 
 
-# ---------------------------------------------------------------------------
-# Internal helpers
-# ---------------------------------------------------------------------------
-
 def _normalize(text: str) -> str:
     return text.strip().lower()
 
@@ -35,21 +23,11 @@ def _available_topics(votes_df: pd.DataFrame) -> list[str]:
     return sorted(votes_df["policy_topic"].unique().tolist())
 
 
-# ---------------------------------------------------------------------------
-# Public API
-# ---------------------------------------------------------------------------
-
 def search_policy_topic(query: str) -> str | None:
-    """Resolve a free-text query to the closest known policy topic.
+    """Try to match a user's search query to a known policy topic.
 
-    Three-pass matching, most to least strict:
-        1. Exact match (case-insensitive).
-        2. Substring — topic contains query, or query contains topic.
-        3. Word-overlap — any query word appears in a topic name.
-
-    Returns the exact policy_topic label, or None if nothing matches.
-    When the dataset grows richer, replace these passes with a proper
-    text-search filter in eu_dataset_loader (e.g. SPARQL FILTER CONTAINS).
+    Does three passes: exact match first, then substring, then word overlap.
+    Returns None if nothing is found.
     """
     if not query or not query.strip():
         return None
@@ -58,13 +36,13 @@ def search_policy_topic(query: str) -> str | None:
     topics = _available_topics(votes_df)
     q = _normalize(query)
 
-    # Pass 1 — exact
+    # exact match
     for topic in topics:
         if _normalize(topic) == q:
             logger.info("Topic matched (exact): %r", topic)
             return topic
 
-    # Pass 2 — substring
+    # substring match
     substring_matches = [
         t for t in topics
         if q in _normalize(t) or _normalize(t) in q
@@ -77,7 +55,7 @@ def search_policy_topic(query: str) -> str | None:
         logger.info("Topic matched (substring, shortest of %d): %r", len(substring_matches), best)
         return best
 
-    # Pass 3 — word-overlap
+    # word overlap as last resort
     query_words = set(q.split())
     word_matches = [t for t in topics if query_words & set(_normalize(t).split())]
     if word_matches:
@@ -90,24 +68,12 @@ def search_policy_topic(query: str) -> str | None:
 
 
 def fetch_all_votes() -> pd.DataFrame:
-    """Return the full voting dataset — no topic filter.
-
-    Attempts to refresh data/recent/ via the EP live API before returning
-    historical data. If the live fetch fails for any reason the error is logged
-    and the function continues normally — the app never crashes because of it.
-
-    Used by app.py for global KPIs and charts.
-    """
+    """Returns the full vote dataset. Used for global stats and charts."""
     return get_eu_votes()
 
 
 def fetch_eu_votes(query: str) -> pd.DataFrame:
-    """Return voting records matching a free-text policy topic query.
-
-    Resolves the query to a known topic via search_policy_topic(), then
-    filters the full dataset. Returns an empty DataFrame (correct schema)
-    if no topic matches.
-    """
+    """Returns votes filtered by a search query. Empty DataFrame if no match."""
     topic = search_policy_topic(query)
     if topic is None:
         return pd.DataFrame(columns=_EXPECTED_COLUMNS)

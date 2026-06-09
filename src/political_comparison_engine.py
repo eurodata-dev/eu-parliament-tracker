@@ -4,7 +4,7 @@ VOTE_LABELS = ["FOR", "AGAINST", "ABSTAIN"]
 
 
 def _vote_shares(df: pd.DataFrame, group_col: str) -> pd.DataFrame:
-    """Return % FOR / AGAINST / ABSTAIN per value of group_col."""
+    """Calculates % FOR / AGAINST / ABSTAIN for each value in group_col."""
     if df.empty or group_col not in df.columns:
         return pd.DataFrame(columns=[group_col, "pct_FOR", "pct_AGAINST", "pct_ABSTAIN"])
 
@@ -21,35 +21,17 @@ def _vote_shares(df: pd.DataFrame, group_col: str) -> pd.DataFrame:
 
 
 def compute_group_behavior(df: pd.DataFrame) -> pd.DataFrame:
-    """Return per-political-group vote share (% FOR / AGAINST / ABSTAIN).
-
-    Args:
-        df: DataFrame with columns member_name, political_group, policy_topic,
-            vote, date.
-
-    Returns:
-        DataFrame indexed by political_group with columns
-        pct_FOR, pct_AGAINST, pct_ABSTAIN.
-    """
+    """Vote share breakdown per political group."""
     return _vote_shares(df, "political_group")
 
 
 def compute_topic_behavior(df: pd.DataFrame) -> pd.DataFrame:
-    """Return per-policy-topic vote share (% FOR / AGAINST / ABSTAIN).
-
-    Args:
-        df: DataFrame with columns member_name, political_group, policy_topic,
-            vote, date.
-
-    Returns:
-        DataFrame indexed by policy_topic with columns
-        pct_FOR, pct_AGAINST, pct_ABSTAIN.
-    """
+    """Vote share breakdown per policy topic."""
     return _vote_shares(df, "policy_topic")
 
 
 def _drift_table(hist: pd.DataFrame, recent: pd.DataFrame, key_col: str) -> dict:
-    """Compute per-key delta (recent − historical) for all three vote shares."""
+    """Computes how much each group/topic shifted between historical and recent data."""
     hist_indexed = hist.set_index(key_col) if not hist.empty else pd.DataFrame()
     recent_indexed = recent.set_index(key_col) if not recent.empty else pd.DataFrame()
 
@@ -72,7 +54,7 @@ def _drift_table(hist: pd.DataFrame, recent: pd.DataFrame, key_col: str) -> dict
 
 
 def _top_changers(drift: dict, n: int = 5) -> list[str]:
-    """Return the top-N keys by absolute total drift across all vote types."""
+    """Returns the top N groups/topics that changed the most."""
     scored = {
         key: abs(v["delta_FOR"]) + abs(v["delta_AGAINST"]) + abs(v["delta_ABSTAIN"])
         for key, v in drift.items()
@@ -81,38 +63,14 @@ def _top_changers(drift: dict, n: int = 5) -> list[str]:
 
 
 def _polarization(df: pd.DataFrame) -> float:
-    """Measure polarization as the average absolute deviation of FOR% from 50."""
+    """Simple polarization metric based on how far FOR% is from 50."""
     if df.empty or "pct_FOR" not in df.columns:
         return 0.0
     return round(float((df["pct_FOR"] - 50.0).abs().mean()), 2)
 
 
 def compare_behavior(historical_df: pd.DataFrame, recent_df: pd.DataFrame) -> dict:
-    """Compare historical vs recent voting behavior and surface changes.
-
-    Args:
-        historical_df: Full historical votes DataFrame.
-        recent_df:     Recent-window votes DataFrame (same schema).
-
-    Returns:
-        {
-            "group_drift": {
-                "<group>": {"delta_FOR": float, "delta_AGAINST": float, "delta_ABSTAIN": float},
-                ...
-            },
-            "topic_drift": {
-                "<topic>": {"delta_FOR": float, "delta_AGAINST": float, "delta_ABSTAIN": float},
-                ...
-            },
-            "summary": {
-                "most_changed_group": str | None,
-                "most_changed_topic": str | None,
-                "overall_polarization_change": float,
-                "top_5_changed_groups": list[str],
-                "top_5_changed_topics": list[str],
-            },
-        }
-    """
+    """Compares historical and recent voting patterns to find what changed."""
     hist_groups = compute_group_behavior(historical_df)
     recent_groups = compute_group_behavior(recent_df)
     hist_topics = compute_topic_behavior(historical_df)
