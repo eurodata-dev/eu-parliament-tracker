@@ -23,6 +23,20 @@ st.markdown('<meta name="google-site-verification" content="ymZ5DtlnckmG4aJ3DT4_
 
 st.markdown("""
 <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stDeployButton {display: none;}
+    [data-testid="stToolbar"] {visibility: hidden;}
+    header[data-testid="stHeader"] {visibility: hidden;}
+    [data-testid="stDecoration"] {display: none;}
+    /* Mobile improvements */
+    @media (max-width: 768px) {
+        [data-testid="stSidebar"] { min-width: 80vw !important; }
+        .result-card .pct { font-size: 1.8rem !important; }
+        .topic-bar { font-size: 0.95rem !important; padding: 10px 14px !important; }
+        .ai-card { font-size: 0.85rem !important; padding: 1rem !important; }
+        [data-testid="stColumns"] > div { min-width: 100% !important; }
+    }
     .stButton > button {
         border-radius: 20px; font-size: 0.82rem; padding: 0.25rem 0.85rem;
         background-color: #f3f4f6; color: #374151; border: 1px solid #e5e7eb;
