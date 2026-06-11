@@ -16,7 +16,7 @@ st.set_page_config(
     page_title="EU Parliament Vote Tracker",
     page_icon="\U0001f1ea\U0001f1fa",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="auto",
 )
 
 st.markdown('<meta name="google-site-verification" content="ymZ5DtlnckmG4aJ3DT4_OAbB1vsTcUXJpOoklHcXO58" />', unsafe_allow_html=True)
