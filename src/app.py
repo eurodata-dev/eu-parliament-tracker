@@ -237,6 +237,8 @@ _TR: dict[str, dict[str, str]] = {
         "search_hint":       "Type a topic to see matching votes &nbsp;·&nbsp; Use 2-letter uppercase for abbreviations (AI, EP...)",
         "no_results":        "No matching topics found.",
         "see_all_combined":  "\U0001f50d See all {n} topics combined — {v:,} votes",
+        "see_all_help":      "Combines all matching topics into one view so you can see the Parliament's overall position on this theme — not just one specific law.",
+        "combined_note":     "📊 You are viewing **{n} topics combined**. This shows the Parliament's overall voting pattern on this theme across all related laws. To see a specific law, search again and pick one topic.",
         "see_all_list":      "\U0001f4cb See all {n} matching topics",
         "n_match_pick":      "{n} topics match — pick one, or use the button above to combine all:",
         "all_topics_label":  "All topics matching '{q}'",
@@ -338,6 +340,8 @@ _TR: dict[str, dict[str, str]] = {
         "search_hint":       "Tapez un sujet pour voir les votes correspondants &nbsp;·&nbsp; Utilisez des majuscules pour les abbréviations (IA, EP...)",
         "no_results":        "Aucun sujet trouvé.",
         "see_all_combined":  "\U0001f50d Voir les {n} sujets combinés — {v:,} votes",
+        "see_all_help":      "Regroupe tous les sujets correspondants en une seule vue pour montrer la position globale du Parlement sur ce thème — pas seulement une loi précise.",
+        "combined_note":     "📊 Vous visualisez **{n} sujets combinés**. Cela montre le comportement de vote global du Parlement sur ce thème, toutes lois confondues. Pour voir une loi spécifique, faites une nouvelle recherche et choisissez un seul sujet.",
         "see_all_list":      "\U0001f4cb Voir les {n} sujets correspondants",
         "n_match_pick":      "{n} sujets correspondent — choisissez-en un ou combinez-les :",
         "all_topics_label":  "Tous les sujets correspondant à '{q}'",
@@ -439,6 +443,8 @@ _TR: dict[str, dict[str, str]] = {
         "search_hint":       "Escribe un tema para ver los votos &nbsp;·&nbsp; Usa mayúsculas para abreviaturas (IA, EP...)",
         "no_results":        "No se encontraron temas.",
         "see_all_combined":  "\U0001f50d Ver los {n} temas combinados — {v:,} votos",
+        "see_all_help":      "Combina todos los temas relacionados en una sola vista para mostrar la posición general del Parlamento sobre este tema, no solo una ley específica.",
+        "combined_note":     "📊 Estás viendo **{n} temas combinados**. Esto muestra el patrón de votación general del Parlamento sobre este tema en todas las leyes relacionadas. Para ver una ley específica, busca de nuevo y elige un solo tema.",
         "see_all_list":      "\U0001f4cb Ver los {n} temas encontrados",
         "n_match_pick":      "{n} temas coinciden — elige uno o combina todos:",
         "all_topics_label":  "Todos los temas que coinciden con '{q}'",
@@ -540,6 +546,8 @@ _TR: dict[str, dict[str, str]] = {
         "search_hint":       "Thema eingeben, um Abstimmungen zu sehen &nbsp;·&nbsp; Großbuchstaben für Abkürzungen (KI, EP...)",
         "no_results":        "Keine passenden Themen gefunden.",
         "see_all_combined":  "\U0001f50d Alle {n} Themen kombiniert — {v:,} Abstimmungen",
+        "see_all_help":      "Fasst alle passenden Themen in einer Ansicht zusammen, um die allgemeine Haltung des Parlaments zu diesem Thema zu zeigen — nicht nur ein bestimmtes Gesetz.",
+        "combined_note":     "📊 Sie sehen **{n} kombinierte Themen**. Dies zeigt das allgemeine Abstimmungsverhalten des Parlaments über alle zugehörigen Gesetze. Um ein bestimmtes Gesetz zu sehen, suchen Sie erneut und wählen Sie ein Thema.",
         "see_all_list":      "\U0001f4cb Alle {n} passenden Themen anzeigen",
         "n_match_pick":      "{n} Themen gefunden — eines auswählen oder alle kombinieren:",
         "all_topics_label":  "Alle Themen zu '{q}'",
@@ -641,6 +649,8 @@ _TR: dict[str, dict[str, str]] = {
         "search_hint":       "Digita un argomento per vedere i voti &nbsp;·&nbsp; Usa maiuscole per le abbreviazioni (IA, EP...)",
         "no_results":        "Nessun argomento trovato.",
         "see_all_combined":  "\U0001f50d Vedi tutti i {n} argomenti combinati — {v:,} voti",
+        "see_all_help":      "Combina tutti gli argomenti corrispondenti in un'unica vista per mostrare la posizione generale del Parlamento su questo tema, non solo una legge specifica.",
+        "combined_note":     "📊 Stai visualizzando **{n} argomenti combinati**. Questo mostra il comportamento di voto generale del Parlamento su questo tema per tutte le leggi correlate. Per vedere una legge specifica, cerca di nuovo e scegli un solo argomento.",
         "see_all_list":      "\U0001f4cb Vedi tutti i {n} argomenti corrispondenti",
         "n_match_pick":      "{n} argomenti corrispondenti — sceglierne uno o combinarli tutti:",
         "all_topics_label":  "Tutti gli argomenti corrispondenti a '{q}'",
@@ -1150,7 +1160,8 @@ with search_col:
             btn_col, _ = st.columns([3, 1])
             with btn_col:
                 if st.button(t("see_all_combined", n=len(all_matching), v=total_v),
-                             key="pill_all", use_container_width=True):
+                             key="pill_all", use_container_width=True,
+                             help=t("see_all_help")):
                     st.session_state["search_override"] = "__ALL__:" + query
                     st.rerun()
 
@@ -1206,6 +1217,9 @@ if topic:
 
     # Update URL so the page is shareable
     st.query_params["q"] = query
+
+    if combined_mode:
+        st.info(t("combined_note", n=len(all_matching)))
 
     _share_url = f"?q={query.replace(' ', '+')}"
     st.markdown(
