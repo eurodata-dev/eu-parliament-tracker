@@ -34,19 +34,55 @@ st.markdown("""
     [class*="viewerBadge"] {display: none !important;}
     a[href*="streamlit.io"] {display: none !important;}
     a[href*="share.streamlit"] {display: none !important;}
-    /* Mobile: hide sidebar entirely, let main content fill screen */
+    /* Mobile sidebar: slide off-screen by default, JS toggle still works */
     @media (max-width: 768px) {
-        [data-testid="stSidebar"] { display: none !important; }
-        [data-testid="collapsedControl"] { display: none !important; }
+        /* Translate sidebar off-screen rather than display:none so Streamlit JS can still open it */
+        section[data-testid="stSidebar"] {
+            transform: translateX(-110%) !important;
+            position: fixed !important;
+            top: 0 !important; left: 0 !important;
+            height: 100dvh !important;
+            z-index: 999 !important;
+            transition: transform 0.25s ease !important;
+        }
+        /* When sidebar is expanded (Streamlit adds aria-expanded=true), slide it in */
+        section[data-testid="stSidebar"][aria-expanded="true"] {
+            transform: translateX(0) !important;
+        }
+        /* Make the toggle button bigger and more visible */
+        [data-testid="collapsedControl"] {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        [data-testid="collapsedControl"] > button,
+        [data-testid="collapsedControl"] button {
+            width: 2.8rem !important;
+            height: 2.8rem !important;
+            background-color: #2563eb !important;
+            color: white !important;
+            border-radius: 50% !important;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.4) !important;
+        }
+        [data-testid="collapsedControl"] svg {
+            color: white !important;
+            fill: white !important;
+        }
         .result-card { padding: 0.8rem 0.4rem !important; }
         .result-card .pct { font-size: 1.6rem !important; }
         .result-card .label { font-size: 0.78rem !important; }
         .topic-bar { font-size: 0.9rem !important; padding: 8px 12px !important; }
         .ai-card { font-size: 0.85rem !important; padding: 0.8rem !important; }
-        /* Hide floating Streamlit badges on mobile */
+        /* Hide ALL Streamlit branding/badges on mobile */
         [data-testid="manage-app-button"] { display: none !important; }
         [class*="badge"] { display: none !important; }
+        [class*="Badge"] { display: none !important; }
+        [class*="viewerBadge"] { display: none !important; }
         iframe[title*="streamlit"] { display: none !important; }
+        iframe[title*="Streamlit"] { display: none !important; }
+        a[href*="streamlit.io"] { display: none !important; }
+        .stApp > header button[kind="icon"] { display: none !important; }
+        [data-testid="stToolbarActions"] { display: none !important; }
     }
     .stButton > button {
         border-radius: 20px; font-size: 0.82rem; padding: 0.25rem 0.85rem;
