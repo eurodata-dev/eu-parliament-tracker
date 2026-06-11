@@ -87,10 +87,129 @@ _DEMO_ROW_LIMIT = 5000
 _DATA_DIR = Path(__file__).parent.parent / "data"
 
 _SYNONYMS: dict[str, list[str]] = {
+    # English abbreviations
     "AI":   ["artificial intelligence", "intelligence artificielle"],
     "EP":   ["european parliament"],
     "DSA":  ["digital services"],
     "GDPR": ["data protection"],
+    "NATO": ["north atlantic", "defence alliance"],
+    # ── French ──────────────────────────────────────────────────────────────
+    # Countries
+    "MEXIQUE": ["mexico"], "MEXIKO": ["mexico"],
+    "ALLEMAGNE": ["germany"],
+    "CHINE": ["china"],
+    "RUSSIE": ["russia"],
+    "TURQUIE": ["turkey"],
+    "POLOGNE": ["poland"],
+    "HONGRIE": ["hungary"],
+    "ISRAËL": ["israel"], "ISRAEL": ["israel"],
+    "SYRIE": ["syria"],
+    "INDE": ["india"],
+    "JAPON": ["japan"],
+    "CORÉE": ["korea"], "COREE": ["korea"],
+    "ÉTATS-UNIS": ["united states"], "ETATS-UNIS": ["united states"],
+    "ROYAUME-UNI": ["united kingdom"],
+    "IRAN": ["iran"],
+    "LIBYE": ["libya"],
+    "MAROC": ["morocco"],
+    "TUNISIE": ["tunisia"],
+    "ALGÉRIE": ["algeria"], "ALGERIE": ["algeria"],
+    "ÉGYPTE": ["egypt"], "EGYPTE": ["egypt"],
+    "LIBAN": ["lebanon"],
+    "SERBIE": ["serbia"],
+    "MOLDAVIE": ["moldova"],
+    "GÉORGIE": ["georgia"], "GEORGIE": ["georgia"],
+    "BIÉLORUSSIE": ["belarus"], "BIELORUSSIE": ["belarus"],
+    # Topics
+    "CLIMAT": ["climate"], "CLIMATIQUE": ["climate"], "CLIMATIQUES": ["climate"],
+    "MIGRATION": ["migration"], "MIGRATIONS": ["migration"],
+    "IMMIGRATION": ["migration"],
+    "RÉFUGIÉS": ["refugees"], "REFUGIES": ["refugees"],
+    "ARTIFICIELLE": ["artificial"],
+    "ÉNERGIE": ["energy"], "ENERGIES": ["energy"],
+    "ÉNERGÉTIQUE": ["energy"], "ÉNERGÉTIQUES": ["energy"],
+    "DÉFENSE": ["defence", "defense"],
+    "SÉCURITÉ": ["security"], "SECURITE": ["security"],
+    "SANTÉ": ["health"], "SANTE": ["health"],
+    "COMMERCE": ["trade"],
+    "NUMÉRIQUE": ["digital"], "NUMERIQUE": ["digital"],
+    "GUERRE": ["war"],
+    "PAIX": ["peace"],
+    "PHARMACIE": ["pharmaceutical"],
+    "PHARMACEUTIQUE": ["pharmaceutical", "pharma"],
+    "TRANSPORT": ["transport"],
+    "PÊCHE": ["fisheries"], "PECHE": ["fisheries"],
+    "AGRICULTURE": ["agriculture"],
+    "ÉLECTIONS": ["elections"], "ELECTIONS": ["elections"],
+    "DROITS": ["rights"],
+    "FORÊT": ["forest", "deforestation"], "FORET": ["forest"],
+    "NUCLÉAIRE": ["nuclear"], "NUCLEAIRE": ["nuclear"],
+    # ── Spanish ─────────────────────────────────────────────────────────────
+    "ALEMANIA": ["germany"],
+    "RUSIA": ["russia"],
+    "TURQUÍA": ["turkey"], "TURQUIA": ["turkey"],
+    "POLONIA": ["poland"],
+    "HUNGRÍA": ["hungary"], "HUNGRIA": ["hungary"],
+    "INDIA": ["india"],
+    "JAPÓN": ["japan"], "JAPON": ["japan"],
+    "COREA": ["korea"],
+    "SIRIA": ["syria"],
+    "REINO": ["kingdom"],
+    "CLIMA": ["climate"], "CLIMÁTICO": ["climate"], "CLIMATICO": ["climate"],
+    "DEFENSA": ["defence", "defense"],
+    "SEGURIDAD": ["security"],
+    "ARTIFICIAL": ["artificial"],
+    "ENERGÍA": ["energy"], "ENERGIA": ["energy"],
+    "SALUD": ["health"],
+    "GUERRA": ["war"],
+    "PAZ": ["peace"],
+    "DIGITAL": ["digital"],
+    "COMERCIO": ["trade"],
+    "PRESUPUESTO": ["budget"],
+    "PESCA": ["fisheries"],
+    "NUCLEAR": ["nuclear"],
+    "DERECHOS": ["rights"],
+    "REFUGIADOS": ["refugees"],
+    "MARRUECOS": ["morocco"],
+    "LIBANO": ["lebanon"], "LÍBANO": ["lebanon"],
+    # ── German ──────────────────────────────────────────────────────────────
+    "DEUTSCHLAND": ["germany"],
+    "RUSSLAND": ["russia"],
+    "TÜRKEI": ["turkey"], "TURKEI": ["turkey"],
+    "KLIMA": ["climate"], "KLIMAWANDEL": ["climate change", "climate"],
+    "VERTEIDIGUNG": ["defence", "defense"],
+    "SICHERHEIT": ["security"],
+    "KÜNSTLICHE": ["artificial"], "KUNSTLICHE": ["artificial"],
+    "GESUNDHEIT": ["health"],
+    "HANDEL": ["trade"],
+    "HAUSHALT": ["budget"],
+    "KRIEG": ["war"],
+    "FRIEDEN": ["peace"],
+    "VEREINIGTE": ["united"],
+    "KÖNIGREICH": ["kingdom"], "KONIGREICH": ["kingdom"],
+    "DIGITALE": ["digital"], "DIGITALISIERUNG": ["digital"],
+    "FISCHEREI": ["fisheries"],
+    "KERNKRAFT": ["nuclear"], "KERNENERGIE": ["nuclear"],
+    "RECHTE": ["rights"],
+    "FLÜCHTLINGE": ["refugees"], "FLUCHTLINGE": ["refugees"],
+    "MAROKKO": ["morocco"],
+    # ── Italian ─────────────────────────────────────────────────────────────
+    "GERMANIA": ["germany"],
+    "CINA": ["china"],
+    "TURCHIA": ["turkey"],
+    "UNGHERIA": ["hungary"],
+    "DIFESA": ["defence", "defense"],
+    "SICUREZZA": ["security"],
+    "ARTIFICIALE": ["artificial"],
+    "SALUTE": ["health"],
+    "BILANCIO": ["budget"],
+    "PACE": ["peace"],
+    "PESCA": ["fisheries"],
+    "NUCLEARE": ["nuclear"],
+    "DIRITTI": ["rights"],
+    "RIFUGIATI": ["refugees"],
+    "MAROCCO": ["morocco"],
+    "LIBANO": ["lebanon"],
 }
 
 # ---------------------------------------------------------------------------
@@ -671,43 +790,51 @@ def _search_topics(topic_index: pd.DataFrame, query: str) -> pd.DataFrame:
     if len(q) <= 1:
         return topic_index.iloc[:0]
 
-    # 2-char uppercase only (abbreviations like "AI", "EP")
-    if len(q) == 2:
-        if q != q.upper():
-            return topic_index.iloc[:0]
-        pattern = r'\b' + re.escape(q) + r'\b'
-        mask = topic_index["policy_topic"].str.contains(pattern, case=True, na=False, regex=True)
-        for syn in _SYNONYMS.get(q.upper(), []):
-            syn_pat = r'\b' + re.escape(syn) + r'\b'
-            mask = mask | topic_index["policy_topic"].str.contains(syn_pat, case=False, na=False, regex=True)
-        return topic_index[mask]
-
-    tokens = q.split()
-
-    if len(tokens) == 1:
-        # Single word: word-boundary match
-        pattern = r'\b' + re.escape(q) + r'\b'
-        mask = topic_index["policy_topic"].str.contains(pattern, case=False, na=False, regex=True)
-        for syn in _SYNONYMS.get(q.upper(), []):
-            syn_pat = r'\b' + re.escape(syn) + r'\b'
-            mask = mask | topic_index["policy_topic"].str.contains(syn_pat, case=False, na=False, regex=True)
-        return topic_index[mask]
-
-    # Multi-word query: each token must appear somewhere in the topic (AND logic)
-    # This handles "AI act" matching "Regulation on artificial intelligence (AI Act)"
     topics_lower = topic_index["policy_topic"].str.lower()
-    mask = pd.Series([True] * len(topic_index), index=topic_index.index)
-    for token in tokens:
-        token_l = token.lower()
-        # Expand abbreviations per token
-        token_syns = _SYNONYMS.get(token.upper(), [token_l])
-        if token_l not in token_syns:
-            token_syns = [token_l] + list(token_syns)
-        token_mask = pd.Series([False] * len(topic_index), index=topic_index.index)
-        for syn in token_syns:
-            token_mask = token_mask | topics_lower.str.contains(re.escape(syn), na=False, regex=True)
-        mask = mask & token_mask
-    return topic_index[mask]
+
+    def _tmask(token: str) -> "pd.Series[bool]":
+        """Mask for topics that contain this token (or its synonyms), using prefix-boundary match."""
+        syns: list[str] = list(_SYNONYMS.get(token.upper(), []))
+        if token.lower() not in [s.lower() for s in syns]:
+            syns = [token] + syns
+        m = pd.Series(False, index=topic_index.index)
+        for s in syns:
+            m = m | topics_lower.str.contains(r'\b' + re.escape(s.lower()), na=False, regex=True)
+        return m
+
+    # 2-char uppercase abbreviations (AI, EP, DSA …) — user typed them capitalised on purpose
+    if len(q) == 2 and q == q.upper() and q.isalpha():
+        return topic_index[_tmask(q)]
+
+    # Tokenise; skip stop-words and single characters
+    _STOP = {"the", "of", "on", "in", "at", "a", "an", "to", "and", "or", "for",
+             "by", "with", "from", "how", "is", "are", "was", "were", "be"}
+    tokens = [t for t in q.lower().split() if len(t) >= 2 and t not in _STOP]
+    if not tokens:
+        return topic_index.iloc[:0]
+
+    # ── Strict AND: every token must match ──────────────────────────────────
+    and_mask = pd.Series(True, index=topic_index.index)
+    for tok in tokens:
+        and_mask = and_mask & _tmask(tok)
+
+    if and_mask.any():
+        return topic_index[and_mask]
+
+    # ── OR fallback (multi-token only): rank by number of matching tokens ───
+    if len(tokens) >= 2:
+        scores = pd.Series(0, index=topic_index.index, dtype=int)
+        or_mask = pd.Series(False, index=topic_index.index)
+        for tok in tokens:
+            tm = _tmask(tok)
+            scores += tm.astype(int)
+            or_mask |= tm
+        matched = topic_index[or_mask].copy()
+        # topics where more tokens hit come first; break ties by vote count
+        sort_key = -scores[or_mask].values * 100_000 - matched["n"].values
+        return matched.iloc[sort_key.argsort()]
+
+    return topic_index.iloc[:0]
 
 
 def _get_suggestions(topic_index: pd.DataFrame, query: str) -> list[tuple[str, int]]:
@@ -715,6 +842,7 @@ def _get_suggestions(topic_index: pd.DataFrame, query: str) -> list[tuple[str, i
     if matched.empty:
         return []
     q_lower = query.lower()
+    # Exact-start matches surface first; the rest keep _search_topics order (relevance)
     starts = matched[matched["policy_topic"].str.lower().str.startswith(q_lower)]
     others = matched[~matched["policy_topic"].str.lower().str.startswith(q_lower)]
     ranked = pd.concat([starts, others]).head(15)
