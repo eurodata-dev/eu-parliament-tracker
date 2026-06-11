@@ -34,14 +34,19 @@ st.markdown("""
     [class*="viewerBadge"] {display: none !important;}
     a[href*="streamlit.io"] {display: none !important;}
     a[href*="share.streamlit"] {display: none !important;}
-    /* Mobile improvements */
+    /* Mobile: hide sidebar entirely, let main content fill screen */
     @media (max-width: 768px) {
-        [data-testid="stSidebar"] { min-width: 80vw !important; }
+        [data-testid="stSidebar"] { display: none !important; }
+        [data-testid="collapsedControl"] { display: none !important; }
         .result-card { padding: 0.8rem 0.4rem !important; }
         .result-card .pct { font-size: 1.6rem !important; }
         .result-card .label { font-size: 0.78rem !important; }
         .topic-bar { font-size: 0.9rem !important; padding: 8px 12px !important; }
         .ai-card { font-size: 0.85rem !important; padding: 0.8rem !important; }
+        /* Hide floating Streamlit badges on mobile */
+        [data-testid="manage-app-button"] { display: none !important; }
+        [class*="badge"] { display: none !important; }
+        iframe[title*="streamlit"] { display: none !important; }
     }
     .stButton > button {
         border-radius: 20px; font-size: 0.82rem; padding: 0.25rem 0.85rem;
