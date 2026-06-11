@@ -29,13 +29,15 @@ st.markdown("""
     [data-testid="stToolbar"] {visibility: hidden;}
     header[data-testid="stHeader"] {visibility: hidden;}
     [data-testid="stDecoration"] {display: none;}
+    [data-testid="manage-app-button"] {display: none !important;}
     /* Mobile improvements */
     @media (max-width: 768px) {
         [data-testid="stSidebar"] { min-width: 80vw !important; }
-        .result-card .pct { font-size: 1.8rem !important; }
-        .topic-bar { font-size: 0.95rem !important; padding: 10px 14px !important; }
-        .ai-card { font-size: 0.85rem !important; padding: 1rem !important; }
-        [data-testid="stColumns"] > div { min-width: 100% !important; }
+        .result-card { padding: 0.8rem 0.4rem !important; }
+        .result-card .pct { font-size: 1.6rem !important; }
+        .result-card .label { font-size: 0.78rem !important; }
+        .topic-bar { font-size: 0.9rem !important; padding: 8px 12px !important; }
+        .ai-card { font-size: 0.85rem !important; padding: 0.8rem !important; }
     }
     .stButton > button {
         border-radius: 20px; font-size: 0.82rem; padding: 0.25rem 0.85rem;
@@ -1257,9 +1259,11 @@ if not query:
                 pol_change = summary.get("overall_polarization_change")
                 pol_label  = f"{pol_change:+.1f} pp" if pol_change is not None else "-"
                 pol_color  = "normal" if pol_change is None or abs(pol_change) < 1.0 else ("inverse" if pol_change > 0 else "normal")
+                mc_group_display = (mc_group[:28] + "…") if len(mc_group) > 28 else mc_group
+                mc_topic_display = (mc_topic[:28] + "…") if len(mc_topic) > 28 else mc_topic
                 m1, m2, m3 = st.columns(3)
-                m1.metric(t("most_chg_group"), mc_group)
-                m2.metric(t("most_chg_topic"), mc_topic)
+                m1.metric(t("most_chg_group"), mc_group_display, help=mc_group)
+                m2.metric(t("most_chg_topic"), mc_topic_display, help=mc_topic)
                 m3.metric(t("polarization"), pol_label, delta=pol_label, delta_color=pol_color)
                 st.subheader(t("ai_summary"))
                 if DEMO_MODE:
