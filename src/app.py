@@ -27,8 +27,7 @@ st.markdown("""
     footer {visibility: hidden;}
     .stDeployButton {display: none;}
     [data-testid="stToolbar"] {visibility: hidden;}
-    header[data-testid="stHeader"] {visibility: hidden;}
-    [data-testid="collapsedControl"] {visibility: visible !important;}
+    header[data-testid="stHeader"] {background: transparent !important; border-bottom: none !important;}
     [data-testid="stDecoration"] {display: none;}
     [data-testid="manage-app-button"] {display: none !important;}
     [data-testid="stToolbarActions"] {display: none !important;}
