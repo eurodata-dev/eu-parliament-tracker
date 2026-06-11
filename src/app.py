@@ -16,7 +16,7 @@ st.set_page_config(
     page_title="EU Parliament Vote Tracker",
     page_icon="\U0001f1ea\U0001f1fa",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 st.markdown('<meta name="google-site-verification" content="ymZ5DtlnckmG4aJ3DT4_OAbB1vsTcUXJpOoklHcXO58" />', unsafe_allow_html=True)
@@ -30,6 +30,11 @@ st.markdown("""
     header[data-testid="stHeader"] {visibility: hidden;}
     [data-testid="stDecoration"] {display: none;}
     [data-testid="manage-app-button"] {display: none !important;}
+    [data-testid="stToolbarActions"] {display: none !important;}
+    .viewerBadge_container__r5tak {display: none !important;}
+    [class*="viewerBadge"] {display: none !important;}
+    a[href*="streamlit.io"] {display: none !important;}
+    a[href*="share.streamlit"] {display: none !important;}
     /* Mobile improvements */
     @media (max-width: 768px) {
         [data-testid="stSidebar"] { min-width: 80vw !important; }
