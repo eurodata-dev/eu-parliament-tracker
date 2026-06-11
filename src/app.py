@@ -34,40 +34,56 @@ st.markdown("""
     [class*="viewerBadge"] {display: none !important;}
     a[href*="streamlit.io"] {display: none !important;}
     a[href*="share.streamlit"] {display: none !important;}
-    /* Mobile sidebar: slide off-screen by default, JS toggle still works */
+    /* Mobile sidebar: true overlay, main content takes full width */
     @media (max-width: 768px) {
-        /* Translate sidebar off-screen rather than display:none so Streamlit JS can still open it */
+        /* Sidebar: collapsed = zero width so main content fills screen */
         section[data-testid="stSidebar"] {
-            transform: translateX(-110%) !important;
             position: fixed !important;
-            top: 0 !important; left: 0 !important;
+            left: 0 !important; top: 0 !important;
             height: 100dvh !important;
-            z-index: 999 !important;
+            width: min(85vw, 22rem) !important;
+            z-index: 9999 !important;
+            overflow-y: auto !important;
+            transform: translateX(-110%) !important;
             transition: transform 0.25s ease !important;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.25) !important;
         }
-        /* When sidebar is expanded (Streamlit adds aria-expanded=true), slide it in */
+        /* When Streamlit marks it expanded */
         section[data-testid="stSidebar"][aria-expanded="true"] {
             transform: translateX(0) !important;
         }
-        /* Make the toggle button bigger and more visible */
+        /* Critical: remove the layout space Streamlit reserves for sidebar */
+        [data-testid="stAppViewContainer"] > section:first-child:not([data-testid="stSidebar"]),
+        [data-testid="stAppViewContainer"] > .main {
+            margin-left: 0 !important;
+            width: 100% !important;
+        }
+        .main .block-container {
+            max-width: 100vw !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        /* Show and style the toggle button on mobile */
         [data-testid="collapsedControl"] {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
+            position: fixed !important;
+            top: 0.6rem !important;
+            left: 0.5rem !important;
+            z-index: 10000 !important;
         }
         [data-testid="collapsedControl"] > button,
         [data-testid="collapsedControl"] button {
-            width: 2.8rem !important;
-            height: 2.8rem !important;
-            background-color: #2563eb !important;
+            width: 3rem !important;
+            height: 3rem !important;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
             color: white !important;
             border-radius: 50% !important;
-            box-shadow: 0 2px 8px rgba(37,99,235,0.4) !important;
+            box-shadow: 0 3px 12px rgba(37,99,235,0.55) !important;
+            border: none !important;
         }
-        [data-testid="collapsedControl"] svg {
-            color: white !important;
-            fill: white !important;
-        }
+        [data-testid="collapsedControl"] svg { color: white !important; stroke: white !important; }
         .result-card { padding: 0.8rem 0.4rem !important; }
         .result-card .pct { font-size: 1.6rem !important; }
         .result-card .label { font-size: 0.78rem !important; }
@@ -81,7 +97,6 @@ st.markdown("""
         iframe[title*="streamlit"] { display: none !important; }
         iframe[title*="Streamlit"] { display: none !important; }
         a[href*="streamlit.io"] { display: none !important; }
-        .stApp > header button[kind="icon"] { display: none !important; }
         [data-testid="stToolbarActions"] { display: none !important; }
     }
     .stButton > button {
@@ -123,6 +138,28 @@ st.markdown("""
         margin-top: 0.2rem;
         letter-spacing: 0.05em;
         text-transform: uppercase;
+    }
+    /* Desktop sidebar toggle — bigger, blue, always visible */
+    @media (min-width: 769px) {
+        [data-testid="collapsedControl"] {
+            display: flex !important;
+            align-items: center !important;
+        }
+        [data-testid="collapsedControl"] > button,
+        [data-testid="collapsedControl"] button {
+            width: 2.2rem !important;
+            height: 2.2rem !important;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+            color: white !important;
+            border-radius: 50% !important;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.45) !important;
+            border: none !important;
+            opacity: 1 !important;
+        }
+        [data-testid="collapsedControl"] svg {
+            color: white !important;
+            stroke: white !important;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
