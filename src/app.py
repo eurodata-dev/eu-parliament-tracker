@@ -26,14 +26,20 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     .stDeployButton {display: none;}
+    /* Hide entire Streamlit toolbar (crown, GitHub, settings icons) */
+    [data-testid="stToolbar"] {display: none !important;}
+    [data-testid="stToolbarActions"] {display: none !important;}
     header[data-testid="stHeader"] {background: transparent !important; border-bottom: none !important;}
     [data-testid="stDecoration"] {display: none;}
     [data-testid="manage-app-button"] {display: none !important;}
-    [data-testid="stToolbarActions"] {display: none !important;}
     .viewerBadge_container__r5tak {display: none !important;}
     [class*="viewerBadge"] {display: none !important;}
     a[href*="streamlit.io"] {display: none !important;}
     a[href*="share.streamlit"] {display: none !important;}
+    /* Hide GitHub avatar/profile button */
+    [data-testid="stHeader"] a[href*="github"] {display: none !important;}
+    button[data-testid*="github"] {display: none !important;}
+    img[alt*="avatar"], img[alt*="GitHub"] {display: none !important;}
     /* Mobile sidebar: true overlay, main content takes full width */
     @media (max-width: 768px) {
         /* Sidebar: collapsed = zero width so main content fills screen */
