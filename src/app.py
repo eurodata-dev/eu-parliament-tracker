@@ -16,7 +16,7 @@ st.set_page_config(
     page_title="EU Parliament Vote Tracker",
     page_icon="\U0001f1ea\U0001f1fa",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 st.markdown('<meta name="google-site-verification" content="ymZ5DtlnckmG4aJ3DT4_OAbB1vsTcUXJpOoklHcXO58" />', unsafe_allow_html=True)
@@ -44,70 +44,47 @@ st.markdown("""
     iframe:not([title]) {display: none !important;}
     iframe[src*="streamlit"] {display: none !important;}
     iframe[src*="badge"] {display: none !important;}
-    /* Mobile sidebar: true overlay, main content takes full width */
+    /* ── Mobile layout ──────────────────────────────────────────────────── */
     @media (max-width: 768px) {
-        /* Sidebar: collapsed = zero width so main content fills screen */
-        section[data-testid="stSidebar"] {
-            position: fixed !important;
-            left: 0 !important; top: 0 !important;
-            height: 100dvh !important;
-            width: min(85vw, 22rem) !important;
-            z-index: 9999 !important;
-            overflow-y: auto !important;
-            transform: translateX(-110%) !important;
-            transition: transform 0.25s ease !important;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.25) !important;
-        }
-        /* When Streamlit marks it expanded */
-        section[data-testid="stSidebar"][aria-expanded="true"] {
-            transform: translateX(0) !important;
-        }
-        /* Critical: remove the layout space Streamlit reserves for sidebar */
-        [data-testid="stAppViewContainer"] > section:first-child:not([data-testid="stSidebar"]),
-        [data-testid="stAppViewContainer"] > .main {
-            margin-left: 0 !important;
-            width: 100% !important;
-        }
+        /* Sidebar starts collapsed (initial_sidebar_state="collapsed").
+           Streamlit handles it natively as an overlay — no CSS hack needed. */
         .main .block-container {
-            max-width: 100vw !important;
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+            padding-top: 3.5rem !important;
         }
-        /* Show and style the toggle button on mobile */
+        /* Sidebar toggle — big blue circle, fixed top-left */
         [data-testid="collapsedControl"] {
+            position: fixed !important;
+            top: 0.5rem !important;
+            left: 0.5rem !important;
+            z-index: 9999 !important;
             display: flex !important;
             align-items: center !important;
-            justify-content: center !important;
-            position: fixed !important;
-            top: 0.6rem !important;
-            left: 0.5rem !important;
-            z-index: 10000 !important;
         }
-        [data-testid="collapsedControl"] > button,
         [data-testid="collapsedControl"] button {
             width: 3rem !important;
             height: 3rem !important;
             background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
             color: white !important;
             border-radius: 50% !important;
-            box-shadow: 0 3px 12px rgba(37,99,235,0.55) !important;
             border: none !important;
+            box-shadow: 0 3px 12px rgba(37,99,235,0.5) !important;
         }
         [data-testid="collapsedControl"] svg { color: white !important; stroke: white !important; }
-        .result-card { padding: 0.8rem 0.4rem !important; }
-        .result-card .pct { font-size: 1.6rem !important; }
-        .result-card .label { font-size: 0.78rem !important; }
-        .topic-bar { font-size: 0.9rem !important; padding: 8px 12px !important; }
-        .ai-card { font-size: 0.85rem !important; padding: 0.8rem !important; }
-        /* Hide ALL Streamlit branding/badges on mobile */
+        /* Result cards */
+        .result-card { padding: 0.6rem 0.2rem !important; }
+        .result-card .pct { font-size: 1.3rem !important; font-weight: 800 !important; }
+        .result-card .label { font-size: 0.65rem !important; }
+        /* Other */
+        .topic-bar { font-size: 0.88rem !important; padding: 8px 10px !important; }
+        .ai-card { font-size: 0.84rem !important; padding: 0.7rem !important; }
+        /* Hide Streamlit branding */
         [data-testid="manage-app-button"] { display: none !important; }
-        [class*="badge"] { display: none !important; }
-        [class*="Badge"] { display: none !important; }
-        [class*="viewerBadge"] { display: none !important; }
-        iframe[title*="streamlit"] { display: none !important; }
-        iframe[title*="Streamlit"] { display: none !important; }
-        a[href*="streamlit.io"] { display: none !important; }
         [data-testid="stToolbarActions"] { display: none !important; }
+        [class*="viewerBadge"] { display: none !important; }
+        a[href*="streamlit.io"] { display: none !important; }
+        iframe[src*="badge"] { display: none !important; }
     }
     .stButton > button {
         border-radius: 20px; font-size: 0.82rem; padding: 0.25rem 0.85rem;
@@ -1154,6 +1131,33 @@ if _current_page == "about":
         <div style="font-size:0.75rem;color:#6b7280;margin-top:0.2rem;">EN · FR · ES · DE · IT</div>
         </div>""", unsafe_allow_html=True)
 
+    # ── Tech stack — show the real engineering behind this ───────────────────
+    st.markdown("---")
+    st.markdown("""
+<div style="background:#0f172a;color:#e2e8f0;border-radius:14px;padding:1.5rem 1.8rem;margin-bottom:1.5rem;">
+  <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:#94a3b8;margin-bottom:1rem;">
+    ⚙️ Built from scratch — real engineering, real code
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:1rem;">
+    <span style="background:#1e293b;border:1px solid #334155;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.8rem;">🐍 Python 3.11</span>
+    <span style="background:#1e293b;border:1px solid #334155;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.8rem;">🐼 Pandas + Parquet</span>
+    <span style="background:#1e293b;border:1px solid #334155;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.8rem;">📊 Plotly</span>
+    <span style="background:#1e293b;border:1px solid #334155;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.8rem;">🤖 LLaMA 3.1 · Groq API</span>
+    <span style="background:#1e293b;border:1px solid #334155;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.8rem;">🗄️ Supabase</span>
+    <span style="background:#1e293b;border:1px solid #334155;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.8rem;">📧 Resend API</span>
+    <span style="background:#1e293b;border:1px solid #334155;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.8rem;">🔄 GitHub Actions</span>
+    <span style="background:#1e293b;border:1px solid #334155;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.8rem;">🌐 REST APIs</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:1.5rem;font-size:0.85rem;color:#94a3b8;border-top:1px solid #1e293b;padding-top:0.9rem;">
+    <span>📁 <strong style="color:#e2e8f0;">3,000+</strong> lines of code</span>
+    <span>🗳️ <strong style="color:#e2e8f0;">10M+</strong> votes processed</span>
+    <span>⚡ <strong style="color:#e2e8f0;">Custom</strong> data pipeline</span>
+    <span>🔎 <strong style="color:#e2e8f0;">Multilingual</strong> semantic search</span>
+    <span>📬 <strong style="color:#e2e8f0;">Automated</strong> weekly digest</span>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
     st.markdown("---")
     if st.button(t("about_cta"), type="primary"):
         st.session_state["page"] = "contact"
@@ -1255,7 +1259,7 @@ st.markdown(
 if DEMO_MODE:
     st.info("**Demo Mode** — dataset capped at 5,000 rows.")
 
-_, search_col, _ = st.columns([1, 4, 1])
+_, search_col, _ = st.columns([0.5, 9, 0.5])
 with search_col:
     query = st.text_input(
         "Search", value=default_val, key="main_search",
@@ -1356,9 +1360,27 @@ if topic:
         group_votes["Total"] = group_votes.sum(axis=1)
         for col in ("FOR", "AGAINST", "ABSTAIN"):
             group_votes[f"{col}_%"] = (group_votes[col] / group_votes["Total"].replace(0, 1) * 100).round(1)
+        # Abbreviate long political group names for readability on mobile
+        _GROUP_SHORT = {
+            "Group of the European People's Party (Christian Democrats)": "EPP",
+            "Group of the Progressive Alliance of Socialists and Democrats in the European Parliament": "S&D",
+            "Group of the Progressive Alliance of Socialists and Democrats": "S&D",
+            "Renew Europe Group": "Renew Europe",
+            "Group of the Greens/European Free Alliance": "Greens/EFA",
+            "European Conservatives and Reformists Group": "ECR",
+            "Identity and Democracy Group": "ID",
+            "The Left group in the European Parliament - GUE/NGL": "GUE/NGL",
+            "Non-attached Members": "Non-attached (NI)",
+            "Europe of Sovereign Nations Group": "ESN",
+            "Patriots for Europe Group": "Patriots",
+            "European People's Party Group": "EPP",
+        }
         plot_df = group_votes.sort_values("FOR_%", ascending=True).reset_index()
+        plot_df["group_label"] = plot_df["political_group"].apply(
+            lambda g: _GROUP_SHORT.get(g, g[:30] + "…" if len(g) > 30 else g)
+        )
         fig = px.bar(
-            plot_df, y="political_group", x=["FOR_%", "AGAINST_%", "ABSTAIN_%"],
+            plot_df, y="group_label", x=["FOR_%", "AGAINST_%", "ABSTAIN_%"],
             orientation="h", barmode="stack",
             color_discrete_map={"FOR_%": "#2563eb", "AGAINST_%": "#ef4444", "ABSTAIN_%": "#d1d5db"},
             title=t("vote_breakdown"),
@@ -1366,17 +1388,19 @@ if topic:
         lbl = {"FOR_%": t("for_label"), "AGAINST_%": t("against_label"), "ABSTAIN_%": t("abstain_label")}
         for trace in fig.data:
             trace.name = lbl.get(trace.name, trace.name)
-            trace.hovertemplate = "%{y}: %{x:.1f}%<extra>" + trace.name + "</extra>"
+            trace.hovertemplate = "%{customdata}: %{x:.1f}%<extra>" + trace.name + "</extra>"
+            trace.customdata = plot_df["political_group"].values
         fig.update_layout(
             xaxis_title="", yaxis_title="", legend_title_text="",
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
             plot_bgcolor="white", paper_bgcolor="white",
-            margin=dict(l=10, r=20, t=55, b=10),
-            height=max(300, len(plot_df) * 40 + 90), title_font_size=14,
+            margin=dict(l=0, r=10, t=55, b=10),
+            height=max(280, len(plot_df) * 42 + 90),
+            title_font_size=14,
         )
         fig.update_xaxes(range=[0, 100], ticksuffix="%", showgrid=True, gridcolor="#f3f4f6", zeroline=False)
-        fig.update_yaxes(showgrid=False)
-        st.plotly_chart(fig, use_container_width=True)
+        fig.update_yaxes(showgrid=False, automargin=True, tickfont=dict(size=11))
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
     else:
         st.info(t("no_vote_data"))
 
@@ -1475,11 +1499,13 @@ if not query:
         unsafe_allow_html=True,
     )
     _examples = ["AI Act", "Ukraine", "Climate", "Migration", "Digital Services Act"]
-    _ex_cols = st.columns(len(_examples))
-    for _i, _ex in enumerate(_examples):
-        if _ex_cols[_i].button(_ex, key=f"ex_{_ex}", use_container_width=True):
-            st.session_state["search_override"] = _ex
-            st.rerun()
+    for _row_start in range(0, len(_examples), 3):
+        _row = _examples[_row_start : _row_start + 3]
+        _ex_cols = st.columns(len(_row))
+        for _i, _ex in enumerate(_row):
+            if _ex_cols[_i].button(_ex, key=f"ex_{_ex}", use_container_width=True):
+                st.session_state["search_override"] = _ex
+                st.rerun()
 
     st.divider()
     st.subheader(t("latest_title"))
@@ -1587,5 +1613,20 @@ st.markdown(f"""
     🤖 AI analysis powered by <a href="https://groq.com" target="_blank" style="color:#2563eb;">Groq</a> (Llama 3.1)<br><br>
     <strong style="color:#374151;">{t("about_transp_title")}</strong><br>
     {t("about_transparency")}
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div style="margin-top:1.2rem;padding:0.9rem 1.2rem;background:#f8fafc;border-radius:10px;
+            border:1px solid #e5e7eb;display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem 1rem;">
+  <span style="font-size:0.75rem;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">
+    ⚙️ Built with real code
+  </span>
+  <span style="font-size:0.76rem;color:#6b7280;">🐍 Python 3.11</span>
+  <span style="font-size:0.76rem;color:#6b7280;">📊 Pandas · Plotly</span>
+  <span style="font-size:0.76rem;color:#6b7280;">🤖 LLaMA 3.1</span>
+  <span style="font-size:0.76rem;color:#6b7280;">🗄️ Supabase</span>
+  <span style="font-size:0.76rem;color:#6b7280;">🔄 GitHub Actions</span>
+  <span style="font-size:0.76rem;color:#374151;font-weight:600;">3,000+ lines · 10M+ votes</span>
 </div>
 """, unsafe_allow_html=True)
