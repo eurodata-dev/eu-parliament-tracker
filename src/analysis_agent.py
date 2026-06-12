@@ -160,7 +160,9 @@ def generate_ai_insight(summary_dict: VoteSummary, topic: str, lang: str = "Engl
 
     group_text = "\n".join(group_summary)
 
-    prompt = f"""You are a strictly neutral political reporter explaining an EU Parliament vote in plain language. You have no political opinion. You never express approval, disapproval, hope, or disappointment about any outcome.
+    prompt = f"""IMPORTANT: You MUST write your entire response in {lang}. Every single sentence must be in {lang}. Do not use English if {lang} is not English.
+
+You are a strictly neutral political reporter explaining an EU Parliament vote in plain language. You have no political opinion. You never express approval, disapproval, hope, or disappointment about any outcome.
 
 VOTE TOPIC: {topic}
 
@@ -191,7 +193,10 @@ Respond entirely in {lang}."""
             },
             json={
                 "model": "llama-3.1-8b-instant",
-                "messages": [{"role": "user", "content": prompt}],
+                "messages": [
+                    {"role": "system", "content": f"You are a neutral political analyst. You MUST respond entirely in {lang}. Never use English if the requested language is not English."},
+                    {"role": "user", "content": prompt},
+                ],
                 "max_tokens": 400,
                 "temperature": 0.1,
             },
@@ -211,6 +216,6 @@ Respond entirely in {lang}."""
             return "API_ERROR"
     except requests.exceptions.Timeout:
         return "TIMEOUT"
-    except Exception as exc:
-        logger.warning("Groq request failed: %s", exc)
+    except Exception as e:
+        logger.error("AI insight error: %s", e)
         return "API_ERROR"

@@ -63,15 +63,20 @@ st.markdown("""
             align-items: center !important;
         }
         [data-testid="collapsedControl"] button {
-            width: 3rem !important;
-            height: 3rem !important;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+            width: 3.8rem !important;
+            height: 3.8rem !important;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
             color: white !important;
             border-radius: 50% !important;
-            border: none !important;
-            box-shadow: 0 3px 12px rgba(37,99,235,0.5) !important;
+            border: 3px solid rgba(255,255,255,0.35) !important;
+            box-shadow: 0 4px 18px rgba(37,99,235,0.65), 0 0 0 6px rgba(37,99,235,0.18) !important;
+            animation: menu-pulse 2.5s ease-in-out infinite !important;
         }
-        [data-testid="collapsedControl"] svg { color: white !important; stroke: white !important; }
+        @keyframes menu-pulse {
+            0%, 100% { box-shadow: 0 4px 18px rgba(37,99,235,0.65), 0 0 0 6px rgba(37,99,235,0.18) !important; }
+            50%       { box-shadow: 0 4px 24px rgba(37,99,235,0.8), 0 0 0 10px rgba(37,99,235,0.08) !important; }
+        }
+        [data-testid="collapsedControl"] svg { color: white !important; stroke: white !important; width: 1.5rem !important; height: 1.5rem !important; }
         /* Result cards */
         .result-card { padding: 0.6rem 0.2rem !important; }
         .result-card .pct { font-size: 1.3rem !important; font-weight: 800 !important; }
@@ -134,18 +139,20 @@ st.markdown("""
         }
         [data-testid="collapsedControl"] > button,
         [data-testid="collapsedControl"] button {
-            width: 2.2rem !important;
-            height: 2.2rem !important;
+            width: 2.6rem !important;
+            height: 2.6rem !important;
             background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
             color: white !important;
             border-radius: 50% !important;
-            box-shadow: 0 2px 8px rgba(37,99,235,0.45) !important;
-            border: none !important;
+            box-shadow: 0 2px 12px rgba(37,99,235,0.55) !important;
+            border: 2px solid rgba(255,255,255,0.25) !important;
             opacity: 1 !important;
         }
         [data-testid="collapsedControl"] svg {
             color: white !important;
             stroke: white !important;
+            width: 1.2rem !important;
+            height: 1.2rem !important;
         }
     }
 </style>
@@ -187,7 +194,7 @@ _SYNONYMS: dict[str, list[str]] = {
     "DSA":  ["digital services"],
     "GDPR": ["data protection"],
     "NATO": ["north atlantic", "defence alliance"],
-    # ── French ──────────────────────────────────────────────────────────────
+    # French
     # Countries
     "MEXIQUE": ["mexico"], "MEXIKO": ["mexico"],
     "ALLEMAGNE": ["germany"],
@@ -238,7 +245,7 @@ _SYNONYMS: dict[str, list[str]] = {
     "DROITS": ["rights"],
     "FORÊT": ["forest", "deforestation"], "FORET": ["forest"],
     "NUCLÉAIRE": ["nuclear"], "NUCLEAIRE": ["nuclear"],
-    # ── Spanish ─────────────────────────────────────────────────────────────
+    # Spanish
     "ALEMANIA": ["germany"],
     "RUSIA": ["russia"],
     "TURQUÍA": ["turkey"], "TURQUIA": ["turkey"],
@@ -266,7 +273,7 @@ _SYNONYMS: dict[str, list[str]] = {
     "REFUGIADOS": ["refugees"],
     "MARRUECOS": ["morocco"],
     "LIBANO": ["lebanon"], "LÍBANO": ["lebanon"],
-    # ── German ──────────────────────────────────────────────────────────────
+    # German
     "DEUTSCHLAND": ["germany"],
     "RUSSLAND": ["russia"],
     "TÜRKEI": ["turkey"], "TURKEI": ["turkey"],
@@ -287,7 +294,7 @@ _SYNONYMS: dict[str, list[str]] = {
     "RECHTE": ["rights"],
     "FLÜCHTLINGE": ["refugees"], "FLUCHTLINGE": ["refugees"],
     "MAROKKO": ["morocco"],
-    # ── Italian ─────────────────────────────────────────────────────────────
+    # Italian
     "GERMANIA": ["germany"],
     "CINA": ["china"],
     "TURCHIA": ["turkey"],
@@ -306,9 +313,7 @@ _SYNONYMS: dict[str, list[str]] = {
     "LIBANO": ["lebanon"],
 }
 
-# ---------------------------------------------------------------------------
 # Translations
-# ---------------------------------------------------------------------------
 _TR: dict[str, dict[str, str]] = {
     "EN": {
         "lang_label":        "Language",
@@ -836,8 +841,8 @@ _LANG_OPTIONS = {
 }
 
 # Render language picker at top-right BEFORE sidebar so t() calls work everywhere
-_sp, _lang_col = st.columns([5, 1])
-with _lang_col:
+spacer, lang_col = st.columns([5, 1])
+with lang_col:
     st.markdown('<p class="lang-label">🌐 Language</p>', unsafe_allow_html=True)
     lang_display = st.selectbox(
         "language",
@@ -848,7 +853,13 @@ with _lang_col:
         key="lang_display",
         label_visibility="collapsed",
     )
-st.session_state["lang"] = _LANG_OPTIONS[lang_display]
+new_lang = _LANG_OPTIONS[lang_display]
+if st.session_state.get("lang") != new_lang:
+    # Clear cached AI summaries so they regenerate in the new language
+    for k in list(st.session_state.keys()):
+        if k.startswith("__ai_"):
+            del st.session_state[k]
+st.session_state["lang"] = new_lang
 
 def t(key: str, **kwargs) -> str:
     lang = st.session_state.get("lang", "EN")
@@ -856,12 +867,11 @@ def t(key: str, **kwargs) -> str:
     return text.format(**kwargs) if kwargs else text
 
 
-# ---------------------------------------------------------------------------
 # Data loading
-# ---------------------------------------------------------------------------
 
 @st.cache_data(show_spinner=False)
 def _preload(years: tuple = (2024, 2025, 2026)):
+    # loading everything upfront so the UI stays snappy
     _votes = get_eu_votes(years=list(years))
     if DEMO_MODE and len(_votes) > _DEMO_ROW_LIMIT:
         _votes = _votes.tail(_DEMO_ROW_LIMIT).reset_index(drop=True)
@@ -890,6 +900,7 @@ def _preload(years: tuple = (2024, 2025, 2026)):
 
 
 def _search_topics(topic_index: pd.DataFrame, query: str) -> pd.DataFrame:
+    # AND first, OR fallback — feels more natural than pure OR
     q = query.strip()
     if len(q) <= 1:
         return topic_index.iloc[:0]
@@ -917,7 +928,7 @@ def _search_topics(topic_index: pd.DataFrame, query: str) -> pd.DataFrame:
     if not tokens:
         return topic_index.iloc[:0]
 
-    # ── Strict AND: every token must match ──────────────────────────────────
+    # Strict AND: every token must match
     and_mask = pd.Series(True, index=topic_index.index)
     for tok in tokens:
         and_mask = and_mask & _tmask(tok)
@@ -958,25 +969,21 @@ _available_years = _get_available_years() or list(range(2019, 2027))
 _selected_years  = tuple(sorted(_available_years))  # always load all years
 votes_df, _hist_df, _recent_df, _group_behavior, _comparison, _has_recent, _topic_index, _latest_15 = _preload(years=_selected_years)
 
-# ---------------------------------------------------------------------------
 # Unsubscribe handler
-# ---------------------------------------------------------------------------
-_unsub_email = st.query_params.get("unsubscribe", "")
-if _unsub_email:
+unsub_email = st.query_params.get("unsubscribe", "")
+if unsub_email:
     try:
-        from email_alerts import remove_subscriber as _remove_subscriber
-        _result = _remove_subscriber(_unsub_email.strip().lower())
-        if _result == "ok":
-            st.success(f"✅ {_unsub_email} a été désabonné(e).")
+        from email_alerts import remove_subscriber as remove_subscriber
+        result = remove_subscriber(unsub_email.strip().lower())
+        if result == "ok":
+            st.success(f"✅ {unsub_email} a été désabonné(e).")
         else:
             st.warning("Une erreur s'est produite. Contactez-nous si le problème persiste.")
     except Exception:
         st.warning("Désabonnement temporairement indisponible.")
     st.query_params.clear()
 
-# ---------------------------------------------------------------------------
 # Sidebar
-# ---------------------------------------------------------------------------
 
 with st.sidebar:
     st.title("EU Parliament")
@@ -1053,28 +1060,24 @@ with st.sidebar:
             except Exception as exc:
                 st.error(f"{t('refresh_failed')}: {exc}")
 
-# ---------------------------------------------------------------------------
 # Filters (lazy — applied only when a topic is selected)
-# ---------------------------------------------------------------------------
 
-_date_start = pd.Timestamp(date_range[0]) if date_range and len(date_range) == 2 else None
-_date_end   = (pd.Timestamp(date_range[1]) + pd.Timedelta(days=1)) if date_range and len(date_range) == 2 else None
-_groups_active = set(selected_groups) if selected_groups and set(selected_groups) != set(all_groups) else None
+date_start = pd.Timestamp(date_range[0]) if date_range and len(date_range) == 2 else None
+date_end   = (pd.Timestamp(date_range[1]) + pd.Timedelta(days=1)) if date_range and len(date_range) == 2 else None
+active_groups = set(selected_groups) if selected_groups and set(selected_groups) != set(all_groups) else None
 
 def _apply_filters(df: pd.DataFrame) -> pd.DataFrame:
-    if _date_start and _date_end:
-        df = df[(df["date"] >= _date_start) & (df["date"] < _date_end)]
-    if _groups_active:
-        df = df[df["political_group"].isin(_groups_active)]
+    if date_start and date_end:
+        df = df[(df["date"] >= date_start) & (df["date"] < date_end)]
+    if active_groups:
+        df = df[df["political_group"].isin(active_groups)]
     return df
 
-# ---------------------------------------------------------------------------
 # Page routing — About / Contact rendered here; st.stop() skips home content
-# ---------------------------------------------------------------------------
-_current_page = st.session_state.get("page", "home")
+page = st.session_state.get("page", "home")
 _contact_email = st.secrets.get("CONTACT_EMAIL", os.getenv("CONTACT_EMAIL", "elmas.burhan80@gmail.com"))
 
-if _current_page == "about":
+if page == "about":
     st.markdown(f"""
 <div style="max-width:720px;margin:0 auto;">
 <div style="background:linear-gradient(135deg,#1e3a8a,#1d4ed8);border-radius:16px;
@@ -1131,7 +1134,7 @@ if _current_page == "about":
         <div style="font-size:0.75rem;color:#6b7280;margin-top:0.2rem;">EN · FR · ES · DE · IT</div>
         </div>""", unsafe_allow_html=True)
 
-    # ── Tech stack — show the real engineering behind this ───────────────────
+    # Tech stack — show the real engineering behind this
     st.markdown("---")
     st.markdown("""
 <div style="background:#0f172a;color:#e2e8f0;border-radius:14px;padding:1.5rem 1.8rem;margin-bottom:1.5rem;">
@@ -1164,7 +1167,7 @@ if _current_page == "about":
         st.rerun()
     st.stop()
 
-elif _current_page == "contact":
+elif page == "contact":
     st.markdown(f"## {t('contact_page_title')}")
     st.caption(t("contact_subtitle"))
     st.markdown("---")
@@ -1221,11 +1224,9 @@ elif _current_page == "contact":
 
     st.stop()
 
-# ---------------------------------------------------------------------------
 # Search state  (only needed on home page, but harmless to run always)
-# ---------------------------------------------------------------------------
 
-# ── Deep-link: load topic from URL ?q=... on first visit ────────────────────
+# Deep-link: load topic from URL ?q=... on first visit
 if "main_search" not in st.session_state:
     _url_q = st.query_params.get("q", "")
     if _url_q:
@@ -1245,9 +1246,7 @@ else:
     if default_val != st.session_state.get("_combined_mode", ""):
         st.session_state.pop("_combined_mode", None)
 
-# ---------------------------------------------------------------------------
 # Main UI
-# ---------------------------------------------------------------------------
 
 st.title(t("title"))
 st.markdown(
@@ -1321,9 +1320,7 @@ if query:
         elif len(all_matching) > 1:
             topic = st.selectbox(t("n_match_pick", n=len(all_matching)), all_matching)
 
-# ---------------------------------------------------------------------------
 # Topic view
-# ---------------------------------------------------------------------------
 
 if topic:
     if combined_mode:
@@ -1440,44 +1437,42 @@ if topic:
     if DEMO_MODE:
         st.info("AI Analysis is disabled in Demo Mode.")
     else:
-        _cache_key = f"__ai_{hash(topic)}_{st.session_state.get('lang','EN')}"
+        cache_key = f"__ai_{hash(topic)}_{st.session_state.get('lang','EN')}"
         if st.button(t("ai_button"), type="primary"):
             from analysis_agent import build_summary
             topic_summary = build_summary(topic_df)
             if not topic_summary:
                 st.warning(t("ai_no_data"))
             else:
-                if _cache_key in st.session_state:
-                    insight = st.session_state[_cache_key]
+                if cache_key in st.session_state:
+                    insight = st.session_state[cache_key]
                 else:
                     with st.spinner(t("ai_spinning")):
                         insight = generate_ai_insight(topic_summary, topic, lang=t("lang_name"))
-                    st.session_state[_cache_key] = insight
-                _errors = {
+                    st.session_state[cache_key] = insight
+                error_map = {
                     "NO_KEY":     t("ai_no_key"),
                     "BAD_KEY":    t("ai_bad_key"),
                     "RATE_LIMIT": t("ai_rate_limit"),
                     "TIMEOUT":    t("ai_timeout"),
                     "API_ERROR":  t("ai_error"),
                 }
-                if insight in _errors:
-                    st.warning(_errors[insight])
+                if insight in error_map:
+                    st.warning(error_map[insight])
                 else:
                     st.markdown(f'<div class="ai-card">{insight}</div>', unsafe_allow_html=True)
-        elif _cache_key in st.session_state:
-            insight = st.session_state[_cache_key]
-            _errors = {"NO_KEY", "BAD_KEY", "RATE_LIMIT", "TIMEOUT", "API_ERROR"}
-            if insight not in _errors:
+        elif cache_key in st.session_state:
+            insight = st.session_state[cache_key]
+            error_map = {"NO_KEY", "BAD_KEY", "RATE_LIMIT", "TIMEOUT", "API_ERROR"}
+            if insight not in error_map:
                 st.markdown(f'<div class="ai-card">{insight}</div>', unsafe_allow_html=True)
 
     st.divider()
 
-# ---------------------------------------------------------------------------
 # Homepage — latest 15 votes
-# ---------------------------------------------------------------------------
 
 if not query:
-    # ── Hero banner ──────────────────────────────────────────────────────────
+    # Hero banner
     st.markdown(f"""
     <div style="background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 50%,#0369a1 100%);
                 border-radius:16px;padding:2.5rem 2rem 2rem 2rem;
@@ -1492,19 +1487,19 @@ if not query:
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Quick-start examples ─────────────────────────────────────────────────
+    # Quick-start examples
     st.markdown(
         f"<p style='color:#6b7280;font-size:0.9rem;font-weight:600;margin-bottom:0.5rem;'>"
         f"{t('try_example')}</p>",
         unsafe_allow_html=True,
     )
-    _examples = ["AI Act", "Ukraine", "Climate", "Migration", "Digital Services Act"]
-    for _row_start in range(0, len(_examples), 3):
-        _row = _examples[_row_start : _row_start + 3]
-        _ex_cols = st.columns(len(_row))
-        for _i, _ex in enumerate(_row):
-            if _ex_cols[_i].button(_ex, key=f"ex_{_ex}", use_container_width=True):
-                st.session_state["search_override"] = _ex
+    examples = ["AI Act", "Ukraine", "Climate", "Migration", "Digital Services Act"]
+    for row_start in range(0, len(examples), 3):
+        row = examples[row_start : row_start + 3]
+        ex_cols = st.columns(len(row))
+        for i, ex in enumerate(row):
+            if ex_cols[i].button(ex, key=f"ex_{ex}", use_container_width=True):
+                st.session_state["search_override"] = ex
                 st.rerun()
 
     st.divider()
@@ -1524,9 +1519,7 @@ if not query:
         with col_date:
             st.markdown(f"<p style='color:#9ca3af;font-size:0.8rem;text-align:right;margin-top:0.5rem;'>{date_str}</p>", unsafe_allow_html=True)
 
-    # ---------------------------------------------------------------------------
     # Recent political changes (homepage only)
-    # ---------------------------------------------------------------------------
     if _has_recent:
         st.header(t("recent_changes"))
         st.caption(t("recent_caption"))
@@ -1560,73 +1553,42 @@ if not query:
                 st.warning(f"{t('recent_failed')}: {exc}")
         st.divider()
 
-# ---------------------------------------------------------------------------
 # Newsletter subscription (shown on every page)
-# ---------------------------------------------------------------------------
 st.divider()
 st.markdown(f"### {t('subscribe_title')}")
 st.caption(t("subscribe_body"))
-_sub_col, _ = st.columns([2, 1])
-with _sub_col:
-    _sub_email = st.text_input(
+sub_col, _ = st.columns([2, 1])
+with sub_col:
+    sub_email = st.text_input(
         "email_sub", label_visibility="collapsed",
         placeholder=t("subscribe_placeholder"), key="sub_email_input",
     )
     if st.button(t("subscribe_btn"), type="primary", key="sub_btn"):
-        _email_clean = _sub_email.strip().lower()
-        if not _email_clean or "@" not in _email_clean:
+        email = sub_email.strip().lower()
+        if not email or "@" not in email:
             st.warning(t("subscribe_invalid"))
         else:
             try:
-                import requests as _req
-                _sb_url = st.secrets.get("SUPABASE_URL", os.getenv("SUPABASE_URL", ""))
-                _sb_key = st.secrets.get("SUPABASE_KEY", os.getenv("SUPABASE_KEY", ""))
-                if not _sb_url or not _sb_key:
+                import requests as requests
+                sb_url = st.secrets.get("SUPABASE_URL", os.getenv("SUPABASE_URL", ""))
+                sb_key = st.secrets.get("SUPABASE_KEY", os.getenv("SUPABASE_KEY", ""))
+                if not sb_url or not sb_key:
                     st.error(t("subscribe_err"))
                 else:
-                    _r = _req.post(
-                        f"{_sb_url}/rest/v1/subscribers",
+                    resp = requests.post(
+                        f"{sb_url}/rest/v1/subscribers",
                         headers={
-                            "apikey": _sb_key,
-                            "Authorization": f"Bearer {_sb_key}",
+                            "apikey": sb_key,
+                            "Authorization": f"Bearer {sb_key}",
                             "Content-Type": "application/json",
                             "Prefer": "resolution=merge-duplicates,return=minimal",
                         },
-                        json={"email": _email_clean, "language": st.session_state.get("lang", "EN")},
+                        json={"email": email, "language": st.session_state.get("lang", "EN")},
                         timeout=10,
                     )
-                    if _r.status_code in (200, 201):
+                    if resp.status_code in (200, 201):
                         st.success(t("subscribe_ok"))
                     else:
                         st.error(t("subscribe_err"))
             except Exception:
                 st.error(t("subscribe_err"))
-
-st.divider()
-st.markdown(f"""
-<div style="color:#6b7280;font-size:0.82rem;line-height:1.7;">
-    <strong style="color:#374151;">{t("about_tool_title")}</strong><br>
-    {t("about_tool_body")}<br><br>
-    <strong style="color:#374151;">{t("about_data_title")}</strong><br>
-    🏛️ <a href="https://data.europarl.europa.eu" target="_blank" style="color:#2563eb;">EU Parliament Open Data Portal</a> — official roll-call votes 2019–2026<br>
-    🔴 <a href="https://howtheyvote.eu" target="_blank" style="color:#2563eb;">HowTheyVote.eu</a> — live vote feed (last 30 days)<br>
-    🤖 AI analysis powered by <a href="https://groq.com" target="_blank" style="color:#2563eb;">Groq</a> (Llama 3.1)<br><br>
-    <strong style="color:#374151;">{t("about_transp_title")}</strong><br>
-    {t("about_transparency")}
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<div style="margin-top:1.2rem;padding:0.9rem 1.2rem;background:#f8fafc;border-radius:10px;
-            border:1px solid #e5e7eb;display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem 1rem;">
-  <span style="font-size:0.75rem;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">
-    ⚙️ Built with real code
-  </span>
-  <span style="font-size:0.76rem;color:#6b7280;">🐍 Python 3.11</span>
-  <span style="font-size:0.76rem;color:#6b7280;">📊 Pandas · Plotly</span>
-  <span style="font-size:0.76rem;color:#6b7280;">🤖 LLaMA 3.1</span>
-  <span style="font-size:0.76rem;color:#6b7280;">🗄️ Supabase</span>
-  <span style="font-size:0.76rem;color:#6b7280;">🔄 GitHub Actions</span>
-  <span style="font-size:0.76rem;color:#374151;font-weight:600;">3,000+ lines · 10M+ votes</span>
-</div>
-""", unsafe_allow_html=True)
