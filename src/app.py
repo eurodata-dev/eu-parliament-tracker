@@ -26,20 +26,25 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     .stDeployButton {display: none;}
-    /* Hide entire Streamlit toolbar (crown, GitHub, settings icons) */
+    /* Hide entire Streamlit toolbar and all branding */
     [data-testid="stToolbar"] {display: none !important;}
     [data-testid="stToolbarActions"] {display: none !important;}
+    [data-testid="stStatusWidget"] {display: none !important;}
     header[data-testid="stHeader"] {background: transparent !important; border-bottom: none !important;}
     [data-testid="stDecoration"] {display: none;}
     [data-testid="manage-app-button"] {display: none !important;}
     .viewerBadge_container__r5tak {display: none !important;}
     [class*="viewerBadge"] {display: none !important;}
+    [class*="ViewerBadge"] {display: none !important;}
     a[href*="streamlit.io"] {display: none !important;}
     a[href*="share.streamlit"] {display: none !important;}
-    /* Hide GitHub avatar/profile button */
     [data-testid="stHeader"] a[href*="github"] {display: none !important;}
     button[data-testid*="github"] {display: none !important;}
     img[alt*="avatar"], img[alt*="GitHub"] {display: none !important;}
+    /* Hide Streamlit Cloud overlay iframes (badge, crown) */
+    iframe:not([title]) {display: none !important;}
+    iframe[src*="streamlit"] {display: none !important;}
+    iframe[src*="badge"] {display: none !important;}
     /* Mobile sidebar: true overlay, main content takes full width */
     @media (max-width: 768px) {
         /* Sidebar: collapsed = zero width so main content fills screen */
@@ -168,6 +173,34 @@ st.markdown("""
         }
     }
 </style>
+<script>
+(function() {
+    var HIDE = [
+        '[data-testid="stToolbar"]',
+        '[data-testid="stStatusWidget"]',
+        '[data-testid="manage-app-button"]',
+        '[class*="viewerBadge"]',
+        '[class*="ViewerBadge"]',
+        'a[href*="streamlit.io"]',
+        'iframe:not([title])',
+        'iframe[src*="streamlit"]',
+        'iframe[src*="badge"]'
+    ];
+    function hideAll() {
+        HIDE.forEach(function(sel) {
+            try {
+                document.querySelectorAll(sel).forEach(function(el) {
+                    el.style.setProperty("display", "none", "important");
+                    el.style.setProperty("visibility", "hidden", "important");
+                });
+            } catch(e) {}
+        });
+    }
+    hideAll();
+    var obs = new MutationObserver(hideAll);
+    obs.observe(document.documentElement, {childList: true, subtree: true});
+})();
+</script>
 """, unsafe_allow_html=True)
 
 DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() in ("1", "true", "yes")
