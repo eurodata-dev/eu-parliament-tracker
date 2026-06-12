@@ -26,8 +26,7 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     .stDeployButton {display: none;}
-    /* Hide entire Streamlit toolbar and all branding */
-    [data-testid="stToolbar"] {display: none !important;}
+    /* Hide Streamlit branding buttons but NOT the toolbar itself (needed for sidebar toggle) */
     [data-testid="stToolbarActions"] {display: none !important;}
     [data-testid="stStatusWidget"] {display: none !important;}
     header[data-testid="stHeader"] {background: transparent !important; border-bottom: none !important;}
@@ -176,14 +175,11 @@ st.markdown("""
 <script>
 (function() {
     var HIDE = [
-        '[data-testid="stToolbar"]',
         '[data-testid="stStatusWidget"]',
         '[data-testid="manage-app-button"]',
         '[class*="viewerBadge"]',
         '[class*="ViewerBadge"]',
         'a[href*="streamlit.io"]',
-        'iframe:not([title])',
-        'iframe[src*="streamlit"]',
         'iframe[src*="badge"]'
     ];
     function hideAll() {
