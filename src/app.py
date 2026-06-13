@@ -45,46 +45,18 @@ st.markdown("""
     iframe[src*="streamlit"] {display: none !important;}
     iframe[src*="badge"] {display: none !important;}
     /* ── Mobile layout ──────────────────────────────────────────────────── */
+    /* Mobile layout */
     @media (max-width: 768px) {
-        /* Sidebar starts collapsed (initial_sidebar_state="collapsed").
-           Streamlit handles it natively as an overlay — no CSS hack needed. */
         .main .block-container {
             padding-left: 0.75rem !important;
             padding-right: 0.75rem !important;
-            padding-top: 3.5rem !important;
+            padding-top: 4rem !important;
         }
-        /* Sidebar toggle — big blue circle, fixed top-left */
-        [data-testid="collapsedControl"] {
-            position: fixed !important;
-            top: 0.5rem !important;
-            left: 0.5rem !important;
-            z-index: 9999 !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-        [data-testid="collapsedControl"] button {
-            width: 3.8rem !important;
-            height: 3.8rem !important;
-            background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
-            color: white !important;
-            border-radius: 50% !important;
-            border: 3px solid rgba(255,255,255,0.35) !important;
-            box-shadow: 0 4px 18px rgba(37,99,235,0.65), 0 0 0 6px rgba(37,99,235,0.18) !important;
-            animation: menu-pulse 2.5s ease-in-out infinite !important;
-        }
-        @keyframes menu-pulse {
-            0%, 100% { box-shadow: 0 4px 18px rgba(37,99,235,0.65), 0 0 0 6px rgba(37,99,235,0.18) !important; }
-            50%       { box-shadow: 0 4px 24px rgba(37,99,235,0.8), 0 0 0 10px rgba(37,99,235,0.08) !important; }
-        }
-        [data-testid="collapsedControl"] svg { color: white !important; stroke: white !important; width: 1.5rem !important; height: 1.5rem !important; }
-        /* Result cards */
         .result-card { padding: 0.6rem 0.2rem !important; }
         .result-card .pct { font-size: 1.3rem !important; font-weight: 800 !important; }
         .result-card .label { font-size: 0.65rem !important; }
-        /* Other */
         .topic-bar { font-size: 0.88rem !important; padding: 8px 10px !important; }
         .ai-card { font-size: 0.84rem !important; padding: 0.7rem !important; }
-        /* Hide Streamlit branding */
         [data-testid="manage-app-button"] { display: none !important; }
         [data-testid="stToolbarActions"] { display: none !important; }
         [class*="viewerBadge"] { display: none !important; }
@@ -131,28 +103,48 @@ st.markdown("""
         letter-spacing: 0.05em;
         text-transform: uppercase;
     }
-    /* Desktop sidebar toggle — bigger, blue, always visible */
-    @media (min-width: 769px) {
+    /* Sidebar toggle — same style on all screen sizes */
+    @keyframes menu-pulse {
+        0%, 100% { box-shadow: 0 4px 20px rgba(37,99,235,0.6), 0 0 0 5px rgba(37,99,235,0.15); }
+        50%       { box-shadow: 0 4px 28px rgba(37,99,235,0.85), 0 0 0 9px rgba(37,99,235,0.07); }
+    }
+    [data-testid="collapsedControl"] {
+        display: flex !important;
+        align-items: center !important;
+        z-index: 9999 !important;
+    }
+    [data-testid="collapsedControl"] button,
+    [data-testid="collapsedControl"] > button {
+        width: 3rem !important;
+        height: 3rem !important;
+        background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+        color: white !important;
+        border-radius: 50% !important;
+        border: 3px solid rgba(255,255,255,0.3) !important;
+        box-shadow: 0 4px 20px rgba(37,99,235,0.6), 0 0 0 5px rgba(37,99,235,0.15) !important;
+        animation: menu-pulse 2.5s ease-in-out infinite !important;
+        opacity: 1 !important;
+    }
+    [data-testid="collapsedControl"] svg {
+        color: white !important;
+        stroke: white !important;
+        width: 1.3rem !important;
+        height: 1.3rem !important;
+    }
+    @media (max-width: 768px) {
         [data-testid="collapsedControl"] {
-            display: flex !important;
-            align-items: center !important;
+            position: fixed !important;
+            top: 0.6rem !important;
+            left: 0.6rem !important;
         }
-        [data-testid="collapsedControl"] > button,
-        [data-testid="collapsedControl"] button {
-            width: 2.6rem !important;
-            height: 2.6rem !important;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
-            color: white !important;
-            border-radius: 50% !important;
-            box-shadow: 0 2px 12px rgba(37,99,235,0.55) !important;
-            border: 2px solid rgba(255,255,255,0.25) !important;
-            opacity: 1 !important;
+        [data-testid="collapsedControl"] button,
+        [data-testid="collapsedControl"] > button {
+            width: 3.5rem !important;
+            height: 3.5rem !important;
         }
         [data-testid="collapsedControl"] svg {
-            color: white !important;
-            stroke: white !important;
-            width: 1.2rem !important;
-            height: 1.2rem !important;
+            width: 1.5rem !important;
+            height: 1.5rem !important;
         }
     }
 </style>
