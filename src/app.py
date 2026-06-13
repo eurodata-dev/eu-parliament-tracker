@@ -479,28 +479,64 @@ hr { border-color: var(--line) !important; margin: 1.5rem 0 !important; }
         'iframe[src*="badge"]'
     ];
 
-    /* Force button styles that Streamlit overrides */
-    function styleButtons() {
-        /* All regular buttons */
-        document.querySelectorAll('button[kind="secondary"], .stButton > button').forEach(function(btn) {
-            var sidebar = btn.closest('[data-testid="stSidebar"]');
-            if (sidebar) {
-                btn.style.setProperty("background", "rgba(255,255,255,0.1)", "important");
-                btn.style.setProperty("color", "#f1f5f9", "important");
-                btn.style.setProperty("border", "1px solid rgba(255,255,255,0.2)", "important");
-                btn.style.setProperty("border-radius", "8px", "important");
-            } else if (!btn.getAttribute("kind") || btn.getAttribute("kind") === "secondary") {
-                btn.style.setProperty("background", "#ffffff", "important");
-                btn.style.setProperty("color", "#334155", "important");
-                btn.style.setProperty("border", "1.5px solid rgba(15,27,61,0.12)", "important");
-            }
-        });
-        /* Primary buttons */
-        document.querySelectorAll('button[kind="primary"], .stButton > button[data-testid="baseButton-primary"]').forEach(function(btn) {
-            btn.style.setProperty("background", "#2563EB", "important");
-            btn.style.setProperty("color", "#ffffff", "important");
-            btn.style.setProperty("border", "none", "important");
-        });
+    /* Inject persistent <style> tag — survives React re-renders */
+    function injectStyles() {
+        var existing = document.getElementById("__eu_custom_styles");
+        if (existing) return;
+        var s = document.createElement("style");
+        s.id = "__eu_custom_styles";
+        s.textContent = [
+            /* ── Sidebar buttons: dark background, white text ── */
+            '[data-testid="stSidebar"] [data-testid="baseButton-secondary"],',
+            '[data-testid="stSidebar"] [data-testid="baseButton-primary"],',
+            '[data-testid="stSidebar"] .stButton > button {',
+            '  background: rgba(255,255,255,0.12) !important;',
+            '  color: #f1f5f9 !important;',
+            '  border: 1px solid rgba(255,255,255,0.22) !important;',
+            '  border-radius: 8px !important;',
+            '}',
+            '[data-testid="stSidebar"] [data-testid="baseButton-secondary"]:hover,',
+            '[data-testid="stSidebar"] [data-testid="baseButton-primary"]:hover,',
+            '[data-testid="stSidebar"] .stButton > button:hover {',
+            '  background: rgba(255,255,255,0.25) !important;',
+            '  color: #ffffff !important;',
+            '}',
+            /* ── Main area secondary buttons: white bg, dark text ── */
+            '[data-testid="baseButton-secondary"] {',
+            '  background: #ffffff !important;',
+            '  color: #334155 !important;',
+            '  border: 1.5px solid rgba(15,27,61,0.14) !important;',
+            '}',
+            '[data-testid="baseButton-secondary"]:hover {',
+            '  background: #EFF6FF !important;',
+            '  color: #1D4ED8 !important;',
+            '  border-color: #2563EB !important;',
+            '}',
+            /* ── Primary buttons: blue ── */
+            '[data-testid="baseButton-primary"] {',
+            '  background: #2563EB !important;',
+            '  color: #ffffff !important;',
+            '  border: none !important;',
+            '}',
+            /* ── Sidebar toggle: big blue circle ── */
+            '[data-testid="collapsedControl"] button {',
+            '  width: 3.5rem !important;',
+            '  height: 3.5rem !important;',
+            '  min-width: 3.5rem !important;',
+            '  min-height: 3.5rem !important;',
+            '  background: linear-gradient(135deg,#1D4ED8,#2563EB) !important;',
+            '  border-radius: 50% !important;',
+            '  border: 3px solid rgba(255,255,255,0.35) !important;',
+            '  box-shadow: 0 4px 20px rgba(37,99,235,0.6),0 0 0 5px rgba(37,99,235,0.18) !important;',
+            '  color: #ffffff !important;',
+            '}',
+            '[data-testid="collapsedControl"] svg {',
+            '  width: 1.5rem !important; height: 1.5rem !important;',
+            '  fill: #ffffff !important; stroke: #ffffff !important;',
+            '  color: #ffffff !important;',
+            '}'
+        ].join("\n");
+        document.head.appendChild(s);
     }
 
     function hideAll() {
@@ -514,9 +550,10 @@ hr { border-color: var(--line) !important; margin: 1.5rem 0 !important; }
         });
     }
 
-    hideAll();
-    styleButtons();
-    var obs = new MutationObserver(function() { hideAll(); styleButtons(); });
+    function applyAll() { hideAll(); injectStyles(); }
+
+    applyAll();
+    var obs = new MutationObserver(applyAll);
     obs.observe(document.documentElement, {childList: true, subtree: true});
 })();
 </script>
