@@ -23,130 +23,419 @@ st.markdown('<meta name="google-site-verification" content="ymZ5DtlnckmG4aJ3DT4_
 
 st.markdown("""
 <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    .stDeployButton {display: none;}
-    /* Hide Streamlit branding buttons but NOT the toolbar itself (needed for sidebar toggle) */
-    [data-testid="stToolbarActions"] {display: none !important;}
-    [data-testid="stStatusWidget"] {display: none !important;}
-    header[data-testid="stHeader"] {background: transparent !important; border-bottom: none !important;}
-    [data-testid="stDecoration"] {display: none;}
-    [data-testid="manage-app-button"] {display: none !important;}
-    .viewerBadge_container__r5tak {display: none !important;}
-    [class*="viewerBadge"] {display: none !important;}
-    [class*="ViewerBadge"] {display: none !important;}
-    a[href*="streamlit.io"] {display: none !important;}
-    a[href*="share.streamlit"] {display: none !important;}
-    [data-testid="stHeader"] a[href*="github"] {display: none !important;}
-    button[data-testid*="github"] {display: none !important;}
-    img[alt*="avatar"], img[alt*="GitHub"] {display: none !important;}
-    /* Hide Streamlit Cloud overlay iframes (badge, crown) */
-    iframe:not([title]) {display: none !important;}
-    iframe[src*="streamlit"] {display: none !important;}
-    iframe[src*="badge"] {display: none !important;}
-    /* ── Mobile layout ──────────────────────────────────────────────────── */
-    /* Mobile layout */
-    @media (max-width: 768px) {
-        .main .block-container {
-            padding-left: 0.75rem !important;
-            padding-right: 0.75rem !important;
-            padding-top: 4rem !important;
-        }
-        .result-card { padding: 0.6rem 0.2rem !important; }
-        .result-card .pct { font-size: 1.3rem !important; font-weight: 800 !important; }
-        .result-card .label { font-size: 0.65rem !important; }
-        .topic-bar { font-size: 0.88rem !important; padding: 8px 10px !important; }
-        .ai-card { font-size: 0.84rem !important; padding: 0.7rem !important; }
-        [data-testid="manage-app-button"] { display: none !important; }
-        [data-testid="stToolbarActions"] { display: none !important; }
-        [class*="viewerBadge"] { display: none !important; }
-        a[href*="streamlit.io"] { display: none !important; }
-        iframe[src*="badge"] { display: none !important; }
-    }
-    .stButton > button {
-        border-radius: 20px; font-size: 0.82rem; padding: 0.25rem 0.85rem;
-        background-color: #f3f4f6; color: #374151; border: 1px solid #e5e7eb;
-        transition: all 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .stButton > button:hover { background-color: #dbeafe; border-color: #3b82f6; color: #1d4ed8; }
-    .stButton > button[data-testid="baseButton-primary"] {
-        background-color: #2563eb !important; color: white !important;
-        border: none !important; border-radius: 8px !important;
-        font-size: 1rem !important; padding: 0.5rem 2rem !important;
-    }
-    [data-testid="stSidebar"] .stButton > button { border-radius: 6px; }
-    .topic-bar { background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 20px;
-        border-radius: 4px; margin-bottom: 1.5rem; font-size: 1.05rem; line-height: 1.5; }
-    .verdict-passed    { background:#dcfce7; color:#166534; padding:5px 16px; border-radius:20px; font-weight:600; font-size:0.95rem; display:inline-block; margin-top:0.8rem; }
-    .verdict-rejected  { background:#fee2e2; color:#991b1b; padding:5px 16px; border-radius:20px; font-weight:600; font-size:0.95rem; display:inline-block; margin-top:0.8rem; }
-    .verdict-contested { background:#fef9c3; color:#854d0e; padding:5px 16px; border-radius:20px; font-weight:600; font-size:0.95rem; display:inline-block; margin-top:0.8rem; }
-    .result-card { text-align:center; padding:1.2rem 1rem; border-radius:10px; }
-    .result-card .icon { font-size:2rem; }
-    .result-card .pct  { font-size:2.6rem; font-weight:800; line-height:1.1; }
-    .result-card .label{ font-size:0.9rem; color:#6b7280; margin-top:0.2rem; }
-    .ai-card { background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:1.2rem 1.5rem; margin-top:0.5rem; white-space:pre-wrap; font-size:0.92rem; }
-    .search-hint { text-align:center; color:#9ca3af; font-size:0.82rem; margin-top:0.3rem; }
-    /* Language picker — top right */
-    div[data-testid="stSelectbox"][id="lang-picker"] > div > div {
-        border: 2px solid #2563eb !important;
-        border-radius: 20px !important;
-        background: #eff6ff !important;
-        font-size: 0.9rem !important;
-        padding: 0 0.4rem !important;
-    }
-    .lang-label {
-        text-align: right;
-        font-size: 0.72rem;
-        color: #6b7280;
-        margin-bottom: 2px;
-        margin-top: 0.2rem;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-    }
-    /* Sidebar toggle — same style on all screen sizes */
-    @keyframes menu-pulse {
-        0%, 100% { box-shadow: 0 4px 20px rgba(37,99,235,0.6), 0 0 0 5px rgba(37,99,235,0.15); }
-        50%       { box-shadow: 0 4px 28px rgba(37,99,235,0.85), 0 0 0 9px rgba(37,99,235,0.07); }
-    }
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+/* ── Design tokens ── */
+:root {
+  --bg:          #F4F6FB;
+  --bg2:         #E9ECF5;
+  --surface:     #FFFFFF;
+  --navy:        #0F1B3D;
+  --navy-soft:   #334155;
+  --navy-faint:  #64748B;
+  --blue:        #2563EB;
+  --blue-deep:   #1D4ED8;
+  --blue-pale:   #EFF6FF;
+  --line:        rgba(15,27,61,0.09);
+  --line-soft:   rgba(15,27,61,0.05);
+  --sh-sm:  0 1px 3px rgba(15,27,61,0.05), 0 4px 16px rgba(15,27,61,0.06);
+  --sh-md:  0 8px 28px rgba(15,27,61,0.09), 0 2px 6px rgba(15,27,61,0.04);
+  --sh-lg:  0 24px 64px rgba(15,27,61,0.14), 0 8px 24px rgba(15,27,61,0.08);
+  --radius: 18px;
+  --ease:   cubic-bezier(0.22,0.61,0.36,1);
+}
+
+/* ── Streamlit chrome hide ── */
+#MainMenu {visibility:hidden;}
+footer {visibility:hidden;}
+.stDeployButton {display:none;}
+[data-testid="stToolbarActions"] {display:none !important;}
+[data-testid="stStatusWidget"]   {display:none !important;}
+header[data-testid="stHeader"]   {background:transparent !important;border-bottom:none !important;}
+[data-testid="stDecoration"]     {display:none;}
+[data-testid="manage-app-button"]{display:none !important;}
+[class*="viewerBadge"]           {display:none !important;}
+[class*="ViewerBadge"]           {display:none !important;}
+a[href*="streamlit.io"]          {display:none !important;}
+a[href*="share.streamlit"]       {display:none !important;}
+iframe:not([title])              {display:none !important;}
+iframe[src*="streamlit"]         {display:none !important;}
+iframe[src*="badge"]             {display:none !important;}
+
+/* ── Global base ── */
+html, body, [data-testid="stAppViewContainer"] {
+    font-family: 'Inter', system-ui, sans-serif !important;
+    background: var(--bg) !important;
+    color: var(--navy) !important;
+    -webkit-font-smoothing: antialiased;
+}
+[data-testid="stMain"],
+[data-testid="stMainBlockContainer"],
+.main .block-container {
+    background: var(--bg) !important;
+    padding-top: 2rem !important;
+}
+h1, h2, h3, h4, .stTitle {
+    font-family: 'Sora', sans-serif !important;
+    color: var(--navy) !important;
+    letter-spacing: -0.02em;
+}
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background: var(--navy) !important;
+}
+[data-testid="stSidebar"] * {
+    color: #e2e8f0 !important;
+}
+[data-testid="stSidebar"] .stButton > button {
+    background: rgba(255,255,255,0.08) !important;
+    color: #e2e8f0 !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 10px !important;
+}
+[data-testid="stSidebar"] .stButton > button:hover {
+    background: rgba(255,255,255,0.16) !important;
+    border-color: rgba(255,255,255,0.25) !important;
+}
+
+/* ── Sidebar toggle button ── */
+@keyframes menu-pulse {
+    0%,100% { box-shadow: 0 4px 20px rgba(37,99,235,0.55), 0 0 0 4px rgba(37,99,235,0.14); }
+    50%      { box-shadow: 0 4px 28px rgba(37,99,235,0.8),  0 0 0 8px rgba(37,99,235,0.07); }
+}
+[data-testid="collapsedControl"] {
+    display: flex !important;
+    align-items: center !important;
+    z-index: 9999 !important;
+}
+[data-testid="collapsedControl"] button,
+[data-testid="collapsedControl"] > button {
+    width: 3rem !important;
+    height: 3rem !important;
+    background: linear-gradient(135deg, #1D4ED8, #2563EB) !important;
+    color: white !important;
+    border-radius: 50% !important;
+    border: 3px solid rgba(255,255,255,0.3) !important;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.55), 0 0 0 4px rgba(37,99,235,0.14) !important;
+    animation: menu-pulse 2.5s ease-in-out infinite !important;
+    opacity: 1 !important;
+}
+[data-testid="collapsedControl"] svg {
+    color: white !important;
+    stroke: white !important;
+    width: 1.3rem !important;
+    height: 1.3rem !important;
+}
+@media (max-width: 768px) {
     [data-testid="collapsedControl"] {
-        display: flex !important;
-        align-items: center !important;
-        z-index: 9999 !important;
+        position: fixed !important;
+        top: 0.6rem !important;
+        left: 0.6rem !important;
     }
     [data-testid="collapsedControl"] button,
     [data-testid="collapsedControl"] > button {
-        width: 3rem !important;
-        height: 3rem !important;
-        background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
-        color: white !important;
-        border-radius: 50% !important;
-        border: 3px solid rgba(255,255,255,0.3) !important;
-        box-shadow: 0 4px 20px rgba(37,99,235,0.6), 0 0 0 5px rgba(37,99,235,0.15) !important;
-        animation: menu-pulse 2.5s ease-in-out infinite !important;
-        opacity: 1 !important;
+        width: 3.5rem !important;
+        height: 3.5rem !important;
     }
     [data-testid="collapsedControl"] svg {
-        color: white !important;
-        stroke: white !important;
-        width: 1.3rem !important;
-        height: 1.3rem !important;
+        width: 1.5rem !important;
+        height: 1.5rem !important;
     }
-    @media (max-width: 768px) {
-        [data-testid="collapsedControl"] {
-            position: fixed !important;
-            top: 0.6rem !important;
-            left: 0.6rem !important;
-        }
-        [data-testid="collapsedControl"] button,
-        [data-testid="collapsedControl"] > button {
-            width: 3.5rem !important;
-            height: 3.5rem !important;
-        }
-        [data-testid="collapsedControl"] svg {
-            width: 1.5rem !important;
-            height: 1.5rem !important;
-        }
+    .main .block-container {
+        padding-left: 0.8rem !important;
+        padding-right: 0.8rem !important;
+        padding-top: 4rem !important;
     }
+    .result-card .pct { font-size: 1.3rem !important; font-weight: 800 !important; }
+    .result-card .label { font-size: 0.65rem !important; }
+    .topic-bar { font-size: 0.88rem !important; }
+    .ai-card { font-size: 0.84rem !important; }
+}
+
+/* ── Hero ── */
+.eu-hero {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    padding: 3rem 2.5rem 2.5rem;
+    background: linear-gradient(145deg, #0F1B3D 0%, #1D4ED8 60%, #1E40AF 100%);
+}
+.hero-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 52px 52px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 60% 30%, #000 0%, transparent 80%);
+    mask-image:         radial-gradient(ellipse 80% 70% at 60% 30%, #000 0%, transparent 80%);
+}
+.hero-blob-1 {
+    position: absolute;
+    width: 500px; height: 500px;
+    top: -180px; right: -120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(96,165,250,0.35) 0%, transparent 65%);
+    filter: blur(50px);
+    animation: blob-float1 18s ease-in-out infinite;
+}
+.hero-blob-2 {
+    position: absolute;
+    width: 380px; height: 380px;
+    bottom: -160px; left: -100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(147,197,253,0.25) 0%, transparent 70%);
+    filter: blur(40px);
+    animation: blob-float2 22s ease-in-out infinite;
+}
+@keyframes blob-float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-28px,32px)} }
+@keyframes blob-float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(26px,-24px)} }
+.hero-inner { position: relative; z-index: 1; }
+.hero-eyebrow {
+    display: inline-block;
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 0.4em 1em;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+    backdrop-filter: blur(4px);
+}
+.hero-title {
+    font-family: 'Sora', sans-serif !important;
+    font-size: clamp(2rem, 4.5vw, 3.4rem) !important;
+    font-weight: 800 !important;
+    color: white !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.03em !important;
+    margin-bottom: 0.9rem !important;
+}
+.hero-title .accent { color: #93C5FD; display: block; }
+.hero-sub {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+    color: rgba(255,255,255,0.78);
+    max-width: 580px;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+.hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+}
+.hero-stat { display: flex; align-items: baseline; gap: 0.35em; }
+.hero-stat-num {
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: white;
+}
+.hero-stat-label { font-size: 0.82rem; color: rgba(255,255,255,0.6); }
+.hero-stat-sep { color: rgba(255,255,255,0.25); font-size: 1.2rem; }
+
+/* ── Search bar ── */
+.stTextInput > div > div > input {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1.05rem !important;
+    border: 2px solid var(--line) !important;
+    border-radius: 14px !important;
+    background: var(--surface) !important;
+    color: var(--navy) !important;
+    padding: 0.85rem 1.2rem !important;
+    box-shadow: var(--sh-sm) !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+.stTextInput > div > div > input:focus {
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.1), var(--sh-sm) !important;
+    outline: none !important;
+}
+.stTextInput > div > div > input::placeholder {
+    color: var(--navy-faint) !important;
+}
+
+/* ── Buttons ── */
+.stButton > button {
+    font-family: 'Inter', sans-serif;
+    border-radius: 10px;
+    font-size: 0.84rem;
+    font-weight: 500;
+    padding: 0.45rem 1rem;
+    background: var(--surface);
+    color: var(--navy-soft);
+    border: 1.5px solid var(--line);
+    box-shadow: var(--sh-sm);
+    transition: all 0.2s var(--ease);
+    white-space: nowrap;
+}
+.stButton > button:hover {
+    background: var(--blue-pale);
+    border-color: var(--blue);
+    color: var(--blue-deep);
+    transform: translateY(-1px);
+    box-shadow: var(--sh-md);
+}
+.stButton > button[data-testid="baseButton-primary"] {
+    background: var(--blue) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    padding: 0.6rem 2rem !important;
+    box-shadow: 0 6px 18px rgba(37,99,235,0.3) !important;
+}
+.stButton > button[data-testid="baseButton-primary"]:hover {
+    background: var(--blue-deep) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 26px rgba(37,99,235,0.38) !important;
+}
+
+/* ── Topic bar ── */
+.topic-bar {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--blue);
+    padding: 1rem 1.4rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    font-size: 1.02rem;
+    line-height: 1.5;
+    box-shadow: var(--sh-sm);
+}
+
+/* ── Verdict badges ── */
+.verdict-passed    { background:#dcfce7; color:#15803d; padding:5px 16px; border-radius:999px; font-weight:700; font-size:0.9rem; display:inline-block; margin-top:0.8rem; letter-spacing:0.02em; }
+.verdict-rejected  { background:#fee2e2; color:#b91c1c; padding:5px 16px; border-radius:999px; font-weight:700; font-size:0.9rem; display:inline-block; margin-top:0.8rem; letter-spacing:0.02em; }
+.verdict-contested { background:#fef9c3; color:#854d0e; padding:5px 16px; border-radius:999px; font-weight:700; font-size:0.9rem; display:inline-block; margin-top:0.8rem; letter-spacing:0.02em; }
+
+/* ── Result cards ── */
+.result-card {
+    text-align: center;
+    padding: 1.4rem 1rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    box-shadow: var(--sh-sm);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s;
+}
+.result-card:hover { transform: translateY(-3px); box-shadow: var(--sh-md); }
+.result-card .icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
+.result-card .pct  { font-family: 'Sora', sans-serif; font-size: 2.6rem; font-weight: 800; line-height: 1.1; color: var(--navy); }
+.result-card .label{ font-size: 0.88rem; color: var(--navy-faint); margin-top: 0.3rem; font-weight: 500; }
+
+/* ── AI card ── */
+.ai-card {
+    background: var(--blue-pale);
+    border: 1px solid #BFDBFE;
+    border-radius: var(--radius);
+    padding: 1.4rem 1.6rem;
+    margin-top: 0.5rem;
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    box-shadow: var(--sh-sm);
+    color: var(--navy);
+}
+
+/* ── Search hint ── */
+.search-hint { text-align: center; color: var(--navy-faint); font-size: 0.8rem; margin-top: 0.4rem; }
+
+/* ── Homepage banner ── */
+.home-banner {
+    background: linear-gradient(145deg, #0F1B3D 0%, #1D4ED8 100%);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 1.5rem;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--sh-lg);
+}
+.home-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.07) 1.5px, transparent 1.6px);
+    background-size: 24px 24px;
+}
+.home-banner-inner { position: relative; z-index: 1; }
+.home-banner-icon  { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.home-banner-title {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-weight: 800;
+    margin-bottom: 0.7rem;
+    letter-spacing: -0.02em;
+}
+.home-banner-body {
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    opacity: 0.85;
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ── Latest votes list ── */
+.vote-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    margin-bottom: 0.45rem;
+    box-shadow: var(--sh-sm);
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    cursor: pointer;
+}
+.vote-row:hover { transform: translateX(4px); border-color: var(--blue); box-shadow: var(--sh-md); }
+
+/* ── Language picker ── */
+.lang-label {
+    text-align: right;
+    font-size: 0.7rem;
+    color: var(--navy-faint);
+    margin-bottom: 2px;
+    margin-top: 0.2rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: 'Sora', sans-serif;
+}
+
+/* ── Metrics ── */
+[data-testid="stMetric"] {
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem !important;
+    box-shadow: var(--sh-sm);
+}
+[data-testid="stMetricLabel"] { font-family: 'Inter', sans-serif; color: var(--navy-faint) !important; font-size: 0.82rem !important; }
+[data-testid="stMetricValue"] { font-family: 'Sora', sans-serif !important; color: var(--navy) !important; font-weight: 700 !important; }
+
+/* ── Dividers ── */
+hr { border-color: var(--line) !important; margin: 1.5rem 0 !important; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+/* ── Reveal animation ── */
+@keyframes fade-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.fade-up { animation: fade-up 0.55s var(--ease) both; }
 </style>
 <script>
 (function() {
@@ -1240,12 +1529,37 @@ else:
 
 # Main UI
 
-st.title(t("title"))
-st.markdown(
-    f"<p style='color:#6b7280;font-size:1.05rem;margin-top:-0.5rem;'>"
-    f"{t('subtitle', n=len(votes_df))}</p>",
-    unsafe_allow_html=True,
-)
+st.markdown(f"""
+<div class="eu-hero fade-up">
+  <div class="hero-blob-1"></div>
+  <div class="hero-blob-2"></div>
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">🏛️ EU Parliament · 2019–2026</div>
+    <h1 class="hero-title">
+      {t("title")}
+      <span class="accent">{t("onboard_title")}</span>
+    </h1>
+    <p class="hero-sub">{t("onboard_body")}</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">{len(votes_df):,}</span>
+        <span class="hero-stat-label">{t("votes_loaded")}</span>
+      </div>
+      <span class="hero-stat-sep">·</span>
+      <div class="hero-stat">
+        <span class="hero-stat-num">5</span>
+        <span class="hero-stat-label">languages</span>
+      </div>
+      <span class="hero-stat-sep">·</span>
+      <div class="hero-stat">
+        <span class="hero-stat-num">AI</span>
+        <span class="hero-stat-label">powered</span>
+      </div>
+    </div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
 if DEMO_MODE:
     st.info("**Demo Mode** — dataset capped at 5,000 rows.")
@@ -1464,21 +1778,6 @@ if topic:
 # Homepage — latest 15 votes
 
 if not query:
-    # Hero banner
-    st.markdown(f"""
-    <div style="background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 50%,#0369a1 100%);
-                border-radius:16px;padding:2.5rem 2rem 2rem 2rem;
-                margin-bottom:1.8rem;color:white;text-align:center;">
-        <div style="font-size:2.8rem;margin-bottom:0.4rem;">🏛️</div>
-        <div style="font-size:1.6rem;font-weight:800;margin-bottom:0.7rem;letter-spacing:-0.02em;">
-            {t("onboard_title")}
-        </div>
-        <div style="font-size:1rem;opacity:0.88;line-height:1.65;max-width:640px;margin:0 auto;">
-            {t("onboard_body")}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
     # Quick-start examples
     st.markdown(
         f"<p style='color:#6b7280;font-size:0.9rem;font-weight:600;margin-bottom:0.5rem;'>"
@@ -1551,36 +1850,4 @@ st.markdown(f"### {t('subscribe_title')}")
 st.caption(t("subscribe_body"))
 sub_col, _ = st.columns([2, 1])
 with sub_col:
-    sub_email = st.text_input(
-        "email_sub", label_visibility="collapsed",
-        placeholder=t("subscribe_placeholder"), key="sub_email_input",
-    )
-    if st.button(t("subscribe_btn"), type="primary", key="sub_btn"):
-        email = sub_email.strip().lower()
-        if not email or "@" not in email:
-            st.warning(t("subscribe_invalid"))
-        else:
-            try:
-                import requests as requests
-                sb_url = st.secrets.get("SUPABASE_URL", os.getenv("SUPABASE_URL", ""))
-                sb_key = st.secrets.get("SUPABASE_KEY", os.getenv("SUPABASE_KEY", ""))
-                if not sb_url or not sb_key:
-                    st.error(t("subscribe_err"))
-                else:
-                    resp = requests.post(
-                        f"{sb_url}/rest/v1/subscribers",
-                        headers={
-                            "apikey": sb_key,
-                            "Authorization": f"Bearer {sb_key}",
-                            "Content-Type": "application/json",
-                            "Prefer": "resolution=merge-duplicates,return=minimal",
-                        },
-                        json={"email": email, "language": st.session_state.get("lang", "EN")},
-                        timeout=10,
-                    )
-                    if resp.status_code in (200, 201):
-                        st.success(t("subscribe_ok"))
-                    else:
-                        st.error(t("subscribe_err"))
-            except Exception:
-                st.error(t("subscribe_err"))
+    su
