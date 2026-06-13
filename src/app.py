@@ -1881,4 +1881,36 @@ st.markdown(f"### {t('subscribe_title')}")
 st.caption(t("subscribe_body"))
 sub_col, _ = st.columns([2, 1])
 with sub_col:
-    su
+    sub_email = st.text_input(
+        "email_sub", label_visibility="collapsed",
+        placeholder=t("subscribe_placeholder"), key="sub_email_input",
+    )
+    if st.button(t("subscribe_btn"), type="primary", key="sub_btn"):
+        email = sub_email.strip().lower()
+        if not email or "@" not in email:
+            st.warning(t("subscribe_invalid"))
+        else:
+            try:
+                import requests as req_lib
+                sb_url = st.secrets.get("SUPABASE_URL", os.getenv("SUPABASE_URL", ""))
+                sb_key = st.secrets.get("SUPABASE_KEY", os.getenv("SUPABASE_KEY", ""))
+                if not sb_url or not sb_key:
+                    st.error(t("subscribe_err"))
+                else:
+                    resp = req_lib.post(
+                        f"{sb_url}/rest/v1/subscribers",
+                        headers={
+                            "apikey": sb_key,
+                            "Authorization": f"Bearer {sb_key}",
+                            "Content-Type": "application/json",
+                            "Prefer": "resolution=merge-duplicates,return=minimal",
+                        },
+                        json={"email": email, "language": st.session_state.get("lang", "EN")},
+                        timeout=10,
+                    )
+                    if resp.status_code in (200, 201):
+                        st.success(t("subscribe_ok"))
+                    else:
+                        st.error(t("subscribe_err"))
+            except Exception:
+                st.error(t("subscribe_err"))
