@@ -85,18 +85,45 @@ h1, h2, h3, h4, .stTitle {
 [data-testid="stSidebar"] {
     background: var(--navy) !important;
 }
-[data-testid="stSidebar"] * {
+/* Text elements in sidebar — light colored */
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"],
+[data-testid="stSidebar"] .stTitle,
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] h4,
+[data-testid="stSidebar"] small,
+[data-testid="stSidebar"] .stCaption {
     color: #e2e8f0 !important;
 }
+/* Sidebar buttons — translucent on dark bg, light text */
 [data-testid="stSidebar"] .stButton > button {
-    background: rgba(255,255,255,0.08) !important;
-    color: #e2e8f0 !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
-    border-radius: 10px !important;
+    background: rgba(255,255,255,0.1) !important;
+    color: #f1f5f9 !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
 }
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(255,255,255,0.16) !important;
-    border-color: rgba(255,255,255,0.25) !important;
+    background: rgba(255,255,255,0.2) !important;
+    border-color: rgba(255,255,255,0.32) !important;
+    transform: none !important;
+    color: white !important;
+}
+/* Multiselect tags in sidebar */
+[data-testid="stSidebar"] [data-testid="stMultiSelectTag"] {
+    background: rgba(37,99,235,0.7) !important;
+    color: white !important;
+}
+/* Date input in sidebar */
+[data-testid="stSidebar"] input {
+    background: rgba(255,255,255,0.08) !important;
+    color: #e2e8f0 !important;
+    border-color: rgba(255,255,255,0.15) !important;
 }
 
 /* ── Sidebar toggle button ── */
@@ -130,17 +157,21 @@ h1, h2, h3, h4, .stTitle {
 @media (max-width: 768px) {
     [data-testid="collapsedControl"] {
         position: fixed !important;
-        top: 0.6rem !important;
-        left: 0.6rem !important;
+        top: 0.75rem !important;
+        left: 0.75rem !important;
     }
     [data-testid="collapsedControl"] button,
     [data-testid="collapsedControl"] > button {
-        width: 3.5rem !important;
-        height: 3.5rem !important;
+        width: 4rem !important;
+        height: 4rem !important;
+        border-radius: 50% !important;
+        background: linear-gradient(135deg, #1D4ED8, #2563EB) !important;
+        border: 3px solid rgba(255,255,255,0.4) !important;
+        box-shadow: 0 6px 24px rgba(37,99,235,0.75), 0 0 0 7px rgba(37,99,235,0.2) !important;
     }
     [data-testid="collapsedControl"] svg {
-        width: 1.5rem !important;
-        height: 1.5rem !important;
+        width: 1.7rem !important;
+        height: 1.7rem !important;
     }
     .main .block-container {
         padding-left: 0.8rem !important;
@@ -264,24 +295,24 @@ h1, h2, h3, h4, .stTitle {
 
 /* ── Buttons ── */
 .stButton > button {
-    font-family: 'Inter', sans-serif;
-    border-radius: 10px;
-    font-size: 0.84rem;
-    font-weight: 500;
-    padding: 0.45rem 1rem;
-    background: var(--surface);
-    color: var(--navy-soft);
-    border: 1.5px solid var(--line);
-    box-shadow: var(--sh-sm);
-    transition: all 0.2s var(--ease);
-    white-space: nowrap;
+    font-family: 'Inter', sans-serif !important;
+    border-radius: 10px !important;
+    font-size: 0.84rem !important;
+    font-weight: 500 !important;
+    padding: 0.45rem 1rem !important;
+    background: var(--surface) !important;
+    color: var(--navy-soft) !important;
+    border: 1.5px solid var(--line) !important;
+    box-shadow: var(--sh-sm) !important;
+    transition: all 0.2s var(--ease) !important;
+    white-space: nowrap !important;
 }
 .stButton > button:hover {
-    background: var(--blue-pale);
-    border-color: var(--blue);
-    color: var(--blue-deep);
-    transform: translateY(-1px);
-    box-shadow: var(--sh-md);
+    background: var(--blue-pale) !important;
+    border-color: var(--blue) !important;
+    color: var(--blue-deep) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--sh-md) !important;
 }
 .stButton > button[data-testid="baseButton-primary"] {
     background: var(--blue) !important;
