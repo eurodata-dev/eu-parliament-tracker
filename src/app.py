@@ -478,6 +478,31 @@ hr { border-color: var(--line) !important; margin: 1.5rem 0 !important; }
         'a[href*="streamlit.io"]',
         'iframe[src*="badge"]'
     ];
+
+    /* Force button styles that Streamlit overrides */
+    function styleButtons() {
+        /* All regular buttons */
+        document.querySelectorAll('button[kind="secondary"], .stButton > button').forEach(function(btn) {
+            var sidebar = btn.closest('[data-testid="stSidebar"]');
+            if (sidebar) {
+                btn.style.setProperty("background", "rgba(255,255,255,0.1)", "important");
+                btn.style.setProperty("color", "#f1f5f9", "important");
+                btn.style.setProperty("border", "1px solid rgba(255,255,255,0.2)", "important");
+                btn.style.setProperty("border-radius", "8px", "important");
+            } else if (!btn.getAttribute("kind") || btn.getAttribute("kind") === "secondary") {
+                btn.style.setProperty("background", "#ffffff", "important");
+                btn.style.setProperty("color", "#334155", "important");
+                btn.style.setProperty("border", "1.5px solid rgba(15,27,61,0.12)", "important");
+            }
+        });
+        /* Primary buttons */
+        document.querySelectorAll('button[kind="primary"], .stButton > button[data-testid="baseButton-primary"]').forEach(function(btn) {
+            btn.style.setProperty("background", "#2563EB", "important");
+            btn.style.setProperty("color", "#ffffff", "important");
+            btn.style.setProperty("border", "none", "important");
+        });
+    }
+
     function hideAll() {
         HIDE.forEach(function(sel) {
             try {
@@ -488,8 +513,10 @@ hr { border-color: var(--line) !important; margin: 1.5rem 0 !important; }
             } catch(e) {}
         });
     }
+
     hideAll();
-    var obs = new MutationObserver(hideAll);
+    styleButtons();
+    var obs = new MutationObserver(function() { hideAll(); styleButtons(); });
     obs.observe(document.documentElement, {childList: true, subtree: true});
 })();
 </script>
