@@ -63,6 +63,12 @@ _REJECTED = {
     "EN": "❌ Rejected", "FR": "❌ Rejeté", "ES": "❌ Rechazado",
     "DE": "❌ Abgelehnt", "IT": "❌ Respinto",
 }
+_FOR = {
+    "EN": "FOR", "FR": "POUR", "ES": "A FAVOR", "DE": "DAFÜR", "IT": "A FAVORE",
+}
+_AGAINST = {
+    "EN": "AGAINST", "FR": "CONTRE", "ES": "EN CONTRA", "DE": "DAGEGEN", "IT": "CONTRARI",
+}
 
 
 # Supabase helpers
@@ -198,6 +204,8 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
     intro       = _INTRO.get(lang, _INTRO["EN"])
     explore_lbl = _EXPLORE.get(lang, _EXPLORE["EN"])
     unsub_lbl   = _UNSUB.get(lang, _UNSUB["EN"])
+    for_lbl     = _FOR.get(lang, _FOR["EN"])
+    against_lbl = _AGAINST.get(lang, _AGAINST["EN"])
     week_str    = datetime.now().strftime("W%V · %B %Y")
 
     blocks = ""
@@ -224,7 +232,7 @@ def build_html(votes: list[dict], lang: str, unsub_link: str = "") -> str:
           </div>
           <div style="background:#f3f4f6;border-radius:6px;padding:8px 12px;
                       font-size:13px;color:#374151;">
-            🗳️ {v['for_pct']}% FOR &nbsp;·&nbsp; {v['against_pct']}% AGAINST
+            🗳️ {v['for_pct']}% {for_lbl} &nbsp;·&nbsp; {v['against_pct']}% {against_lbl}
           </div>
         </div>
         </a>"""
@@ -309,9 +317,7 @@ def send_digest() -> None:
             continue
 
         unsub_link = f"{APP_URL}?unsubscribe={quote(email, safe='')}"
-        logger.info("DEBUG unsub_link: %s", unsub_link)
         html    = build_html(votes, lang, unsub_link=unsub_link)
-        logger.info("DEBUG html snippet: %s", html[html.find("unsub"):html.find("unsub")+200] if "unsub" in html.lower() else "NOT FOUND IN HTML")
         subject = f"🏛️ EU Parliament {_WEEK_LABELS.get(lang,'Weekly Digest')} — {datetime.now().strftime('%d %b %Y')}"
 
         try:
