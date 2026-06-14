@@ -155,34 +155,44 @@ h1, h2, h3, h4, .stTitle {
    collapsed sidebar is now data-testid="stExpandSidebarButton" (the old
    "collapsedControl" no longer exists). The in-sidebar close control is
    data-testid="stSidebarCollapseButton". */
-@keyframes menu-pulse {
-    0%,100% { box-shadow: 0 4px 20px rgba(37,99,235,0.55), 0 0 0 4px rgba(37,99,235,0.14); }
-    50%      { box-shadow: 0 4px 28px rgba(37,99,235,0.8),  0 0 0 8px rgba(37,99,235,0.07); }
+@keyframes eu-toggle-flow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 [data-testid="stExpandSidebarButton"] {
-    width: 3rem !important;
-    height: 3rem !important;
-    min-width: 3rem !important;
-    min-height: 3rem !important;
+    width: 2.9rem !important;
+    height: 2.9rem !important;
+    min-width: 2.9rem !important;
+    min-height: 2.9rem !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: linear-gradient(135deg, #1D4ED8, #2563EB) !important;
-    color: white !important;
-    border-radius: 50% !important;
-    border: 3px solid rgba(255,255,255,0.35) !important;
-    box-shadow: 0 4px 20px rgba(37,99,235,0.6), 0 0 0 5px rgba(37,99,235,0.18) !important;
-    animation: menu-pulse 2.5s ease-in-out infinite !important;
+    background: linear-gradient(120deg, #0F1B3D, #1D4ED8, #4F46E5, #2563EB, #0F1B3D) !important;
+    background-size: 300% 300% !important;
+    animation: eu-toggle-flow 8s ease-in-out infinite !important;
+    color: #ffffff !important;
+    border-radius: 14px !important;
+    border: 1px solid rgba(255,255,255,0.16) !important;
+    box-shadow: 0 8px 22px rgba(29,78,216,0.28), 0 2px 6px rgba(15,27,61,0.18) !important;
     opacity: 1 !important;
     z-index: 9999 !important;
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease) !important;
+}
+[data-testid="stExpandSidebarButton"]:hover {
+    transform: translateY(-2px) scale(1.04) !important;
+    box-shadow: 0 12px 28px rgba(79,70,229,0.38), 0 4px 10px rgba(29,78,216,0.22) !important;
 }
 [data-testid="stExpandSidebarButton"] svg {
-    color: white !important;
-    fill: white !important;
-    stroke: white !important;
-    width: 1.4rem !important;
-    height: 1.4rem !important;
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+    width: 1.35rem !important;
+    height: 1.35rem !important;
+}
+@media (prefers-reduced-motion: reduce) {
+    [data-testid="stExpandSidebarButton"] { animation: none !important; }
 }
 /* In-sidebar collapse (close) button — keep icon visible on navy */
 [data-testid="stSidebarCollapseButton"] svg {
@@ -193,18 +203,18 @@ h1, h2, h3, h4, .stTitle {
 @media (max-width: 768px) {
     [data-testid="stExpandSidebarButton"] {
         position: fixed !important;
-        top: 0.75rem !important;
-        left: 0.75rem !important;
-        width: 3.75rem !important;
-        height: 3.75rem !important;
-        min-width: 3.75rem !important;
-        min-height: 3.75rem !important;
-        border: 3px solid rgba(255,255,255,0.45) !important;
-        box-shadow: 0 6px 24px rgba(37,99,235,0.75), 0 0 0 7px rgba(37,99,235,0.2) !important;
+        top: 0.7rem !important;
+        left: 0.7rem !important;
+        width: 3.15rem !important;
+        height: 3.15rem !important;
+        min-width: 3.15rem !important;
+        min-height: 3.15rem !important;
+        border-radius: 14px !important;
+        box-shadow: 0 8px 22px rgba(29,78,216,0.32) !important;
     }
     [data-testid="stExpandSidebarButton"] svg {
-        width: 1.7rem !important;
-        height: 1.7rem !important;
+        width: 1.5rem !important;
+        height: 1.5rem !important;
     }
     [data-testid="stMainBlockContainer"],
     .main .block-container {
@@ -517,6 +527,26 @@ hr { border-color: var(--line) !important; margin: 1.5rem 0 !important; }
 ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; }
 ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
+/* ── Mobile: single-column stacking + overflow hardening (BUG 3) ── */
+@media (max-width: 640px) {
+    html, body,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stMain"],
+    [data-testid="stMainBlockContainer"] {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+    }
+    [data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
+        gap: 0.6rem !important;
+    }
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+        flex: 1 1 100% !important;
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+}
+
 /* ── Reveal animation ── */
 @keyframes fade-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 .fade-up { animation: fade-up 0.55s var(--ease) both; }
@@ -556,23 +586,27 @@ components_html(
     [data-testid="stSidebar"] .stButton button:hover {
       background: rgba(255,255,255,0.25) !important; border-color: rgba(255,255,255,0.40) !important;
     }
+    @keyframes eu-toggle-flow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
     [data-testid="stExpandSidebarButton"] {
-      width: 3rem !important; height: 3rem !important; min-width: 3rem !important; min-height: 3rem !important;
+      width: 2.9rem !important; height: 2.9rem !important; min-width: 2.9rem !important; min-height: 2.9rem !important;
       padding: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important;
-      background: linear-gradient(135deg,#1D4ED8,#2563EB) !important; color: #fff !important;
-      border-radius: 50% !important; border: 3px solid rgba(255,255,255,0.35) !important;
-      box-shadow: 0 4px 20px rgba(37,99,235,0.6),0 0 0 5px rgba(37,99,235,0.18) !important; opacity: 1 !important;
+      background: linear-gradient(120deg,#0F1B3D,#1D4ED8,#4F46E5,#2563EB,#0F1B3D) !important;
+      background-size: 300% 300% !important; animation: eu-toggle-flow 8s ease-in-out infinite !important;
+      color: #fff !important; border-radius: 14px !important; border: 1px solid rgba(255,255,255,0.16) !important;
+      box-shadow: 0 8px 22px rgba(29,78,216,0.28),0 2px 6px rgba(15,27,61,0.18) !important; opacity: 1 !important;
     }
+    [data-testid="stExpandSidebarButton"]:hover { transform: translateY(-2px) scale(1.04) !important; box-shadow: 0 12px 28px rgba(79,70,229,0.38) !important; }
     [data-testid="stExpandSidebarButton"] svg {
-      width: 1.4rem !important; height: 1.4rem !important;
+      width: 1.35rem !important; height: 1.35rem !important;
       fill: #fff !important; stroke: #fff !important; color: #fff !important;
     }
     @media (max-width: 768px) {
       [data-testid="stExpandSidebarButton"] {
-        position: fixed !important; top: 0.75rem !important; left: 0.75rem !important;
-        width: 3.75rem !important; height: 3.75rem !important; min-width: 3.75rem !important; min-height: 3.75rem !important;
+        position: fixed !important; top: 0.7rem !important; left: 0.7rem !important;
+        width: 3.15rem !important; height: 3.15rem !important; min-width: 3.15rem !important; min-height: 3.15rem !important;
+        border-radius: 14px !important;
       }
-      [data-testid="stExpandSidebarButton"] svg { width: 1.7rem !important; height: 1.7rem !important; }
+      [data-testid="stExpandSidebarButton"] svg { width: 1.5rem !important; height: 1.5rem !important; }
     }
   `;
   function ensure() {
