@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from streamlit.components.v1 import html as components_html
 from eu_api import fetch_all_votes
 from analysis_agent import analyze_policy, generate_ai_insight
 from eu_dataset_loader import get_eu_votes
@@ -68,6 +69,8 @@ html, body, [data-testid="stAppViewContainer"] {
     background: var(--bg) !important;
     color: var(--navy) !important;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden !important;   /* BUG 3: kill horizontal scroll / left overflow */
+    max-width: 100% !important;
 }
 [data-testid="stMain"],
 [data-testid="stMainBlockContainer"],
@@ -85,35 +88,56 @@ h1, h2, h3, h4, .stTitle {
 [data-testid="stSidebar"] {
     background: var(--navy) !important;
 }
-/* Text elements in sidebar — light colored */
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span,
+/* Text elements in sidebar — light colored (buttons handled separately below;
+   their dedicated rules outrank this one, so no white-on-white regression) */
 [data-testid="stSidebar"] label,
-[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"],
+[data-testid="stSidebar"] span,
 [data-testid="stSidebar"] .stTitle,
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
 [data-testid="stSidebar"] h3,
 [data-testid="stSidebar"] h4,
 [data-testid="stSidebar"] small,
-[data-testid="stSidebar"] .stCaption {
+[data-testid="stSidebar"] .stCaption,
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
     color: #e2e8f0 !important;
 }
-/* Sidebar buttons — translucent on dark bg, light text */
-[data-testid="stSidebar"] .stButton > button {
-    background: rgba(255,255,255,0.1) !important;
-    color: #f1f5f9 !important;
-    border: 1px solid rgba(255,255,255,0.18) !important;
+/* ── Sidebar buttons (BUG 1 fix) ──
+   Streamlit 1.58: the real <button> carries data-testid="stBaseButton-*" and is
+   NOT a direct child of .stButton (a tooltip wrapper sits in between), so the old
+   `.stButton > button` selector matched nothing. Target the testid directly and
+   use a descendant combinator. The label color rule (with *) outranks the generic
+   sidebar `p` rule that previously painted button text white-on-white. */
+[data-testid="stSidebar"] [data-testid="stBaseButton-secondary"],
+[data-testid="stSidebar"] [data-testid="stBaseButton-primary"],
+[data-testid="stSidebar"] [data-testid="stBaseButton-tertiary"],
+[data-testid="stSidebar"] .stButton button {
+    background: rgba(255,255,255,0.12) !important;
+    border: 1px solid rgba(255,255,255,0.22) !important;
     border-radius: 8px !important;
     font-weight: 500 !important;
     box-shadow: none !important;
 }
-[data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(255,255,255,0.2) !important;
-    border-color: rgba(255,255,255,0.32) !important;
-    transform: none !important;
-    color: white !important;
+[data-testid="stSidebar"] [data-testid="stBaseButton-secondary"],
+[data-testid="stSidebar"] [data-testid="stBaseButton-secondary"] *,
+[data-testid="stSidebar"] [data-testid="stBaseButton-primary"],
+[data-testid="stSidebar"] [data-testid="stBaseButton-primary"] *,
+[data-testid="stSidebar"] [data-testid="stBaseButton-tertiary"],
+[data-testid="stSidebar"] [data-testid="stBaseButton-tertiary"] *,
+[data-testid="stSidebar"] .stButton button,
+[data-testid="stSidebar"] .stButton button * {
+    color: #f1f5f9 !important;
 }
+[data-testid="stSidebar"] [data-testid="stBaseButton-secondary"]:hover,
+[data-testid="stSidebar"] [data-testid="stBaseButton-primary"]:hover,
+[data-testid="stSidebar"] [data-testid="stBaseButton-tertiary"]:hover,
+[data-testid="stSidebar"] .stButton button:hover {
+    background: rgba(255,255,255,0.25) !important;
+    border-color: rgba(255,255,255,0.40) !important;
+    transform: none !important;
+}
+[data-testid="stSidebar"] .stButton button:hover,
+[data-testid="stSidebar"] .stButton button:hover * { color: #ffffff !important; }
 /* Multiselect tags in sidebar */
 [data-testid="stSidebar"] [data-testid="stMultiSelectTag"] {
     background: rgba(37,99,235,0.7) !important;
@@ -126,62 +150,86 @@ h1, h2, h3, h4, .stTitle {
     border-color: rgba(255,255,255,0.15) !important;
 }
 
-/* ── Sidebar toggle button ── */
+/* ── Sidebar toggle button (BUG 2 fix) ──
+   Streamlit 1.58 renamed the collapsed-state control: the button that OPENS a
+   collapsed sidebar is now data-testid="stExpandSidebarButton" (the old
+   "collapsedControl" no longer exists). The in-sidebar close control is
+   data-testid="stSidebarCollapseButton". */
 @keyframes menu-pulse {
     0%,100% { box-shadow: 0 4px 20px rgba(37,99,235,0.55), 0 0 0 4px rgba(37,99,235,0.14); }
     50%      { box-shadow: 0 4px 28px rgba(37,99,235,0.8),  0 0 0 8px rgba(37,99,235,0.07); }
 }
-[data-testid="collapsedControl"] {
-    display: flex !important;
-    align-items: center !important;
-    z-index: 9999 !important;
-}
-[data-testid="collapsedControl"] button,
-[data-testid="collapsedControl"] > button {
+[data-testid="stExpandSidebarButton"] {
     width: 3rem !important;
     height: 3rem !important;
+    min-width: 3rem !important;
+    min-height: 3rem !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     background: linear-gradient(135deg, #1D4ED8, #2563EB) !important;
     color: white !important;
     border-radius: 50% !important;
-    border: 3px solid rgba(255,255,255,0.3) !important;
-    box-shadow: 0 4px 20px rgba(37,99,235,0.55), 0 0 0 4px rgba(37,99,235,0.14) !important;
+    border: 3px solid rgba(255,255,255,0.35) !important;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.6), 0 0 0 5px rgba(37,99,235,0.18) !important;
     animation: menu-pulse 2.5s ease-in-out infinite !important;
     opacity: 1 !important;
+    z-index: 9999 !important;
 }
-[data-testid="collapsedControl"] svg {
+[data-testid="stExpandSidebarButton"] svg {
     color: white !important;
+    fill: white !important;
     stroke: white !important;
-    width: 1.3rem !important;
-    height: 1.3rem !important;
+    width: 1.4rem !important;
+    height: 1.4rem !important;
+}
+/* In-sidebar collapse (close) button — keep icon visible on navy */
+[data-testid="stSidebarCollapseButton"] svg {
+    color: #e2e8f0 !important;
+    fill: #e2e8f0 !important;
+    stroke: #e2e8f0 !important;
 }
 @media (max-width: 768px) {
-    [data-testid="collapsedControl"] {
+    [data-testid="stExpandSidebarButton"] {
         position: fixed !important;
         top: 0.75rem !important;
         left: 0.75rem !important;
-    }
-    [data-testid="collapsedControl"] button,
-    [data-testid="collapsedControl"] > button {
-        width: 4rem !important;
-        height: 4rem !important;
-        border-radius: 50% !important;
-        background: linear-gradient(135deg, #1D4ED8, #2563EB) !important;
-        border: 3px solid rgba(255,255,255,0.4) !important;
+        width: 3.75rem !important;
+        height: 3.75rem !important;
+        min-width: 3.75rem !important;
+        min-height: 3.75rem !important;
+        border: 3px solid rgba(255,255,255,0.45) !important;
         box-shadow: 0 6px 24px rgba(37,99,235,0.75), 0 0 0 7px rgba(37,99,235,0.2) !important;
     }
-    [data-testid="collapsedControl"] svg {
+    [data-testid="stExpandSidebarButton"] svg {
         width: 1.7rem !important;
         height: 1.7rem !important;
     }
+    [data-testid="stMainBlockContainer"],
     .main .block-container {
-        padding-left: 0.8rem !important;
-        padding-right: 0.8rem !important;
-        padding-top: 4rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 4.25rem !important;
     }
     .result-card .pct { font-size: 1.3rem !important; font-weight: 800 !important; }
     .result-card .label { font-size: 0.65rem !important; }
     .topic-bar { font-size: 0.88rem !important; }
     .ai-card { font-size: 0.84rem !important; }
+    /* BUG 3: hero must shrink and never overflow on phones */
+    .eu-hero {
+        padding: 2rem 1.25rem !important;
+        min-height: auto !important;
+        border-radius: 18px !important;
+    }
+    .hero-title { font-size: 1.85rem !important; line-height: 1.15 !important; }
+    .hero-sub { font-size: 0.92rem !important; }
+    .hero-eyebrow { font-size: 0.68rem !important; }
+    .hero-stats { flex-wrap: wrap !important; gap: 0.5rem 1rem !important; }
+    .hero-stat-num { font-size: 1.25rem !important; }
+    .hero-stat-sep { display: none !important; }
+    /* Stack Streamlit columns so nothing is clipped on narrow screens */
+    [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; }
 }
 
 /* ── Hero ── */
@@ -293,8 +341,12 @@ h1, h2, h3, h4, .stTitle {
     color: var(--navy-faint) !important;
 }
 
-/* ── Buttons ── */
-.stButton > button {
+/* ── Buttons (main area) ──
+   1.58 selectors: button element is [data-testid="stBaseButton-{kind}"] and is a
+   descendant (not direct child) of .stButton. */
+.stButton button,
+[data-testid="stBaseButton-secondary"],
+[data-testid="stBaseButton-tertiary"] {
     font-family: 'Inter', sans-serif !important;
     border-radius: 10px !important;
     font-size: 0.84rem !important;
@@ -307,14 +359,15 @@ h1, h2, h3, h4, .stTitle {
     transition: all 0.2s var(--ease) !important;
     white-space: nowrap !important;
 }
-.stButton > button:hover {
+[data-testid="stBaseButton-secondary"]:hover,
+[data-testid="stBaseButton-tertiary"]:hover {
     background: var(--blue-pale) !important;
     border-color: var(--blue) !important;
     color: var(--blue-deep) !important;
     transform: translateY(-1px) !important;
     box-shadow: var(--sh-md) !important;
 }
-.stButton > button[data-testid="baseButton-primary"] {
+[data-testid="stBaseButton-primary"] {
     background: var(--blue) !important;
     color: white !important;
     border: none !important;
@@ -324,7 +377,7 @@ h1, h2, h3, h4, .stTitle {
     padding: 0.6rem 2rem !important;
     box-shadow: 0 6px 18px rgba(37,99,235,0.3) !important;
 }
-.stButton > button[data-testid="baseButton-primary"]:hover {
+[data-testid="stBaseButton-primary"]:hover {
     background: var(--blue-deep) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 26px rgba(37,99,235,0.38) !important;
@@ -468,96 +521,80 @@ hr { border-color: var(--line) !important; margin: 1.5rem 0 !important; }
 @keyframes fade-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 .fade-up { animation: fade-up 0.55s var(--ease) both; }
 </style>
+""", unsafe_allow_html=True)
+
+# ── Robust style override injector (BUG 1 & BUG 2) ──
+# st.markdown() renders HTML via innerHTML, so <script> tags placed inside it
+# never execute. We instead use components.html (a real iframe whose scripts DO
+# run) to write the critical overrides into the PARENT document's <head> and keep
+# them present across Streamlit re-renders via a MutationObserver. Selectors are
+# the verified Streamlit 1.58 test-ids (stBaseButton-*, stExpandSidebarButton).
+components_html(
+    """
 <script>
-(function() {
-    var HIDE = [
-        '[data-testid="stStatusWidget"]',
-        '[data-testid="manage-app-button"]',
-        '[class*="viewerBadge"]',
-        '[class*="ViewerBadge"]',
-        'a[href*="streamlit.io"]',
-        'iframe[src*="badge"]'
-    ];
-
-    /* Inject persistent <style> tag — survives React re-renders */
-    function injectStyles() {
-        var existing = document.getElementById("__eu_custom_styles");
-        if (existing) return;
-        var s = document.createElement("style");
-        s.id = "__eu_custom_styles";
-        s.textContent = [
-            /* ── Sidebar buttons: dark background, white text ── */
-            '[data-testid="stSidebar"] [data-testid="baseButton-secondary"],',
-            '[data-testid="stSidebar"] [data-testid="baseButton-primary"],',
-            '[data-testid="stSidebar"] .stButton > button {',
-            '  background: rgba(255,255,255,0.12) !important;',
-            '  color: #f1f5f9 !important;',
-            '  border: 1px solid rgba(255,255,255,0.22) !important;',
-            '  border-radius: 8px !important;',
-            '}',
-            '[data-testid="stSidebar"] [data-testid="baseButton-secondary"]:hover,',
-            '[data-testid="stSidebar"] [data-testid="baseButton-primary"]:hover,',
-            '[data-testid="stSidebar"] .stButton > button:hover {',
-            '  background: rgba(255,255,255,0.25) !important;',
-            '  color: #ffffff !important;',
-            '}',
-            /* ── Main area secondary buttons: white bg, dark text ── */
-            '[data-testid="baseButton-secondary"] {',
-            '  background: #ffffff !important;',
-            '  color: #334155 !important;',
-            '  border: 1.5px solid rgba(15,27,61,0.14) !important;',
-            '}',
-            '[data-testid="baseButton-secondary"]:hover {',
-            '  background: #EFF6FF !important;',
-            '  color: #1D4ED8 !important;',
-            '  border-color: #2563EB !important;',
-            '}',
-            /* ── Primary buttons: blue ── */
-            '[data-testid="baseButton-primary"] {',
-            '  background: #2563EB !important;',
-            '  color: #ffffff !important;',
-            '  border: none !important;',
-            '}',
-            /* ── Sidebar toggle: big blue circle ── */
-            '[data-testid="collapsedControl"] button {',
-            '  width: 3.5rem !important;',
-            '  height: 3.5rem !important;',
-            '  min-width: 3.5rem !important;',
-            '  min-height: 3.5rem !important;',
-            '  background: linear-gradient(135deg,#1D4ED8,#2563EB) !important;',
-            '  border-radius: 50% !important;',
-            '  border: 3px solid rgba(255,255,255,0.35) !important;',
-            '  box-shadow: 0 4px 20px rgba(37,99,235,0.6),0 0 0 5px rgba(37,99,235,0.18) !important;',
-            '  color: #ffffff !important;',
-            '}',
-            '[data-testid="collapsedControl"] svg {',
-            '  width: 1.5rem !important; height: 1.5rem !important;',
-            '  fill: #ffffff !important; stroke: #ffffff !important;',
-            '  color: #ffffff !important;',
-            '}'
-        ].join("\n");
-        document.head.appendChild(s);
+(function () {
+  var doc;
+  try { doc = window.parent.document; } catch (e) { return; }
+  var CSS = `
+    [data-testid="stSidebar"] [data-testid="stBaseButton-secondary"],
+    [data-testid="stSidebar"] [data-testid="stBaseButton-primary"],
+    [data-testid="stSidebar"] [data-testid="stBaseButton-tertiary"],
+    [data-testid="stSidebar"] .stButton button {
+      background: rgba(255,255,255,0.12) !important;
+      border: 1px solid rgba(255,255,255,0.22) !important;
+      border-radius: 8px !important; box-shadow: none !important;
     }
-
-    function hideAll() {
-        HIDE.forEach(function(sel) {
-            try {
-                document.querySelectorAll(sel).forEach(function(el) {
-                    el.style.setProperty("display", "none", "important");
-                    el.style.setProperty("visibility", "hidden", "important");
-                });
-            } catch(e) {}
-        });
+    [data-testid="stSidebar"] [data-testid="stBaseButton-secondary"], [data-testid="stSidebar"] [data-testid="stBaseButton-secondary"] *,
+    [data-testid="stSidebar"] [data-testid="stBaseButton-primary"], [data-testid="stSidebar"] [data-testid="stBaseButton-primary"] *,
+    [data-testid="stSidebar"] [data-testid="stBaseButton-tertiary"], [data-testid="stSidebar"] [data-testid="stBaseButton-tertiary"] *,
+    [data-testid="stSidebar"] .stButton button, [data-testid="stSidebar"] .stButton button * {
+      color: #f1f5f9 !important;
     }
-
-    function applyAll() { hideAll(); injectStyles(); }
-
-    applyAll();
-    var obs = new MutationObserver(applyAll);
-    obs.observe(document.documentElement, {childList: true, subtree: true});
+    [data-testid="stSidebar"] [data-testid="stBaseButton-secondary"]:hover,
+    [data-testid="stSidebar"] [data-testid="stBaseButton-primary"]:hover,
+    [data-testid="stSidebar"] [data-testid="stBaseButton-tertiary"]:hover,
+    [data-testid="stSidebar"] .stButton button:hover {
+      background: rgba(255,255,255,0.25) !important; border-color: rgba(255,255,255,0.40) !important;
+    }
+    [data-testid="stExpandSidebarButton"] {
+      width: 3rem !important; height: 3rem !important; min-width: 3rem !important; min-height: 3rem !important;
+      padding: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important;
+      background: linear-gradient(135deg,#1D4ED8,#2563EB) !important; color: #fff !important;
+      border-radius: 50% !important; border: 3px solid rgba(255,255,255,0.35) !important;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.6),0 0 0 5px rgba(37,99,235,0.18) !important; opacity: 1 !important;
+    }
+    [data-testid="stExpandSidebarButton"] svg {
+      width: 1.4rem !important; height: 1.4rem !important;
+      fill: #fff !important; stroke: #fff !important; color: #fff !important;
+    }
+    @media (max-width: 768px) {
+      [data-testid="stExpandSidebarButton"] {
+        position: fixed !important; top: 0.75rem !important; left: 0.75rem !important;
+        width: 3.75rem !important; height: 3.75rem !important; min-width: 3.75rem !important; min-height: 3.75rem !important;
+      }
+      [data-testid="stExpandSidebarButton"] svg { width: 1.7rem !important; height: 1.7rem !important; }
+    }
+  `;
+  function ensure() {
+    var s = doc.getElementById('__eu_overrides');
+    if (!s) {
+      s = doc.createElement('style');
+      s.id = '__eu_overrides';
+      s.textContent = CSS;
+      doc.head.appendChild(s);
+    }
+    ['[data-testid="stStatusWidget"]','[data-testid="stAppDeployButton"]','a[href*="streamlit.io"]']
+      .forEach(function (sel) {
+        try { doc.querySelectorAll(sel).forEach(function (el) { el.style.setProperty('display','none','important'); }); } catch (e) {}
+      });
+  }
+  ensure();
+  try { new MutationObserver(ensure).observe(doc.body, { childList: true, subtree: true }); } catch (e) {}
 })();
 </script>
-""", unsafe_allow_html=True)
+""",
+    height=0,
+)
 
 DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() in ("1", "true", "yes")
 _DEMO_ROW_LIMIT = 5000
