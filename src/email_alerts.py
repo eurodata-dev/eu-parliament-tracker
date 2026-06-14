@@ -155,7 +155,7 @@ def get_top_votes(n: int = 5) -> list[dict]:
             if fallback.exists():
                 dfs.append(pd.read_parquet(fallback) if fallback.suffix == ".parquet" else pd.read_csv(fallback))
                 break
-    # Recent live CSVs excluded — those topics are not in the app's
+    # Recent live CSVs excluded - those topics are not in the app's
     # parquet-based search index, so email deep-links would break.
     if not dfs:
         return []

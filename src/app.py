@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 import plotly.express as px
+import requests
 import streamlit as st
 from streamlit.components.v1 import html as components_html
 from eu_api import fetch_all_votes
@@ -26,7 +27,7 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
-/* ── Design tokens ── */
+/* Design tokens */
 :root {
   --bg:          #F4F6FB;
   --bg2:         #E9ECF5;
@@ -46,7 +47,7 @@ st.markdown("""
   --ease:   cubic-bezier(0.22,0.61,0.36,1);
 }
 
-/* ── Streamlit chrome hide ── */
+/* Streamlit chrome hide */
 #MainMenu {visibility:hidden;}
 footer {visibility:hidden;}
 .stDeployButton {display:none;}
@@ -63,7 +64,7 @@ iframe:not([title])              {display:none !important;}
 iframe[src*="streamlit"]         {display:none !important;}
 iframe[src*="badge"]             {display:none !important;}
 
-/* ── Global base ── */
+/* Global base */
 html, body, [data-testid="stAppViewContainer"] {
     font-family: 'Inter', system-ui, sans-serif !important;
     background: var(--bg) !important;
@@ -84,7 +85,7 @@ h1, h2, h3, h4, .stTitle {
     letter-spacing: -0.02em;
 }
 
-/* ── Sidebar ── */
+/* Sidebar */
 [data-testid="stSidebar"] {
     background: var(--navy) !important;
 }
@@ -102,7 +103,7 @@ h1, h2, h3, h4, .stTitle {
 [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
     color: #e2e8f0 !important;
 }
-/* ── Sidebar buttons (BUG 1 fix) ──
+/* Sidebar buttons (BUG 1 fix) 
    Streamlit 1.58: the real <button> carries data-testid="stBaseButton-*" and is
    NOT a direct child of .stButton (a tooltip wrapper sits in between), so the old
    `.stButton > button` selector matched nothing. Target the testid directly and
@@ -168,7 +169,7 @@ h1, h2, h3, h4, .stTitle {
     color: #e2e8f0 !important;
 }
 
-/* ── Sidebar toggle button (BUG 2 fix) ──
+/* Sidebar toggle button (BUG 2 fix) 
    Streamlit 1.58 renamed the collapsed-state control: the button that OPENS a
    collapsed sidebar is now data-testid="stExpandSidebarButton" (the old
    "collapsedControl" no longer exists). The in-sidebar close control is
@@ -260,7 +261,7 @@ h1, h2, h3, h4, .stTitle {
     [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; }
 }
 
-/* ── Hero ── */
+/* Hero */
 .eu-hero {
     position: relative;
     border-radius: 24px;
@@ -348,7 +349,7 @@ h1, h2, h3, h4, .stTitle {
 .hero-stat-label { font-size: 0.82rem; color: rgba(255,255,255,0.6); }
 .hero-stat-sep { color: rgba(255,255,255,0.25); font-size: 1.2rem; }
 
-/* ── Text inputs (general: contact, subscribe) ── */
+/* Text inputs (general: contact, subscribe) */
 [data-testid="stTextInput"] input {
     font-family: 'Inter', sans-serif !important;
     font-size: 1.0rem !important;
@@ -369,7 +370,7 @@ h1, h2, h3, h4, .stTitle {
     color: var(--navy-faint) !important;
 }
 
-/* ── Main search bar — deliberately distinct from buttons ──
+/* Main search bar — deliberately distinct from buttons 
    Pill shape + magnifier icon + soft blue glow so it can't be mistaken for a
    button. Scoped to the search widget only via its st-key container class. */
 .st-key-main_search [data-baseweb="input"],
@@ -395,7 +396,7 @@ h1, h2, h3, h4, .stTitle {
     box-shadow: 0 0 0 4px rgba(37,99,235,0.15), 0 8px 24px rgba(37,99,235,0.20) !important;
 }
 
-/* ── Buttons (main area) ──
+/* Buttons (main area) 
    1.58 selectors: button element is [data-testid="stBaseButton-{kind}"] and is a
    descendant (not direct child) of .stButton. */
 .stButton button,
@@ -437,7 +438,7 @@ h1, h2, h3, h4, .stTitle {
     box-shadow: 0 10px 26px rgba(37,99,235,0.38) !important;
 }
 
-/* ── Button labels: truncate with ellipsis instead of overflowing (mobile) ── */
+/* Button labels: truncate with ellipsis instead of overflowing (mobile) */
 .stButton button { overflow: hidden !important; }
 .stButton button [data-testid="stMarkdownContainer"] {
     min-width: 0 !important;
@@ -452,7 +453,7 @@ h1, h2, h3, h4, .stTitle {
     text-overflow: ellipsis !important;
 }
 
-/* ── Topic bar ── */
+/* Topic bar */
 .topic-bar {
     background: var(--surface);
     border: 1px solid var(--line);
@@ -465,12 +466,12 @@ h1, h2, h3, h4, .stTitle {
     box-shadow: var(--sh-sm);
 }
 
-/* ── Verdict badges ── */
+/* Verdict badges */
 .verdict-passed    { background:#dcfce7; color:#15803d; padding:5px 16px; border-radius:999px; font-weight:700; font-size:0.9rem; display:inline-block; margin-top:0.8rem; letter-spacing:0.02em; }
 .verdict-rejected  { background:#fee2e2; color:#b91c1c; padding:5px 16px; border-radius:999px; font-weight:700; font-size:0.9rem; display:inline-block; margin-top:0.8rem; letter-spacing:0.02em; }
 .verdict-contested { background:#fef9c3; color:#854d0e; padding:5px 16px; border-radius:999px; font-weight:700; font-size:0.9rem; display:inline-block; margin-top:0.8rem; letter-spacing:0.02em; }
 
-/* ── Result cards ── */
+/* Result cards */
 .result-card {
     text-align: center;
     padding: 1.4rem 1rem;
@@ -485,7 +486,7 @@ h1, h2, h3, h4, .stTitle {
 .result-card .pct  { font-family: 'Sora', sans-serif; font-size: 2.6rem; font-weight: 800; line-height: 1.1; color: var(--navy); }
 .result-card .label{ font-size: 0.88rem; color: var(--navy-faint); margin-top: 0.3rem; font-weight: 500; }
 
-/* ── AI card ── */
+/* AI card */
 .ai-card {
     background: var(--blue-pale);
     border: 1px solid #BFDBFE;
@@ -499,10 +500,10 @@ h1, h2, h3, h4, .stTitle {
     color: var(--navy);
 }
 
-/* ── Search hint ── */
+/* Search hint */
 .search-hint { text-align: center; color: var(--navy-faint); font-size: 0.8rem; margin-top: 0.4rem; }
 
-/* ── Homepage banner ── */
+/* Homepage banner */
 .home-banner {
     background: linear-gradient(145deg, #0F1B3D 0%, #1D4ED8 100%);
     border-radius: 20px;
@@ -538,7 +539,7 @@ h1, h2, h3, h4, .stTitle {
     margin: 0 auto;
 }
 
-/* ── Latest votes list ── */
+/* Latest votes list */
 .vote-row {
     display: flex;
     align-items: center;
@@ -554,7 +555,7 @@ h1, h2, h3, h4, .stTitle {
 }
 .vote-row:hover { transform: translateX(4px); border-color: var(--blue); box-shadow: var(--sh-md); }
 
-/* ── Language picker ── */
+/* Language picker */
 .lang-label {
     text-align: right;
     font-size: 0.7rem;
@@ -566,7 +567,7 @@ h1, h2, h3, h4, .stTitle {
     font-family: 'Sora', sans-serif;
 }
 
-/* ── Metrics ── */
+/* Metrics */
 [data-testid="stMetric"] {
     background: var(--surface);
     border: 1px solid var(--line-soft);
@@ -577,16 +578,16 @@ h1, h2, h3, h4, .stTitle {
 [data-testid="stMetricLabel"] { font-family: 'Inter', sans-serif; color: var(--navy-faint) !important; font-size: 0.82rem !important; }
 [data-testid="stMetricValue"] { font-family: 'Sora', sans-serif !important; color: var(--navy) !important; font-weight: 700 !important; }
 
-/* ── Dividers ── */
+/* Dividers */
 hr { border-color: var(--line) !important; margin: 1.5rem 0 !important; }
 
-/* ── Scrollbar ── */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg2); }
 ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; }
 ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
-/* ── Mobile: single-column stacking + overflow hardening (BUG 3) ── */
+/* Mobile: single-column stacking + overflow hardening (BUG 3) */
 @media (max-width: 640px) {
     html, body,
     [data-testid="stAppViewContainer"],
@@ -606,18 +607,14 @@ hr { border-color: var(--line) !important; margin: 1.5rem 0 !important; }
     }
 }
 
-/* ── Reveal animation ── */
+/* Reveal animation */
 @keyframes fade-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 .fade-up { animation: fade-up 0.55s var(--ease) both; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Robust style override injector (BUG 1 & BUG 2) ──
-# st.markdown() renders HTML via innerHTML, so <script> tags placed inside it
-# never execute. We instead use components.html (a real iframe whose scripts DO
-# run) to write the critical overrides into the PARENT document's <head> and keep
-# them present across Streamlit re-renders via a MutationObserver. Selectors are
-# the verified Streamlit 1.58 test-ids (stBaseButton-*, stExpandSidebarButton).
+# st.markdown won't run <script> tags, so the button + toggle CSS overrides are
+# injected into the parent page <head> via components.html (runs in an iframe).
 components_html(
     """
 <script>
@@ -1406,7 +1403,7 @@ def _preload(years: tuple = (2024, 2025, 2026)):
 
 
 def _search_topics(topic_index: pd.DataFrame, query: str) -> pd.DataFrame:
-    # AND first, OR fallback — feels more natural than pure OR
+    # AND first, OR fallback - feels more natural than pure OR
     q = query.strip()
     if len(q) <= 1:
         return topic_index.iloc[:0]
@@ -1423,7 +1420,7 @@ def _search_topics(topic_index: pd.DataFrame, query: str) -> pd.DataFrame:
             m = m | topics_lower.str.contains(r'\b' + re.escape(s.lower()), na=False, regex=True)
         return m
 
-    # 2-char uppercase abbreviations (AI, EP, DSA …) — user typed them capitalised on purpose
+    # 2-char uppercase abbreviations (AI, EP, DSA ...) - user typed them capitalised on purpose
     if len(q) == 2 and q == q.upper() and q.isalpha():
         return topic_index[_tmask(q)]
 
@@ -1442,7 +1439,7 @@ def _search_topics(topic_index: pd.DataFrame, query: str) -> pd.DataFrame:
     if and_mask.any():
         return topic_index[and_mask]
 
-    # ── OR fallback (multi-token only): rank by number of matching tokens ───
+    # OR fallback (multi-token only): rank by number of matching tokens
     if len(tokens) >= 2:
         scores = pd.Series(0, index=topic_index.index, dtype=int)
         or_mask = pd.Series(False, index=topic_index.index)
@@ -1566,7 +1563,7 @@ with st.sidebar:
             except Exception as exc:
                 st.error(f"{t('refresh_failed')}: {exc}")
 
-# Filters (lazy — applied only when a topic is selected)
+# Filters (lazy - applied only when a topic is selected)
 
 date_start = pd.Timestamp(date_range[0]) if date_range and len(date_range) == 2 else None
 date_end   = (pd.Timestamp(date_range[1]) + pd.Timedelta(days=1)) if date_range and len(date_range) == 2 else None
@@ -1579,7 +1576,7 @@ def _apply_filters(df: pd.DataFrame) -> pd.DataFrame:
         df = df[df["political_group"].isin(active_groups)]
     return df
 
-# Page routing — About / Contact rendered here; st.stop() skips home content
+# Page routing - About / Contact rendered here; st.stop() skips home content
 page = st.session_state.get("page", "home")
 _contact_email = st.secrets.get("CONTACT_EMAIL", os.getenv("CONTACT_EMAIL", "elmas.burhan80@gmail.com"))
 
@@ -1640,7 +1637,7 @@ if page == "about":
         <div style="font-size:0.75rem;color:#6b7280;margin-top:0.2rem;">EN · FR · ES · DE · IT</div>
         </div>""", unsafe_allow_html=True)
 
-    # Tech stack — show the real engineering behind this
+    # Tech stack - show the real engineering behind this
     st.markdown("---")
     st.markdown("""
 <div style="background:#0f172a;color:#e2e8f0;border-radius:14px;padding:1.5rem 1.8rem;margin-bottom:1.5rem;">
@@ -1680,34 +1677,33 @@ elif page == "contact":
 
     _c1, _c2 = st.columns([2, 1])
     with _c1:
-        _ct_name  = st.text_input(t("contact_name_label"),  key="ct_name",  placeholder="e.g. Marie Dupont")
-        _ct_email = st.text_input(t("contact_email_label"), key="ct_email", placeholder="marie@example.com")
-        _ct_msg   = st.text_area( t("contact_msg_label"),   key="ct_msg",   height=180,
-                                  placeholder="I work at the European Commission and I'd love to discuss...")
+        name          = st.text_input(t("contact_name_label"),  key="ct_name",  placeholder="e.g. Marie Dupont")
+        email_input   = st.text_input(t("contact_email_label"), key="ct_email", placeholder="marie@example.com")
+        message_input = st.text_area( t("contact_msg_label"),   key="ct_msg",   height=180,
+                                      placeholder="I work at the European Commission and I'd love to discuss...")
         if st.button(t("contact_send_btn"), type="primary", key="ct_send"):
-            _e = _ct_email.strip()
-            _m = _ct_msg.strip()
-            if not _e or "@" not in _e or not _m:
+            email = email_input.strip()
+            message = message_input.strip()
+            if not email or "@" not in email or not message:
                 st.warning(t("contact_invalid"))
             else:
                 try:
-                    import requests as _rq
-                    _rk = st.secrets.get("RESEND_API_KEY", os.getenv("RESEND_API_KEY", ""))
-                    _fe = st.secrets.get("FROM_EMAIL", os.getenv("FROM_EMAIL", "EU Vote Tracker <onboarding@resend.dev>"))
-                    if not _rk:
+                    resend_key = st.secrets.get("RESEND_API_KEY", os.getenv("RESEND_API_KEY", ""))
+                    from_email = st.secrets.get("FROM_EMAIL", os.getenv("FROM_EMAIL", "EU Vote Tracker <onboarding@resend.dev>"))
+                    if not resend_key:
                         st.error(t("contact_err"))
                     else:
-                        _subj = f"[EU Vote Tracker] Message from {_ct_name or _e}"
-                        _html_body = f"""<p><strong>From:</strong> {_ct_name or '(no name)'} &lt;{_e}&gt;</p>
-<p><strong>Message:</strong></p><p style="white-space:pre-wrap;">{_m}</p>"""
-                        _resp = _rq.post(
+                        subject = f"[EU Vote Tracker] Message from {name or email}"
+                        html_body = f"""<p><strong>From:</strong> {name or '(no name)'} &lt;{email}&gt;</p>
+<p><strong>Message:</strong></p><p style="white-space:pre-wrap;">{message}</p>"""
+                        response = requests.post(
                             "https://api.resend.com/emails",
-                            headers={"Authorization": f"Bearer {_rk}", "Content-Type": "application/json"},
-                            json={"from": _fe, "to": [_contact_email],
-                                  "reply_to": _e, "subject": _subj, "html": _html_body},
+                            headers={"Authorization": f"Bearer {resend_key}", "Content-Type": "application/json"},
+                            json={"from": from_email, "to": [_contact_email],
+                                  "reply_to": email, "subject": subject, "html": html_body},
                             timeout=15,
                         )
-                        if _resp.status_code in (200, 201, 202):
+                        if response.status_code in (200, 201, 202):
                             st.success(t("contact_ok"))
                         else:
                             st.error(t("contact_err"))
@@ -2000,7 +1996,7 @@ if topic:
 
     st.divider()
 
-# Homepage — latest 15 votes
+# Homepage - latest 15 votes
 
 if not query:
     # Quick-start examples
@@ -2085,17 +2081,16 @@ with sub_col:
             st.warning(t("subscribe_invalid"))
         else:
             try:
-                import requests as req_lib
-                sb_url = st.secrets.get("SUPABASE_URL", os.getenv("SUPABASE_URL", ""))
-                sb_key = st.secrets.get("SUPABASE_KEY", os.getenv("SUPABASE_KEY", ""))
-                if not sb_url or not sb_key:
+                supabase_url = st.secrets.get("SUPABASE_URL", os.getenv("SUPABASE_URL", ""))
+                supabase_key = st.secrets.get("SUPABASE_KEY", os.getenv("SUPABASE_KEY", ""))
+                if not supabase_url or not supabase_key:
                     st.error(t("subscribe_err"))
                 else:
-                    resp = req_lib.post(
-                        f"{sb_url}/rest/v1/subscribers",
+                    resp = requests.post(
+                        f"{supabase_url}/rest/v1/subscribers",
                         headers={
-                            "apikey": sb_key,
-                            "Authorization": f"Bearer {sb_key}",
+                            "apikey": supabase_key,
+                            "Authorization": f"Bearer {supabase_key}",
                             "Content-Type": "application/json",
                             "Prefer": "resolution=merge-duplicates,return=minimal",
                         },

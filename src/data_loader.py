@@ -64,8 +64,8 @@ def load_votes() -> pd.DataFrame:
 
     Later this CSV will be replaced by live EU Parliament API calls:
         # response = fetch_url(
-        #     "https://data.europarl.europa.eu/api/v2/votes",
-        #     params={"format": "application/json", "limit": 200},
+        # "https://data.europarl.europa.eu/api/v2/votes",
+        # params={"format": "application/json", "limit": 200},
         # )
         # return pd.DataFrame(response["data"])
 
@@ -73,7 +73,7 @@ def load_votes() -> pd.DataFrame:
         pd.DataFrame with columns: member_name, political_group,
         policy_topic, vote, date.
     """
-    # CSV is now the primary data source — replaces hardcoded mock data.
+    # CSV is now the primary data source - replaces hardcoded mock data.
     csv_path = Path(settings.DATA_DIR) / "raw" / "eu_votes_sample.csv"
 
     if csv_path.exists():
@@ -81,5 +81,5 @@ def load_votes() -> pd.DataFrame:
         df["date"] = pd.to_datetime(df["date"])
         return df
 
-    # CSV not found — fall back to mock data for safety.
+    # CSV not found - fall back to mock data for safety.
     return get_mock_votes()

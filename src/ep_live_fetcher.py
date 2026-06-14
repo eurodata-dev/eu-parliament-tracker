@@ -144,7 +144,7 @@ def run() -> pd.DataFrame:
 
     print(f"\nHowTheyVote fetcher — recent EP votes since {cutoff}")
 
-    # ── STEP 1: collect candidate vote IDs from list pages ────────────────────
+    # STEP 1: collect candidate vote IDs from list pages
 
     candidates: list[dict] = []   # [{id, timestamp, display_title}]
 
@@ -168,7 +168,7 @@ def run() -> pd.DataFrame:
                 "display_title": item.get("display_title", ""),
             })
         else:
-            # The inner loop completed without hitting cutoff — check next page
+            # The inner loop completed without hitting cutoff - check next page
             if not body.get("has_next"):
                 break
             page += 1
@@ -183,7 +183,7 @@ def run() -> pd.DataFrame:
         print("WARNING: no recent EP votes found.")
         return pd.DataFrame(columns=SCHEMA_COLUMNS)
 
-    # ── STEP 2: fetch detail for each candidate (capped at MAX_DETAIL_CALLS) ──
+    # STEP 2: fetch detail for each candidate (capped at MAX_DETAIL_CALLS)
 
     all_rows:       list[dict] = []
     session_dates:  set[str]   = set()
@@ -222,14 +222,14 @@ def run() -> pd.DataFrame:
         print("WARNING: no parseable vote data found.")
         return pd.DataFrame(columns=SCHEMA_COLUMNS)
 
-    # ── STEP 3: build DataFrame ───────────────────────────────────────────────
+    # STEP 3: build DataFrame
 
     df = pd.DataFrame(all_rows)
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df = df.dropna(subset=["date"])
     df = df[SCHEMA_COLUMNS].reset_index(drop=True)
 
-    # ── STEP 4: save CSV ──────────────────────────────────────────────────────
+    # STEP 4: save CSV
 
     _OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -249,7 +249,7 @@ def run() -> pd.DataFrame:
     return df
 
 
-# ── CLI ───────────────────────────────────────────────────────────────────────
+# CLI
 
 if __name__ == "__main__":
     logging.basicConfig(

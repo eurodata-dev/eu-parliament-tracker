@@ -63,7 +63,7 @@ def load_recent_votes(days: int = 30) -> pd.DataFrame:
         if col not in df.columns:
             df[col] = pd.NA
 
-    # Parse dates — coerce unparseable values to NaT instead of raising.
+    # Parse dates - coerce unparseable values to NaT instead of raising.
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
 
     # Drop rows where date could not be parsed.

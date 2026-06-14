@@ -1,4 +1,10 @@
 .env
+.env.*
+*.key
+*.pem
+*.secret
+*.p12
+secrets.toml
 data/raw/real_votes/
 data/recent/*.bak
 __pycache__/
