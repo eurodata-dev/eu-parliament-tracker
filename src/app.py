@@ -143,11 +143,29 @@ h1, h2, h3, h4, .stTitle {
     background: rgba(37,99,235,0.7) !important;
     color: white !important;
 }
-/* Date input in sidebar */
+/* Date input in sidebar — bright, clearly readable value text.
+   baseweb sets -webkit-text-fill-color which overrides `color`, so the date
+   range looked white-on-white; we force it white explicitly. */
+[data-testid="stSidebar"] [data-baseweb="input"],
+[data-testid="stSidebar"] [data-baseweb="base-input"] {
+    background: rgba(255,255,255,0.10) !important;
+    border: 1px solid rgba(255,255,255,0.22) !important;
+    border-radius: 8px !important;
+}
 [data-testid="stSidebar"] input {
-    background: rgba(255,255,255,0.08) !important;
+    background: transparent !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
+}
+[data-testid="stSidebar"] input::placeholder {
+    color: rgba(255,255,255,0.65) !important;
+    -webkit-text-fill-color: rgba(255,255,255,0.65) !important;
+}
+[data-testid="stSidebar"] [data-testid="stDateInput"] svg {
+    fill: #e2e8f0 !important;
     color: #e2e8f0 !important;
-    border-color: rgba(255,255,255,0.15) !important;
 }
 
 /* ── Sidebar toggle button (BUG 2 fix) ──
@@ -330,25 +348,51 @@ h1, h2, h3, h4, .stTitle {
 .hero-stat-label { font-size: 0.82rem; color: rgba(255,255,255,0.6); }
 .hero-stat-sep { color: rgba(255,255,255,0.25); font-size: 1.2rem; }
 
-/* ── Search bar ── */
-.stTextInput > div > div > input {
+/* ── Text inputs (general: contact, subscribe) ── */
+[data-testid="stTextInput"] input {
     font-family: 'Inter', sans-serif !important;
-    font-size: 1.05rem !important;
-    border: 2px solid var(--line) !important;
-    border-radius: 14px !important;
+    font-size: 1.0rem !important;
+    border: 1.5px solid var(--line) !important;
+    border-radius: 12px !important;
     background: var(--surface) !important;
     color: var(--navy) !important;
-    padding: 0.85rem 1.2rem !important;
+    padding: 0.7rem 1rem !important;
     box-shadow: var(--sh-sm) !important;
     transition: border-color 0.2s, box-shadow 0.2s !important;
 }
-.stTextInput > div > div > input:focus {
+[data-testid="stTextInput"] input:focus {
     border-color: var(--blue) !important;
     box-shadow: 0 0 0 4px rgba(37,99,235,0.1), var(--sh-sm) !important;
     outline: none !important;
 }
-.stTextInput > div > div > input::placeholder {
+[data-testid="stTextInput"] input::placeholder {
     color: var(--navy-faint) !important;
+}
+
+/* ── Main search bar — deliberately distinct from buttons ──
+   Pill shape + magnifier icon + soft blue glow so it can't be mistaken for a
+   button. Scoped to the search widget only via its st-key container class. */
+.st-key-main_search [data-baseweb="input"],
+.st-key-main_search [data-baseweb="base-input"] {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 999px !important;
+}
+.st-key-main_search input {
+    font-size: 1.12rem !important;
+    border: 2px solid #BFD4F7 !important;
+    border-radius: 999px !important;
+    padding: 1rem 1.4rem 1rem 3rem !important;
+    background-color: #FFFFFF !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: 1.15rem center !important;
+    background-size: 1.2rem 1.2rem !important;
+    box-shadow: 0 8px 24px rgba(37,99,235,0.16), 0 2px 8px rgba(15,27,61,0.06) !important;
+}
+.st-key-main_search input:focus {
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.15), 0 8px 24px rgba(37,99,235,0.20) !important;
 }
 
 /* ── Buttons (main area) ──
@@ -391,6 +435,21 @@ h1, h2, h3, h4, .stTitle {
     background: var(--blue-deep) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 26px rgba(37,99,235,0.38) !important;
+}
+
+/* ── Button labels: truncate with ellipsis instead of overflowing (mobile) ── */
+.stButton button { overflow: hidden !important; }
+.stButton button [data-testid="stMarkdownContainer"] {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+.stButton button [data-testid="stMarkdownContainer"] p {
+    display: block !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 /* ── Topic bar ── */
