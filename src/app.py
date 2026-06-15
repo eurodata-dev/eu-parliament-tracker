@@ -23,9 +23,9 @@ st.set_page_config(
 
 st.markdown('<meta name="google-site-verification" content="ymZ5DtlnckmG4aJ3DT4_OAbB1vsTcUXJpOoklHcXO58" />', unsafe_allow_html=True)
 
-# Google Analytics
-st.markdown("""
-<!-- Google tag (gtag.js) -->
+# Google Analytics — injected via components.html to bypass Streamlit's iframe sandbox
+from streamlit.components.v1 import html as _html_component
+_html_component("""
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3RB7GL6QNX"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -33,7 +33,7 @@ st.markdown("""
   gtag('js', new Date());
   gtag('config', 'G-3RB7GL6QNX');
 </script>
-""", unsafe_allow_html=True)
+""", height=0)
 
 st.markdown("""
 <style>
