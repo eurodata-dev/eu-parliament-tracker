@@ -1,0 +1,159 @@
+.list {
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 112px 1fr auto;
+  gap: 24px;
+  align-items: start;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line-soft);
+  transition: background 0.12s;
+}
+
+.row:hover {
+  background: linear-gradient(90deg, transparent, var(--bg-raised) 12%, var(--bg-raised) 88%, transparent);
+}
+
+.row:hover .title {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+
+.date {
+  padding-top: 3px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.title {
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  padding-top: 2px;
+  min-width: 132px;
+}
+
+.mini {
+  width: 132px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  text-align: right;
+}
+
+.mini b {
+  font-weight: 500;
+}
+
+.result {
+  display: inline-block;
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.adopted {
+  color: var(--for);
+}
+
+.rejected {
+  color: var(--against);
+}
+
+.position {
+  display: inline-block;
+  min-width: 84px;
+  padding: 3px 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #0b1531;
+}
+
+.position[data-position="FOR"] {
+  background: var(--for);
+}
+
+.position[data-position="AGAINST"] {
+  background: var(--against);
+}
+
+.position[data-position="ABSTENTION"] {
+  background: var(--abstain);
+}
+
+.position[data-position="DID_NOT_VOTE"] {
+  background: transparent;
+  color: var(--muted);
+  outline: 1px solid var(--line);
+  outline-offset: -1px;
+}
+
+.bar {
+  display: flex;
+  gap: 1px;
+  width: 100%;
+  background: var(--bg-sunken);
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+}
+
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: 1fr auto;
+    gap: 6px 14px;
+  }
+
+  .date {
+    grid-column: 1 / -1;
+    padding: 0;
+  }
+
+  .title {
+    font-size: 17px;
+  }
+
+  .side {
+    min-width: 0;
+  }
+
+  .mini {
+    width: 104px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+}

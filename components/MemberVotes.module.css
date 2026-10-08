@@ -1,0 +1,164 @@
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--line);
+}
+
+.tabs button {
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tabs button:last-child {
+  border-right: none;
+}
+
+.tabs button span {
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.tabs button:hover {
+  color: var(--text);
+}
+
+.tabs button[aria-selected="true"] {
+  background: var(--bg-raised);
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.tabs button[aria-selected="true"][data-position="FOR"] {
+  box-shadow: inset 0 -2px 0 var(--for);
+}
+
+.tabs button[aria-selected="true"][data-position="AGAINST"] {
+  box-shadow: inset 0 -2px 0 var(--against);
+}
+
+.tabs button[aria-selected="true"][data-position="ABSTENTION"] {
+  box-shadow: inset 0 -2px 0 var(--abstain);
+}
+
+.search {
+  max-width: 280px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  border-top: 1px solid var(--line-soft);
+}
+
+.member {
+  display: grid;
+  grid-template-columns: 8px 1fr;
+  column-gap: 12px;
+  padding: 9px 10px 9px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.member:hover .name {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.member > i {
+  grid-row: span 2;
+  width: 8px;
+  height: 100%;
+  min-height: 34px;
+}
+
+.member > i[data-position="FOR"] {
+  background: var(--for);
+}
+
+.member > i[data-position="AGAINST"] {
+  background: var(--against);
+}
+
+.member > i[data-position="ABSTENTION"] {
+  background: var(--abstain);
+}
+
+.member > i[data-position="DID_NOT_VOTE"] {
+  background: var(--absent);
+}
+
+.name {
+  font-size: 14px;
+  color: var(--text-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.name b {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.tag em {
+  width: 7px;
+  height: 7px;
+}
+
+.toggle {
+  margin-top: 18px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent-text);
+  cursor: pointer;
+}
+
+.empty {
+  padding: 24px 0;
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  .search {
+    max-width: none;
+  }
+
+  .tabs {
+    width: 100%;
+  }
+
+  .tabs button {
+    flex: 1;
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+}

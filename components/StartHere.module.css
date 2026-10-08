@@ -1,0 +1,83 @@
+.wrap {
+  padding-bottom: 56px;
+}
+
+.wrap :global(.eyebrow) {
+  margin-bottom: 16px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 26px 26px 24px;
+  background: var(--bg-raised);
+  color: var(--text);
+  transition: background 0.15s;
+}
+
+a.card:hover {
+  background: #17295c;
+}
+
+.card svg {
+  color: var(--abstain);
+}
+
+.card h3 {
+  margin-top: 6px;
+  font-size: 22px;
+}
+
+.card p {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+
+.go {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--accent-text);
+  transition: transform 0.15s;
+}
+
+a.card:hover .go {
+  transform: translateX(4px);
+}
+
+.select {
+  margin-top: auto;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-color: var(--bg-sunken);
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.select option {
+  background: var(--bg);
+}
+
+@media (max-width: 860px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}

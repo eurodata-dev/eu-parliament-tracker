@@ -1,0 +1,81 @@
+.figures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.figures > div {
+  padding: 22px 24px 24px 0;
+  border-right: 1px solid var(--line);
+}
+
+.figures > div + div {
+  padding-left: 24px;
+}
+
+.figures > div:last-child {
+  border-right: none;
+}
+
+.figures dt {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.figures dd {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.big {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.big i {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+
+.detail {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.detail b {
+  font-weight: 500;
+  color: var(--text);
+}
+
+@media (max-width: 760px) {
+  .figures {
+    grid-template-columns: 1fr;
+  }
+
+  .figures > div,
+  .figures > div + div {
+    padding: 18px 0;
+    border-right: none;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .figures > div:last-child {
+    border-bottom: none;
+  }
+
+  .big {
+    font-size: 24px;
+  }
+}

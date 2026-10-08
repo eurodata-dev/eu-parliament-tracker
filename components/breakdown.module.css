@@ -1,0 +1,135 @@
+.table {
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.tr {
+  display: grid;
+  grid-template-columns: 150px minmax(120px, 1fr) repeat(5, 76px);
+  gap: 16px;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.th {
+  padding: 10px 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 500;
+}
+
+.name i {
+  width: 10px;
+  height: 10px;
+  flex: none;
+}
+
+.name small {
+  font-size: 11px;
+  color: var(--faint);
+  font-weight: 400;
+}
+
+.n {
+  text-align: right;
+}
+
+.countries {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 40px;
+}
+
+.country {
+  display: grid;
+  grid-template-columns: 150px 1fr 92px;
+  gap: 14px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 14px;
+}
+
+.country b {
+  font-weight: 500;
+}
+
+.country > span:last-child {
+  text-align: right;
+  font-size: 12.5px;
+}
+
+.cname {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cname :global(.num) {
+  display: inline-block;
+  width: 22px;
+  font-size: 11px;
+}
+
+.more summary {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent-text);
+  cursor: pointer;
+  list-style: none;
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+.more[open] summary {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .tr {
+    grid-template-columns: 110px 1fr repeat(4, 52px);
+    gap: 10px;
+  }
+
+  .optional {
+    display: none;
+  }
+
+  .countries {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .tr {
+    grid-template-columns: 1fr repeat(4, 44px);
+    font-size: 13px;
+  }
+
+  .barCol {
+    display: none;
+  }
+
+  .th {
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  .country {
+    grid-template-columns: 120px 1fr 80px;
+  }
+}

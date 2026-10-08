@@ -1,0 +1,85 @@
+.lede {
+  margin: -8px 0 22px;
+  max-width: 64ch;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.seats {
+  display: flex;
+  gap: 2px;
+  height: 16px;
+  margin-bottom: 18px;
+}
+
+.seats span {
+  display: block;
+}
+
+.list {
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.list a {
+  display: grid;
+  grid-template-columns: 12px minmax(180px, 1.1fr) 1.4fr 110px;
+  gap: 18px;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.list a:hover {
+  background: linear-gradient(90deg, transparent, var(--bg-raised) 12%, var(--bg-raised) 88%, transparent);
+}
+
+.list i {
+  width: 12px;
+  height: 12px;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+}
+
+.name b {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.name small {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.desc {
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+.count {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 14px;
+}
+
+.count small {
+  font-size: 11px;
+  color: var(--faint);
+}
+
+@media (max-width: 760px) {
+  .list a {
+    grid-template-columns: 12px 1fr auto;
+    gap: 6px 12px;
+  }
+
+  .desc {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,24 @@
+.pager {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  margin-top: 28px;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.pager a {
+  color: var(--accent-text);
+}
+
+.pager a:hover {
+  color: var(--text);
+}
+
+.pager a:last-child {
+  justify-self: end;
+}
+
+.current {
+  color: var(--muted);
+}

@@ -1,0 +1,50 @@
+.band {
+  background: var(--bg-sunken);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: 48px;
+  padding-block: 56px;
+}
+
+.text h2 {
+  margin: 10px 0 14px;
+  font-size: clamp(30px, 4vw, 44px);
+  line-height: 1.1;
+}
+
+.text :global(.eyebrow) {
+  color: var(--abstain);
+}
+
+.text > p:not(:global(.eyebrow)) {
+  max-width: 44ch;
+  margin-bottom: 26px;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text-soft);
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s;
+}
+
+.chart:hover svg {
+  transform: scale(1.02);
+}
+
+@media (max-width: 860px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-block: 44px;
+  }
+}

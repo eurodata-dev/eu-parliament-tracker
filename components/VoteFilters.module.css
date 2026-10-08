@@ -1,0 +1,122 @@
+.form {
+  margin-top: 28px;
+  max-width: 900px;
+}
+
+.search {
+  position: relative;
+}
+
+.search :global(.input) {
+  padding: 15px 16px;
+  font-size: 16px;
+}
+
+.suggestions {
+  position: absolute;
+  z-index: 5;
+  top: 100%;
+  left: 0;
+  right: 0;
+  list-style: none;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-top: none;
+  box-shadow: 0 12px 30px rgba(3, 8, 24, 0.5);
+}
+
+.suggestions a {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.suggestions li:last-child a {
+  border-bottom: none;
+}
+
+.suggestions a:hover {
+  background: var(--bg);
+}
+
+.suggestions small {
+  flex: none;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: end;
+  margin-top: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field > span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.field option {
+  background: var(--bg);
+}
+
+.field input[type="date"] {
+  color-scheme: dark;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.actions :global(.button) {
+  padding: 12px 26px;
+}
+
+.reset {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--accent-text);
+}
+
+.reset:hover {
+  color: var(--text);
+}
+
+@media (max-width: 760px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .row .field:first-child,
+  .actions {
+    grid-column: 1 / -1;
+  }
+}
