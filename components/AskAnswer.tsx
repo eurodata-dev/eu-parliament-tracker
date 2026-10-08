@@ -86,7 +86,7 @@ export default function AskAnswer({ question, t }: { question: string; t: Dictio
       </div>
       <p className={styles.note}>{t.ai.note}</p>
 
-      <h2 className="eyebrow">{t.ask.sources}</h2>
+      {state.sources.length > 0 && <h2 className="eyebrow">{t.ask.sources}</h2>}
       <ol className={styles.sources}>
         {state.sources.map((s, i) => (
           <li key={s.id}>
