@@ -1,0 +1,88 @@
+.head {
+  padding: 48px 0 32px;
+}
+
+.head h1 {
+  font-size: clamp(32px, 4.5vw, 48px);
+}
+
+.head > p {
+  margin-top: 12px;
+  max-width: 60ch;
+  font-size: 17px;
+  color: var(--text-soft);
+}
+
+.count {
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.examples span {
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.examples a {
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.examples a:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.empty {
+  padding: 40px 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.lede {
+  margin: -16px 0 32px;
+  max-width: 62ch;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text-soft);
+}
+
+.legal {
+  max-width: 68ch;
+  padding-bottom: 72px;
+}
+
+.legal section {
+  padding: 22px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.legal h2 {
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.legal p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-soft);
+}
+
+.legal a {
+  color: var(--accent-text);
+  text-decoration: underline;
+}

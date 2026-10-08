@@ -1,0 +1,45 @@
+.page {
+  padding-top: 96px;
+  padding-bottom: 40px;
+}
+
+.page > * {
+  max-width: 760px;
+}
+
+.page h1 {
+  margin: 14px 0 16px;
+  font-size: clamp(30px, 4vw, 44px);
+}
+
+.page > p:not(:global(.eyebrow)) {
+  margin-bottom: 28px;
+  font-size: 17px;
+  color: var(--text-soft);
+}
+
+.loading {
+  display: flex;
+  gap: 6px;
+}
+
+.loading span {
+  width: 10px;
+  height: 10px;
+  background: var(--line);
+  animation: pulse 1.2s infinite;
+}
+
+.loading span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.loading span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes pulse {
+  40% {
+    background: var(--accent);
+  }
+}
