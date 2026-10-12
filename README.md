@@ -7,7 +7,6 @@ Source of [euparliamenttracker.com](https://euparliamenttracker.com): every roll
 - **Votes**: search by subject, filter by topic and date, and see everything that matches added up (how each group voted across all of them, plus a written overview).
 - **Vote pages**: result, hemicycle, group and country breakdowns, every MEP's vote, the Parliament's press summary, official documents, share links.
 - **MEPs**: directory with filters, and a profile per MEP with attendance and voting history.
-- **Match** (`/match`): answer 10 recent contested votes and see which MEPs and groups vote like you, on a hemicycle seat by seat.
 - **Trends**: the last 30 days of votes compared with the months before: which group moved, which topics, polarization.
 - **Ask**: questions in plain language, answered from the vote records with sources.
 - **Weekly email**: sign-up form, signed unsubscribe links, sent every Monday after a plenary week.
@@ -51,11 +50,10 @@ To test the weekly email by hand: `curl -H "Authorization: Bearer $CRON_SECRET" 
 ## Project layout
 
 ```
-app/            routes (home, votes, meps, match, trends, ask, about, contact) and API routes
+app/            routes (home, votes, meps, trends, ask, about, contact) and API routes
 components/     UI pieces, each with its own CSS module
 lib/htv.ts      HowTheyVote API client
 lib/analysis.ts topic overviews and trends
-lib/match.ts    question picking for /match
 lib/ai.ts       prompts and Groq calls
 lib/i18n/       dictionaries and locale detection
 ```

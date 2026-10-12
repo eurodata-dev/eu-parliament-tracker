@@ -10,7 +10,6 @@ export default function SiteHeader({ locale, t }: { locale: Locale; t: Dictionar
   const links = [
     { href: "/votes", label: t.nav.votes },
     { href: "/meps", label: t.nav.meps },
-    { href: "/match", label: t.nav.match },
     { href: "/trends", label: t.nav.trends },
     { href: "/ask", label: t.nav.ask },
     { href: "/about", label: t.nav.about },

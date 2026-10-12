@@ -5,7 +5,6 @@ import AskBox from "@/components/AskBox";
 import FeaturedVote from "@/components/FeaturedVote";
 import GroupGuide from "@/components/GroupGuide";
 import HeroArc from "@/components/HeroArc";
-import MatchTeaser from "@/components/MatchTeaser";
 import MepWall from "@/components/MepWall";
 import StartHere from "@/components/StartHere";
 import TopicGrid from "@/components/TopicGrid";
@@ -108,8 +107,6 @@ export default async function HomePage() {
       </section>
 
       <StartHere t={t} countries={countries} />
-
-      <MatchTeaser t={t} />
 
       <div className="paper">
         <section id="week" className={`container section ${styles.split}`}>
