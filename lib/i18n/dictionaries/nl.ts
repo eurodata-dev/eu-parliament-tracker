@@ -266,6 +266,7 @@ const nl: Dictionary = {
     subscribe: "Inschrijven",
     subscribed: "Bedankt, je staat op de lijst.",
     subscribeError: "Dat lukte niet. Controleer het adres en probeer opnieuw.",
+    methodology: "Methodologie",
     privacy: "Privacy",
     consent: "Door je in te schrijven ga je akkoord met deze e-mail. Uitschrijven met één klik.",
     language: "Taal",

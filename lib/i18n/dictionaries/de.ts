@@ -266,6 +266,7 @@ const de: Dictionary = {
     subscribe: "Abonnieren",
     subscribed: "Danke, Sie sind dabei.",
     subscribeError: "Das hat nicht geklappt. Prüfen Sie die Adresse und versuchen Sie es erneut.",
+    methodology: "Methodik",
     privacy: "Datenschutz",
     consent: "Mit der Anmeldung stimmen Sie dem Empfang dieser E-Mail zu. Abmeldung mit einem Klick.",
     language: "Sprache",

@@ -264,6 +264,7 @@ const en = {
     subscribe: "Subscribe",
     subscribed: "Thanks, you're on the list.",
     subscribeError: "That didn't work. Check the address and try again.",
+    methodology: "Methodology",
     privacy: "Privacy",
     consent: "By subscribing you agree to receive this email. Unsubscribe in one click.",
     language: "Language",

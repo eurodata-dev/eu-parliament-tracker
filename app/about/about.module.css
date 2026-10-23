@@ -96,6 +96,40 @@
   color: var(--muted);
 }
 
+.lede {
+  margin-top: 14px;
+  max-width: 62ch;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--text-soft);
+}
+
+.updated {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0 36px;
+}
+
+.toc a {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.toc a:hover {
+  border-color: var(--accent-text);
+  color: var(--text);
+}
+
 .cta {
   padding: 40px 0 0;
 }

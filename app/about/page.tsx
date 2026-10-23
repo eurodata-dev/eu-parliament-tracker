@@ -53,6 +53,11 @@ export default async function AboutPage() {
           <h2>{a.dataTitle}</h2>
           <div className={styles.text}>
             <RichText text={a.data} />
+            <p>
+              <Link href="/methodology" className="more-link">
+                {t.footer.methodology} →
+              </Link>
+            </p>
           </div>
         </section>
 

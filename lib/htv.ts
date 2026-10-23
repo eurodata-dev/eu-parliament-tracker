@@ -136,10 +136,10 @@ export async function listVotes({ q, topic, from, to, page, size = 20 }: ListFil
   };
 }
 
-// a vote never changes after it's held
+// results don't change after a vote, but a fresh vote can arrive with an empty roll-call first
 export async function getVote(id: string) {
   if (!/^\d+$/.test(id)) throw new NotFound(id);
-  return get<VoteDetail>(`/votes/${id}`, 7 * DAY);
+  return get<VoteDetail>(`/votes/${id}`, HOUR);
 }
 
 export async function getVotes(ids: string[], concurrency = 8) {
@@ -165,11 +165,16 @@ export function memberVotes(id: string, page = 1, size = 50) {
 }
 
 // no MEP list endpoint, so take them from the latest roll-call
+// the newest votes sometimes come in before their roll-call is filled, so skip those
 export async function currentMembers(): Promise<Member[]> {
-  const { results } = await latestVotes(1, 1);
-  if (!results.length) return [];
-  const vote = await getVote(results[0].id);
-  return vote.member_votes
-    .map((mv) => mv.member)
-    .sort((a, b) => a.last_name.localeCompare(b.last_name));
+  const { results } = await latestVotes(1, 10);
+  for (const summary of results) {
+    const vote = await getVote(summary.id).catch(() => null);
+    if (vote && vote.member_votes.length >= 600) {
+      return vote.member_votes
+        .map((mv) => mv.member)
+        .sort((a, b) => a.last_name.localeCompare(b.last_name));
+    }
+  }
+  return [];
 }

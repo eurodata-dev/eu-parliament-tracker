@@ -38,6 +38,7 @@ export default function SiteFooter({ locale, t }: { locale: Locale; t: Dictionar
           <Link href="/trends">{t.nav.trends}</Link>
           <Link href="/ask">{t.nav.ask}</Link>
           <Link href="/about">{t.nav.about}</Link>
+          <Link href="/methodology">{t.footer.methodology}</Link>
           <Link href="/contact">{t.nav.contact}</Link>
           <Link href="/privacy">{t.footer.privacy}</Link>
         </nav>

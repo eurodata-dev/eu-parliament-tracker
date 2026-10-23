@@ -266,6 +266,7 @@ const it: Dictionary = {
     subscribe: "Iscriviti",
     subscribed: "Grazie, sei nella lista.",
     subscribeError: "Non ha funzionato. Controlla l'indirizzo e riprova.",
+    methodology: "Metodologia",
     privacy: "Privacy",
     consent: "Iscrivendoti accetti di ricevere questa email. Disiscrizione con un clic.",
     language: "Lingua",

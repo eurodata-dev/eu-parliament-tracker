@@ -13,6 +13,7 @@ import ShareLinks from "@/components/ShareLinks";
 import TallyBar from "@/components/TallyBar";
 import { aiEnabled } from "@/lib/ai";
 import { formatDate, percent } from "@/lib/format";
+import VoteContext from "@/components/VoteContext";
 import VoteList from "@/components/VoteList";
 import { getVote, NotFound, search } from "@/lib/htv";
 import { fill, type Locale } from "@/lib/i18n/config";
@@ -142,6 +143,8 @@ export default async function VotePage({ params }: Props) {
           </dl>
         </div>
       </div>
+
+      <VoteContext vote={vote} locale={locale} />
 
       <section className="section">
         <div className="section-head">
