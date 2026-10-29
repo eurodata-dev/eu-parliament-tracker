@@ -21,10 +21,12 @@ export async function addSubscriber(email: string, language: string) {
   // upsert on email, needs a unique constraint on subscribers.email
   const res = await fetch(`${url}?on_conflict=email`, {
     method: "POST",
-    headers: { ...headers, prefer: "resolution=merge-duplicates,return=minimal" },
+    // already subscribed = fine. ignore-duplicates only needs insert rights
+    headers: { ...headers, prefer: "resolution=ignore-duplicates,return=minimal" },
     body: JSON.stringify({ email, language }),
     cache: "no-store",
   });
+  if (res.status === 409) return;
   if (!res.ok) throw new Error(`Supabase ${res.status}: ${(await res.text()).slice(0, 200)}`);
 }
 
